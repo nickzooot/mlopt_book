@@ -1,0 +1,181 @@
+% ML Optimization Book
+\documentclass[11pt,a4paper]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+
+% Algorithm packages
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{microtype}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage{mdframed}
+\usepackage{fancyhdr}
+\usepackage{truncate}
+\usepackage{geometry}
+
+% Set equation numbering to include chapter number and restart with each chapter
+\numberwithin{equation}{chapter}
+\numberwithin{algorithm}{chapter}
+
+% Adjust page geometry for better headers
+\geometry{
+  a4paper,
+  top=3cm,
+  headheight=14pt
+}
+
+% Set up custom page styles for headers to handle long chapter titles
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter. #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection. #1}}
+\fancyhead[LO]{\truncate{0.45\textwidth}{\leftmark}}
+\fancyhead[RE]{\truncate{0.45\textwidth}{\rightmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% Define abstract environment for chapter abstracts
+\newenvironment{abstract}
+{\small
+\begin{center}
+\begin{minipage}{0.9\textwidth}
+\begin{mdframed}[backgroundcolor=gray!10, linewidth=0pt, innertopmargin=10pt, innerbottommargin=10pt, leftmargin=10pt, rightmargin=10pt]
+\noindent\textit{Abstract:}\\}
+{\end{mdframed}
+\end{minipage}
+\end{center}}
+
+% Define pastel colors for theorem-like environments
+\definecolor{pastelPurple}{RGB}{230,190,255}  % For theorems
+\definecolor{pastelGreen}{RGB}{190,255,190}   % For claims
+\definecolor{pastelYellow}{RGB}{255,255,190}  % For lemmas
+\definecolor{pastelBlue}{RGB}{190,230,255}    % For definitions
+\definecolor{pastelOrange}{RGB}{255,224,190}  % For examples
+
+% Custom theorem styles
+\declaretheoremstyle[
+    headfont=\bfseries,
+    bodyfont=\normalfont,
+    mdframed={
+        linecolor=pastelPurple,
+        backgroundcolor=pastelPurple!20,
+        roundcorner=5pt,
+    }
+]{theoremstyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries,
+    bodyfont=\normalfont,
+    mdframed={
+        linecolor=pastelGreen,
+        backgroundcolor=pastelGreen!20,
+        roundcorner=5pt,
+    }
+]{claimstyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries,
+    bodyfont=\normalfont,
+    mdframed={
+        linecolor=pastelYellow,
+        backgroundcolor=pastelYellow!20,
+        roundcorner=5pt,
+    }
+]{lemmastyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries,
+    bodyfont=\normalfont,
+    mdframed={
+        linecolor=pastelBlue,
+        backgroundcolor=pastelBlue!20,
+        roundcorner=5pt,
+    }
+]{definitionstyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries,
+    bodyfont=\normalfont,
+    mdframed={
+        linecolor=pastelOrange,
+        backgroundcolor=pastelOrange!20,
+        roundcorner=5pt,
+    }
+]{examplestyle}
+
+% Custom proof style with bold "Proof:" at beginning and ending with qed symbol
+\renewenvironment{proof}{%
+    \par\medskip\noindent\textbf{Proof:}\space%
+}{%
+    \hfill$\qedsymbol$\par\medskip%
+}
+
+% Custom theorem environments
+\declaretheorem[style=theoremstyle,name=Theorem]{theorem}
+\declaretheorem[style=lemmastyle,name=Lemma]{lemma}
+\declaretheorem[style=claimstyle,name=Claim]{claim}
+\declaretheorem[style=definitionstyle,name=Definition]{definition}
+\declaretheorem[style=examplestyle,name=Example]{example}
+\declaretheorem[style=theoremstyle,name=Corollary]{corollary}
+
+% Number theorems within chapters
+\numberwithin{theorem}{chapter}
+\numberwithin{lemma}{chapter}
+\numberwithin{claim}{chapter}
+\numberwithin{definition}{chapter}
+\numberwithin{example}{chapter}
+\numberwithin{corollary}{chapter}
+
+\title{Machine Learning Optimization: Theory and Practice}
+\author{Multiple Authors}
+\date{\today}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\tableofcontents
+
+\chapter*{Preface}
+This book covers various optimization methods used in machine learning, from fundamental algorithms to advanced techniques. Each chapter focuses on specific optimization methods and their applications in machine learning.
+
+\mainmatter
+
+\input{chapters/01_introduction/chapter}
+\input{chapters/02_gradient_descent/chapter}
+\input{chapters/03_newton_method/chapter}
+\input{chapters/04_conjugate_gradient/chapter}
+\input{chapters/05_hessian_free_newton/chapter}
+\input{chapters/06_quasi_newton_methods/chapter}
+\input{chapters/07_constrained_optimization/chapter}
+\input{chapters/08_dual_optimization/chapter}
+\input{chapters/09_linear_programming/chapter}
+\input{chapters/10_nonsmooth_optimization/chapter}
+\input{chapters/11_proximal_gradient/chapter}
+\input{chapters/12_projections_proximal/chapter}
+\input{chapters/13_stochastic_optimization/chapter}
+
+\backmatter
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document} 

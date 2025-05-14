@@ -1,0 +1,150 @@
+\chapter{Gradient Descent. Convergence speed for different function classes. Examples. Finite-difference methods.}
+
+% Chapter Abstract/Overview
+\begin{abstract}
+This chapter explores gradient descent methods for optimization in machine learning. We analyze convergence rates for different function classes, provide practical examples, and discuss finite-difference approximations when gradients are not analytically available.
+\end{abstract}
+
+% Introduction Section
+\section{Introduction}
+Gradient descent is one of the most fundamental algorithms in optimization, serving as the cornerstone for many machine learning algorithms. This chapter introduces the method, its variants, convergence properties, and practical implementations.
+
+\section{The Gradient Descent Algorithm}
+
+\begin{definition}[Gradient Descent]
+Gradient descent is an iterative optimization algorithm that updates parameters in the direction of the negative gradient. Given a function $f: \mathbb{R}^n \rightarrow \mathbb{R}$, the update rule is:
+\[x_{k+1} = x_k - \alpha_k \nabla f(x_k)\]
+where $\alpha_k > 0$ is the step size or learning rate at iteration $k$.
+\end{definition}
+
+\begin{algorithm}[H]
+\caption{Gradient Descent with Backtracking Line Search}
+\begin{algorithmic}
+\REQUIRE Function $f$, gradient $\nabla f$, initial point $x_0$, tolerance $\epsilon > 0$, maximum iterations $K$
+\REQUIRE Initial step size $\alpha_0 > 0$, backtracking parameters $0 < \beta < 1$, $0 < \sigma < 0.5$
+\ENSURE Approximate minimizer $x^*$
+\STATE $k \gets 0$
+\WHILE{$\|\nabla f(x_k)\| > \epsilon$ and $k < K$}
+    \STATE $d_k \gets -\nabla f(x_k)$ \COMMENT{Descent direction}
+    \STATE $\alpha \gets \alpha_0$ \COMMENT{Reset step size}
+    \WHILE{$f(x_k + \alpha d_k) > f(x_k) + \sigma \alpha \nabla f(x_k)^T d_k$}
+        \STATE $\alpha \gets \beta \alpha$ \COMMENT{Reduce step size}
+    \ENDWHILE
+    \STATE $x_{k+1} \gets x_k + \alpha d_k$ \COMMENT{Update point}
+    \STATE $k \gets k + 1$
+\ENDWHILE
+\RETURN $x_k$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}[Convergence of Gradient Descent for L-smooth Functions]
+If $f$ is L-smooth and convex, and gradient descent is run with constant step size $\alpha \leq \frac{1}{L}$, then after $k$ iterations:
+\[f(x_k) - f(x^*) \leq \frac{\|x_0 - x^*\|^2}{2\alpha k}\]
+where $x^*$ is a minimizer of $f$.
+\end{theorem}
+
+\begin{proof}
+From L-smoothness, we have:
+\[f(x_{k+1}) \leq f(x_k) + \nabla f(x_k)^T(x_{k+1} - x_k) + \frac{L}{2}\|x_{k+1} - x_k\|^2\]
+
+Substituting $x_{k+1} = x_k - \alpha \nabla f(x_k)$:
+\[f(x_{k+1}) \leq f(x_k) - \alpha\|\nabla f(x_k)\|^2 + \frac{L\alpha^2}{2}\|\nabla f(x_k)\|^2\]
+
+When $\alpha \leq \frac{1}{L}$, we have $\frac{L\alpha^2}{2} \leq \frac{\alpha}{2}$, so:
+\[f(x_{k+1}) \leq f(x_k) - \frac{\alpha}{2}\|\nabla f(x_k)\|^2\]
+
+By convexity of $f$, we have $f(x_k) - f(x^*) \leq \nabla f(x_k)^T(x_k - x^*)$.
+Using the Cauchy-Schwarz inequality and some algebraic manipulations (omitted for brevity), we can establish the result.
+\end{proof}
+
+\begin{claim}[Convergence for Strongly Convex Functions]
+If $f$ is $\mu$-strongly convex and L-smooth, gradient descent with constant step size $\alpha = \frac{1}{L}$ converges linearly:
+\[f(x_k) - f(x^*) \leq \left(1 - \frac{\mu}{L}\right)^k [f(x_0) - f(x^*)]\]
+\end{claim}
+
+\begin{example}[Quadratic Function]
+Consider minimizing $f(x) = \frac{1}{2}x^TAx + b^Tx + c$ where $A$ is positive definite. The gradient is $\nabla f(x) = Ax + b$, and gradient descent with optimal step size converges linearly with rate determined by the condition number of $A$.
+\end{example}
+
+\begin{lemma}[Optimal Step Size]
+For minimizing a quadratic function $f(x) = \frac{1}{2}x^TAx + b^Tx + c$, the optimal fixed step size is $\alpha = \frac{2}{\lambda_min(A) + \lambda_max(A)}$.
+\end{lemma}
+
+\begin{example}[Python Implementation of Gradient Descent]
+Below is a pseudocode implementation of gradient descent in Python-like syntax:
+\end{example}
+\begin{algorithm}[H]
+\caption{Gradient Descent Implementation}
+\begin{algorithmic}
+\REQUIRE $f$, $\nabla f$, $x_0$, $\alpha$, $\epsilon$, $max\_iter$
+\STATE $x \gets x_0$
+\STATE $iter \gets 0$
+\STATE $grad\_norm \gets \|\nabla f(x)\|$
+\WHILE{$grad\_norm > \epsilon$ and $iter < max\_iter$}
+    \STATE $x \gets x - \alpha \cdot \nabla f(x)$
+    \STATE $grad\_norm \gets \|\nabla f(x)\|$
+    \STATE $iter \gets iter + 1$
+    \IF{$iter \bmod 100 = 0$}
+        \STATE Print "Iteration:", $iter$, "Function value:", $f(x)$, "Gradient norm:", $grad\_norm$
+    \ENDIF
+\ENDWHILE
+\RETURN $x$
+\end{algorithmic}
+\end{algorithm}
+
+For functions with expensive gradient computations, we can save computation by reusing the gradient:
+
+\begin{algorithm}[H]
+\caption{Memory-Efficient Gradient Descent}
+\begin{algorithmic}
+\REQUIRE $f$, $\nabla f$, $x_0$, $\alpha$, $\epsilon$, $max\_iter$
+\STATE $x \gets x_0$
+\STATE $iter \gets 0$
+\STATE $grad \gets \nabla f(x)$
+\STATE $grad\_norm \gets \|grad\|$
+\WHILE{$grad\_norm > \epsilon$ and $iter < max\_iter$}
+    \STATE $x \gets x - \alpha \cdot grad$
+    \STATE $grad \gets \nabla f(x)$
+    \STATE $grad\_norm \gets \|grad\|$
+    \STATE $iter \gets iter + 1$
+\ENDWHILE
+\RETURN $x$
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Convergence Speed for Different Function Classes}
+\subsection{Convex Functions}
+% Content here
+
+\subsection{Strongly Convex Functions}
+% Content here
+
+\subsection{Non-convex Functions}
+% Content here
+
+\section{Variants of Gradient Descent}
+\subsection{Batch Gradient Descent}
+% Content here
+
+\subsection{Stochastic Gradient Descent}
+% Content here
+
+\subsection{Mini-batch Gradient Descent}
+% Content here
+
+\section{Finite-difference Methods}
+\subsection{Forward Difference}
+% Content here
+
+\subsection{Central Difference}
+% Content here
+
+\subsection{Higher-order Differences}
+% Content here
+
+\section{Applications in Machine Learning}
+% Content here
+
+\section{Conclusion}
+% Summarize key points and prepare for following chapters

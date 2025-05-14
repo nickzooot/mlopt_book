@@ -1,0 +1,119 @@
+\chapter{Introduction to the course. Function classes for optimization.}
+
+% Chapter Abstract/Overview
+\begin{abstract}
+This chapter provides an introduction to optimization in the context of machine learning. We discuss various function classes for optimization, methods for finding Hessians using second differentials, convergence speed analysis of optimization algorithms, and non-exact one-dimensional optimization techniques.
+\end{abstract}
+
+% Introduction Section
+\section{Introduction}
+Optimization is a central problem in machine learning, forming the foundation of model training and parameter estimation. This chapter establishes key concepts, terminology, and mathematical foundations that will be used throughout this book.
+
+% Main Content Sections
+\section{Function Classes for Optimization}
+\subsection{Convex Functions}
+A function $f$ is convex if its domain is a convex set and if for all $x, y$ in the domain and $\alpha \in [0, 1]$:
+
+\begin{definition}[Convexity]
+A function $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex if for all $x, y \in \text{dom}(f)$ and $\alpha \in [0, 1]$:
+\[f(\alpha x + (1-\alpha)y) \leq \alpha f(x) + (1-\alpha)f(y)\]
+\end{definition}
+
+\begin{theorem}[First-order Convexity Condition]
+For a differentiable function $f$, it is convex if and only if its domain is convex and 
+\[f(y) \geq f(x) + \nabla f(x)^T(y-x)\]
+for all $x, y \in \text{dom}(f)$.
+\end{theorem}
+
+\begin{proof}
+Let's consider the function $g(t) = f(x + t(y-x))$ for $t \in [0,1]$. 
+By the convexity of $f$, we have $g(t) \leq (1-t)g(0) + tg(1)$ which gives:
+\[f(x + t(y-x)) \leq (1-t)f(x) + tf(y)\]
+
+Taking the derivative of $g(t)$ at $t=0$:
+\[g'(0) = \nabla f(x)^T(y-x)\]
+
+By convexity, $g(1) - g(0) \geq g'(0)(1-0)$, which gives:
+\[f(y) - f(x) \geq \nabla f(x)^T(y-x)\]
+
+Rearranging, we get $f(y) \geq f(x) + \nabla f(x)^T(y-x)$.
+\end{proof}
+
+\subsection{Smooth Functions}
+Smoothness is another key property in optimization.
+
+\begin{definition}[L-smoothness]
+A differentiable function $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is L-smooth if its gradient is L-Lipschitz continuous, i.e., for all $x, y \in \text{dom}(f)$:
+\[\|\nabla f(x) - \nabla f(y)\| \leq L\|x - y\|\]
+\end{definition}
+
+\begin{claim}[Descent Lemma]
+If $f$ is L-smooth, then for all $x, y \in \text{dom}(f)$:
+\[f(y) \leq f(x) + \nabla f(x)^T(y-x) + \frac{L}{2}\|y-x\|^2\]
+\end{claim}
+
+\begin{lemma}[Quadratic Upper Bound]
+For an L-smooth function $f$, the function value can be upper-bounded by a quadratic approximation:
+\[f(x + d) \leq f(x) + \nabla f(x)^Td + \frac{L}{2}\|d\|^2\]
+\end{lemma}
+
+\begin{example}[Smooth Function]
+The function $f(x) = \frac{1}{2}x^TAx + b^Tx + c$, where $A$ is positive definite, is smooth with constant $L = \lambda_{\max}(A)$, the largest eigenvalue of $A$.
+\end{example}
+
+\subsection{Strongly Convex Functions}
+% Content here
+
+\subsection{Lipschitz Continuous Functions}
+% Content here
+
+\section{Finding Hessians using Second Differentials}
+\subsection{Second Differentials and the Hessian Matrix}
+% Content here
+
+\subsection{Computing Hessians in Practice}
+% Content here
+
+\section{Convergence Speed of Optimization Algorithms}
+\subsection{Rates of Convergence}
+% Content here
+
+\subsection{Linear vs. Superlinear vs. Quadratic Convergence}
+% Content here
+
+\subsection{Convergence Analysis Framework}
+% Content here
+
+\section{Non-exact One-dimensional Optimization}
+\subsection{Line Search Methods}
+Line search is a fundamental technique for determining step sizes in optimization algorithms.
+
+\begin{example}[Backtracking Line Search]
+Backtracking line search is a practical algorithm for finding an appropriate step size that satisfies the Armijo condition. It is widely used in gradient descent and Newton's method implementations.
+
+\begin{algorithm}[H]
+\caption{Backtracking Line Search}
+\begin{algorithmic}
+\REQUIRE Function $f$, current point $x$, descent direction $d$, initial step size $\alpha > 0$, parameters $0 < \beta < 1$ and $0 < \sigma < 0.5$
+\ENSURE Step size $\alpha$
+\WHILE{$f(x + \alpha d) > f(x) + \sigma \alpha \nabla f(x)^T d$}
+    \STATE $\alpha \gets \beta \alpha$ \COMMENT{Reduce step size}
+\ENDWHILE
+\RETURN $\alpha$
+\end{algorithmic}
+\end{algorithm}
+
+The Armijo condition $f(x + \alpha d) \leq f(x) + \sigma \alpha \nabla f(x)^T d$ ensures sufficient decrease in the function value. Typical values are $\beta = 0.5$ (reducing step size by half each iteration) and $\sigma = 0.1$.
+\end{example}
+
+\subsection{Bracketing Methods}
+% Content here
+
+\subsection{Interpolation Methods}
+% Content here
+
+\section{Applications in Machine Learning}
+% Show practical applications of optimization in ML
+
+\section{Conclusion}
+% Summarize key points and prepare for following chapters
