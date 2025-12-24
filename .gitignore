@@ -31,6 +31,9 @@
 main.pdf
 *.pdf
 
+# ===== Разрешим chapter/**/figures =====
+!chapters/**/figures/**/*.pdf
+
 # ===== Editor/OS junk =====
 *.swp
 *.swo
