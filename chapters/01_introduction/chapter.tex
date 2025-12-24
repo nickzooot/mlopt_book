@@ -1,119 +1,171 @@
 \chapter{Introduction to the course. Function classes for optimization.}
 
-% Chapter Abstract/Overview
+\graphicspath{{chapters/01_introduction/figures}}
 \begin{abstract}
-This chapter provides an introduction to optimization in the context of machine learning. We discuss various function classes for optimization, methods for finding Hessians using second differentials, convergence speed analysis of optimization algorithms, and non-exact one-dimensional optimization techniques.
+We summarize first-order and second-order conditions for local minima, 
+recall differential notation, discuss error sources in numerical 
+differentiation, and collect basic convexity, strong convexity, and 
+Lipschitz smoothness facts that will be used throughout the course.
 \end{abstract}
 
-% Introduction Section
-\section{Introduction}
-Optimization is a central problem in machine learning, forming the foundation of model training and parameter estimation. This chapter establishes key concepts, terminology, and mathematical foundations that will be used throughout this book.
+\section{Optimization problem}
+We study unconstrained optimization problems of the form
+\[
+f(x) \rightarrow \min _{x},
+\]
+with the practical goal of finding good local minima. gradients and 
+hessians are denoted by
+\[
+\nabla f(x)=\left[\begin{array}{c}
+\frac{\partial f}{\partial x_{1}} \\
+\vdots \\
+\frac{\partial f}{\partial x_{n}}
+\end{array}\right] \in \mathbb{R}^{n}, \qquad
+\nabla^{2} f(x)=\left\{\frac{\partial^{2} f}{\partial x_{i} \partial x_{j}}\right\}_{i, j=1}^{n} \in \mathbb{R}^{n \times n} .
+\]
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{global_flat.pdf}
+   \caption{left: rugged nonconvex loss with many minima and a sharp global minimum (red). Right: sharp global minimum and flatter local minimum (red).}\label{fig:}
+\end{figure}
+\hfill
+\noindent Many ML losses are highly nonconvex, with numerous sharp minima; the sharp global minimum can be sensitive to initialization and noise, while flatter local minima often yield more robust solutions even if their objective value is slightly higher.
 
-% Main Content Sections
-\section{Function Classes for Optimization}
-\subsection{Convex Functions}
-A function $f$ is convex if its domain is a convex set and if for all $x, y$ in the domain and $\alpha \in [0, 1]$:
+\section{Local optimality conditions}
 
-\begin{definition}[Convexity]
-A function $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex if for all $x, y \in \text{dom}(f)$ and $\alpha \in [0, 1]$:
-\[f(\alpha x + (1-\alpha)y) \leq \alpha f(x) + (1-\alpha)f(y)\]
-\end{definition}
-
-\begin{theorem}[First-order Convexity Condition]
-For a differentiable function $f$, it is convex if and only if its domain is convex and 
-\[f(y) \geq f(x) + \nabla f(x)^T(y-x)\]
-for all $x, y \in \text{dom}(f)$.
-\end{theorem}
-
-\begin{proof}
-Let's consider the function $g(t) = f(x + t(y-x))$ for $t \in [0,1]$. 
-By the convexity of $f$, we have $g(t) \leq (1-t)g(0) + tg(1)$ which gives:
-\[f(x + t(y-x)) \leq (1-t)f(x) + tf(y)\]
-
-Taking the derivative of $g(t)$ at $t=0$:
-\[g'(0) = \nabla f(x)^T(y-x)\]
-
-By convexity, $g(1) - g(0) \geq g'(0)(1-0)$, which gives:
-\[f(y) - f(x) \geq \nabla f(x)^T(y-x)\]
-
-Rearranging, we get $f(y) \geq f(x) + \nabla f(x)^T(y-x)$.
-\end{proof}
-
-\subsection{Smooth Functions}
-Smoothness is another key property in optimization.
-
-\begin{definition}[L-smoothness]
-A differentiable function $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is L-smooth if its gradient is L-Lipschitz continuous, i.e., for all $x, y \in \text{dom}(f)$:
-\[\|\nabla f(x) - \nabla f(y)\| \leq L\|x - y\|\]
-\end{definition}
-
-\begin{claim}[Descent Lemma]
-If $f$ is L-smooth, then for all $x, y \in \text{dom}(f)$:
-\[f(y) \leq f(x) + \nabla f(x)^T(y-x) + \frac{L}{2}\|y-x\|^2\]
+\begin{claim}[Necessary condition of a local minimum]
+If $f \in C^{1}$, $x \in \operatorname{int}(\operatorname{dom} f)$, and $x$ is a local minimum, then $\nabla f(x)=0$. If in addition $f \in C^{2}$, then $\nabla^{2} f(x) \succeq 0$.
 \end{claim}
 
-\begin{lemma}[Quadratic Upper Bound]
-For an L-smooth function $f$, the function value can be upper-bounded by a quadratic approximation:
-\[f(x + d) \leq f(x) + \nabla f(x)^Td + \frac{L}{2}\|d\|^2\]
-\end{lemma}
+\begin{claim}[Sufficient condition of a local minimum]
+If $f \in C^{2}$, $x \in \operatorname{int}(\operatorname{dom} f)$, $\nabla f(x)=0$, and $\nabla^{2} f(x) \succ 0$, then $x$ is a local minimum.
+\end{claim}
 
-\begin{example}[Smooth Function]
-The function $f(x) = \frac{1}{2}x^TAx + b^Tx + c$, where $A$ is positive definite, is smooth with constant $L = \lambda_{\max}(A)$, the largest eigenvalue of $A$.
-\end{example}
+\section{Differentials}
 
-\subsection{Strongly Convex Functions}
-% Content here
+\begin{definition}
+The function $f$ is differentiable at $x$ if
+\[
+f(x+h)-f(x)=\mathrm{d} f(x)[h]+o(\|h\|),
+\]
+where $\mathrm{d} f(x)$ is a linear operator.
+\end{definition}
 
-\subsection{Lipschitz Continuous Functions}
-% Content here
+\begin{definition}
+The second differential is
+\[
+\mathrm{d}^{2} f(x)\left[h_{1}, h_{2}\right]=\mathrm{d}\left(\mathrm{d} f(x)\left[h_{1}\right]\right)(x)\left[h_{2}\right].
+\]
+\end{definition}
 
-\section{Finding Hessians using Second Differentials}
-\subsection{Second Differentials and the Hessian Matrix}
-% Content here
+\section{Error analysis and machine precision}
 
-\subsection{Computing Hessians in Practice}
-% Content here
+For floating-point arithmetic with machine precision $\varepsilon_{m}$, relative errors satisfy
+\[
+\frac{|f(x)-x|}{|x|} \leq \varepsilon_{m}.
+\]
+Typical values:
+\[
+\begin{array}{c|c}
+\text { bits } & \varepsilon_{m} \\
+\hline
+64 & 10^{-16} \\
+32 & 10^{-7} \\
+16 & 10^{-3}
+\end{array}
+\]
 
-\section{Convergence Speed of Optimization Algorithms}
-\subsection{Rates of Convergence}
-% Content here
+\section{Convexity and strong convexity}
 
-\subsection{Linear vs. Superlinear vs. Quadratic Convergence}
-% Content here
+\begin{claim}[Differential criteria of convexity]
+Let $f \in C^{1}$. Then $f$ is convex if and only if for all $x, y$,
+\[
+f(y) \geq f(x)+\nabla f(x)^{\top}(y-x) .
+\]
+If $f \in C^{2}$, then $f$ is convex if and only if $\nabla^{2} f(x) \succeq 0$ for all $x$.
+\end{claim}
 
-\subsection{Convergence Analysis Framework}
-% Content here
+\begin{definition}
+The function $f$ is $\mu$-strongly convex if for all $x$ the function $x \mapsto f(x)-\frac{\mu}{2}\|x\|^{2}$ is convex.
+\end{definition}
 
-\section{Non-exact One-dimensional Optimization}
-\subsection{Line Search Methods}
-Line search is a fundamental technique for determining step sizes in optimization algorithms.
+\begin{claim}[Differential criteria of strong convexity]
+If $f \in C^{1}$, then $f$ is $\mu$-strongly convex if and only if for all $x, y$,
+\[
+f(y) \geq f(x)+\nabla f(x)^{\top}(y-x)+\frac{\mu}{2}\|x-y\|^{2} .
+\]
+If $f \in C^{2}$, then $f$ is $\mu$-strongly convex if and only if $\nabla^{2} f(x) \succeq \mu I \succ 0$ for all $x$.
+\end{claim}
 
-\begin{example}[Backtracking Line Search]
-Backtracking line search is a practical algorithm for finding an appropriate step size that satisfies the Armijo condition. It is widely used in gradient descent and Newton's method implementations.
+\section{Lipschitz classes}
 
-\begin{algorithm}[H]
-\caption{Backtracking Line Search}
-\begin{algorithmic}
-\REQUIRE Function $f$, current point $x$, descent direction $d$, initial step size $\alpha > 0$, parameters $0 < \beta < 1$ and $0 < \sigma < 0.5$
-\ENSURE Step size $\alpha$
-\WHILE{$f(x + \alpha d) > f(x) + \sigma \alpha \nabla f(x)^T d$}
-    \STATE $\alpha \gets \beta \alpha$ \COMMENT{Reduce step size}
-\ENDWHILE
-\RETURN $\alpha$
-\end{algorithmic}
-\end{algorithm}
+\begin{definition}
+The function $f$ belongs to the Lipschitz class $C_{L}^{k, m}$ if (i) $f \in C^{k}$, (ii) $m \leq k$, and (iii)
+\[
+\left\|\nabla^{m} f(x)-\nabla^{m} f(y)\right\| \leq L\|x-y\| \quad \forall x, y .
+\]
+\end{definition}
 
-The Armijo condition $f(x + \alpha d) \leq f(x) + \sigma \alpha \nabla f(x)^T d$ ensures sufficient decrease in the function value. Typical values are $\beta = 0.5$ (reducing step size by half each iteration) and $\sigma = 0.1$.
-\end{example}
+\paragraph{Examples.}
+\begin{enumerate}
+\item If $f \in C_{L}^{0,0}$, then $|f(x)-f(y)| \leq L\|x-y\|$ for all $x, y$, equivalently
+\[
+f(y)-L\|x-y\| \leq f(x) \leq f(y)+L\|x-y\| .
+\]
+\item If $f \in C_{L}^{1,1}$, then
+\[
+f(x) \geq f(y)+\nabla f(y)^{\top}(x-y)-\frac{L}{2}\|x-y\|^{2},
+\]
+\[
+f(x) \leq f(y)+\nabla f(y)^{\top}(x-y)+\frac{L}{2}\|x-y\|^{2}.
+\]
+\end{enumerate}
 
-\subsection{Bracketing Methods}
-% Content here
+\begin{claim}
+If $f \in C_{L}^{k, m-1}$, then $\|\nabla^{m} f(x)\| \leq L$.
+\end{claim}
 
-\subsection{Interpolation Methods}
-% Content here
+\section{Finite differentiation}
 
-\section{Applications in Machine Learning}
-% Show practical applications of optimization in ML
+We approximate directional derivatives $\nabla f(x)^{\top} d$ with stepsize $\varepsilon$ and machine precision $\varepsilon_{m}$.
 
-\section{Conclusion}
-% Summarize key points and prepare for following chapters
+\paragraph{Forward difference.} Using
+\[
+f(x+\varepsilon d)=f(x)+\nabla f(x)^{\top} \varepsilon d+O\left(\varepsilon^{2}\right),
+\]
+the estimator
+\[
+f_{1}(\varepsilon)=\frac{f(x+\varepsilon d)-f(x)}{\varepsilon}=\nabla f(x)^{\top} d+O(\varepsilon)
+\]
+has error bounded by
+\[
+\left|f_{1}(\varepsilon)-\nabla f(x)^{\top} d\right| \leq L_{1} \varepsilon+\frac{L_{2}}{\varepsilon} \varepsilon_{m},
+\]
+so the optimal $\varepsilon$ balances truncation and roundoff: $\varepsilon=\sqrt{\varepsilon_{m}}$, giving $\left|f_{1}(\varepsilon)\right| \lesssim C \sqrt{\varepsilon_{m}}$.
+
+\paragraph{Central difference.} With
+\[
+f(x+\varepsilon d)=f(x)+\nabla f(x)^{\top} \varepsilon d+\frac{\varepsilon^{2}}{2} d^{\top} \nabla^{2} f(x) d+O\left(\varepsilon^{3}\right),
+\]
+\[
+f(x-\varepsilon d)=f(x)-\nabla f(x)^{\top} \varepsilon d+\frac{\varepsilon^{2}}{2} d^{\top} \nabla^{2} f(x) d+O\left(\varepsilon^{3}\right),
+\]
+the estimator
+\[
+\frac{f(x+\varepsilon d)-f(x-\varepsilon d)}{2 \varepsilon}=\nabla f(x)^{\top} d+O\left(\varepsilon^{2}\right)
+\]
+has error bounded by
+\[
+L_{0} \varepsilon^{2}+\frac{L_{1}}{\varepsilon} \varepsilon_{m},
+\]
+optimized at $\varepsilon \approx\left(\varepsilon_{m}\right)^{1 / 3}$.
+
+\paragraph{Complex step.} Using the expansion
+\[
+f(x+i \varepsilon d)=f(x)+i \varepsilon \nabla f(x)^{\top} d+O\left(\varepsilon^{2}\right)+i O\left(\varepsilon^{3}\right),
+\]
+we obtain
+\[
+\frac{\operatorname{Im} f(x+i \varepsilon d)}{\varepsilon}+\!O\left(\varepsilon^{2}\right)=\nabla f(x)^{\top} d .
+\]
+Because there is no subtraction, instability from $a \approx b$ is avoided, so one can take $\varepsilon=\varepsilon_{m}$.

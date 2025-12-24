@@ -11,6 +11,7 @@
 \usepackage{algorithmic}
 
 \usepackage{graphicx}
+\usepackage{svg}
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{cleveref}
@@ -69,6 +70,28 @@
 \definecolor{pastelYellow}{RGB}{255,255,190}  % For lemmas
 \definecolor{pastelBlue}{RGB}{190,230,255}    % For definitions
 \definecolor{pastelOrange}{RGB}{255,224,190}  % For examples
+
+% TikZ/figure palette (shared with external plots)
+\definecolor{deepblue}{HTML}{2c3e7c}
+\definecolor{indigo}{HTML}{5b3c8c}
+\definecolor{teal}{HTML}{168f89}
+\definecolor{forest}{HTML}{2f6a3d}
+\definecolor{amber}{HTML}{d99100}
+\definecolor{crimson}{HTML}{c23b22}
+\definecolor{slate}{HTML}{47515c}
+\definecolor{lightgray}{HTML}{f2f2f2}
+
+% TikZ style presets for consistent figures
+\tikzset{
+  axis/.style={->,thick,color=black},
+  label/.style={scale=0.9,color=black},
+  curve-main/.style={very thick,color=deepblue},
+  curve-alt/.style={thick,color=indigo},
+  path-highlight/.style={very thick,color=teal},
+  point-mark/.style={color=crimson,fill=crimson},
+  region/.style={fill=amber!20,draw=amber!80},
+  bgfill/.style={fill=lightgray,rounded corners=2pt},
+}
 
 % Custom theorem styles
 \declaretheoremstyle[
@@ -175,7 +198,18 @@ This book covers various optimization methods used in machine learning, from fun
 \input{chapters/13_stochastic_optimization/chapter}
 
 \backmatter
+\chapter{Basic notation}
+For $x \in \mathbb{R}^{n}$, the gradient and Hessian of a scalar function $f$ are
+\[
+\nabla f(x)=\left[\begin{array}{c}
+\frac{\partial f}{\partial x_{1}} \\
+\vdots \\
+\frac{\partial f}{\partial x_{n}}
+\end{array}\right] \in \mathbb{R}^{n}, \qquad
+\nabla^{2} f(x)=\left\{\frac{\partial^{2} f}{\partial x_{i} \partial x_{j}}\right\}_{i, j=1}^{n} \in \mathbb{R}^{n \times n} .
+\]
+
 \bibliographystyle{plain}
 \bibliography{references}
 
-\end{document} 
+\end{document}

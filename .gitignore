@@ -1,0 +1,43 @@
+# ===== LaTeX build artifacts =====
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.dvi
+
+# latexmk / intermediate
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+
+# ===== PDFs (обычно генерятся из .tex) =====
+main.pdf
+*.pdf
+
+# ===== Editor/OS junk =====
+*.swp
+*.swo
+*.tmp
+*~
+.DS_Store
+
+# ===== Inkscape / SVG export output =====
+svg-inkscape/
+
