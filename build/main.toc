@@ -1,48 +1,52 @@
 \contentsline {chapter}{\numberline {1}Introduction to the course. Function classes for optimization.}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Introduction}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Function Classes for Optimization}{1}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}Convex Functions}{1}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Smooth Functions}{2}{subsection.1.2.2}%
-\contentsline {subsection}{\numberline {1.2.3}Strongly Convex Functions}{3}{subsection.1.2.3}%
-\contentsline {subsection}{\numberline {1.2.4}Lipschitz Continuous Functions}{3}{subsection.1.2.4}%
-\contentsline {section}{\numberline {1.3}Finding Hessians using Second Differentials}{3}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}Second Differentials and the Hessian Matrix}{3}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {1.3.2}Computing Hessians in Practice}{3}{subsection.1.3.2}%
-\contentsline {section}{\numberline {1.4}Convergence Speed of Optimization Algorithms}{3}{section.1.4}%
-\contentsline {subsection}{\numberline {1.4.1}Rates of Convergence}{3}{subsection.1.4.1}%
-\contentsline {subsection}{\numberline {1.4.2}Linear vs. Superlinear vs. Quadratic Convergence}{3}{subsection.1.4.2}%
-\contentsline {subsection}{\numberline {1.4.3}Convergence Analysis Framework}{3}{subsection.1.4.3}%
-\contentsline {section}{\numberline {1.5}Non-exact One-dimensional Optimization}{3}{section.1.5}%
-\contentsline {subsection}{\numberline {1.5.1}Line Search Methods}{3}{subsection.1.5.1}%
-\contentsline {subsection}{\numberline {1.5.2}Bracketing Methods}{3}{subsection.1.5.2}%
-\contentsline {subsection}{\numberline {1.5.3}Interpolation Methods}{3}{subsection.1.5.3}%
-\contentsline {section}{\numberline {1.6}Applications in Machine Learning}{3}{section.1.6}%
-\contentsline {section}{\numberline {1.7}Conclusion}{3}{section.1.7}%
-\contentsline {chapter}{\numberline {2}Gradient Descent. Convergence speed for different function classes. Examples. Finite-difference methods.}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Introduction}{5}{section.2.1}%
-\contentsline {section}{\numberline {2.2}The Gradient Descent Algorithm}{5}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Convergence Speed for Different Function Classes}{8}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Convex Functions}{8}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Strongly Convex Functions}{8}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Non-convex Functions}{8}{subsection.2.3.3}%
-\contentsline {section}{\numberline {2.4}Variants of Gradient Descent}{8}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}Batch Gradient Descent}{8}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Stochastic Gradient Descent}{8}{subsection.2.4.2}%
-\contentsline {subsection}{\numberline {2.4.3}Mini-batch Gradient Descent}{8}{subsection.2.4.3}%
-\contentsline {section}{\numberline {2.5}Finite-difference Methods}{8}{section.2.5}%
-\contentsline {subsection}{\numberline {2.5.1}Forward Difference}{8}{subsection.2.5.1}%
-\contentsline {subsection}{\numberline {2.5.2}Central Difference}{8}{subsection.2.5.2}%
-\contentsline {subsection}{\numberline {2.5.3}Higher-order Differences}{8}{subsection.2.5.3}%
-\contentsline {section}{\numberline {2.6}Applications in Machine Learning}{8}{section.2.6}%
-\contentsline {section}{\numberline {2.7}Conclusion}{8}{section.2.7}%
-\contentsline {chapter}{\numberline {3}Newton method. Invariance to linear scaling. Global and local convergence. Matrix decompositions for solving linear systems. Hessian correction schemes.}{9}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Conjugate Gradient method for solving linear systems, its convergence properties. Preconditioning. Non-linear CG.}{11}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Hessian-Free Newton (Newton-cg), its convergence speed. Convex sets. Introduction to Quasi-Newton methods.}{13}{chapter.5}%
-\contentsline {chapter}{\numberline {6}Quasi-Newton methods SR1, BFGS and L-BFGS. Convex functions.}{15}{chapter.6}%
-\contentsline {chapter}{\numberline {7}Constrained optimization problem, KKT theorem (first and second order necessary and sufficient conditions). Examples of analytical solving for constrained optimization, DeepFool adversarial attack.}{17}{chapter.7}%
-\contentsline {chapter}{\numberline {8}Dual optimization problem, dual decomposition, duality for Wasserstein distance. Epigraph and reparameterization reformulations. Standard classes of convex constrained optimization problems.}{19}{chapter.8}%
-\contentsline {chapter}{\numberline {9}Revised simplex method for Linear Programming. Log-Barrier method for constrained convex programming.}{21}{chapter.9}%
-\contentsline {chapter}{\numberline {10}Non-smooth convex optimization: examples, subgradient method. Subdifferential calculus.}{23}{chapter.10}%
-\contentsline {chapter}{\numberline {11}Proximal Gradient Method. Closed functions, Fenchel conjugate functions and conjugate (dual) norms}{25}{chapter.11}%
-\contentsline {chapter}{\numberline {12}Projections and proximal operators. Differentiation through optimization methods.}{27}{chapter.12}%
-\contentsline {chapter}{\numberline {13}Stochastic optimization.}{29}{chapter.13}%
+\contentsline {chapter}{\numberline {2}Introduction to Optimization Problems and Function Classes}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction to Optimization Problems}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Conditions for Local Minima}{3}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Necessary Conditions}{3}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Sufficient Conditions}{3}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Directional Derivatives and Optimality}{4}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Example: Taylor Expansion}{4}{subsection.2.3.1}%
+\contentsline {section}{\numberline {2.4}Differential Calculus for Optimization}{4}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Definition of Differentiability}{4}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Second Differential}{4}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Example: Norm Squared Function}{4}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Numerical Precision Considerations}{5}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Machine Precision}{5}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Impact on Directional Derivatives}{5}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Optimal Step Size}{5}{subsection.2.5.3}%
+\contentsline {section}{\numberline {2.6}Function Classes for Optimization}{5}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Convex Functions}{5}{subsection.2.6.1}%
+\contentsline {subsubsection}{First-Order Characterization}{5}{section*.3}%
+\contentsline {subsection}{\numberline {2.6.2}Strongly Convex Functions}{5}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Lipschitz Continuous Functions}{6}{subsection.2.6.3}%
+\contentsline {subsubsection}{Implications for Function Values}{6}{section*.4}%
+\contentsline {section}{\numberline {2.7}Hessian Computation}{6}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Conclusion}{6}{section.2.8}%
+\contentsline {chapter}{\numberline {3}Gradient Descent. Convergence speed for different function classes. Examples. Finite-difference methods.}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{7}{section.3.1}%
+\contentsline {section}{\numberline {3.2}The Gradient Descent Algorithm}{7}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Convergence Speed for Different Function Classes}{10}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Convex Functions}{10}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Strongly Convex Functions}{10}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Non-convex Functions}{10}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Variants of Gradient Descent}{10}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Batch Gradient Descent}{10}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Stochastic Gradient Descent}{10}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Mini-batch Gradient Descent}{10}{subsection.3.4.3}%
+\contentsline {section}{\numberline {3.5}Finite-difference Methods}{10}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Forward Difference}{10}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Central Difference}{10}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Higher-order Differences}{10}{subsection.3.5.3}%
+\contentsline {section}{\numberline {3.6}Applications in Machine Learning}{10}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Conclusion}{10}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Newton method. Invariance to linear scaling. Global and local convergence. Matrix decompositions for solving linear systems. Hessian correction schemes.}{11}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Conjugate Gradient method for solving linear systems, its convergence properties. Preconditioning. Non-linear CG.}{13}{chapter.5}%
+\contentsline {chapter}{\numberline {6}Hessian-Free Newton (Newton-cg), its convergence speed. Convex sets. Introduction to Quasi-Newton methods.}{15}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Quasi-Newton methods SR1, BFGS and L-BFGS. Convex functions.}{17}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Constrained optimization problem, KKT theorem (first and second order necessary and sufficient conditions). Examples of analytical solving for constrained optimization, DeepFool adversarial attack.}{19}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Dual optimization problem, dual decomposition, duality for Wasserstein distance. Epigraph and reparameterization reformulations. Standard classes of convex constrained optimization problems.}{21}{chapter.9}%
+\contentsline {chapter}{\numberline {10}Revised simplex method for Linear Programming. Log-Barrier method for constrained convex programming.}{23}{chapter.10}%
+\contentsline {chapter}{\numberline {11}Non-smooth convex optimization: examples, subgradient method. Subdifferential calculus.}{25}{chapter.11}%
+\contentsline {chapter}{\numberline {12}Proximal Gradient Method. Closed functions, Fenchel conjugate functions and conjugate (dual) norms}{27}{chapter.12}%
+\contentsline {chapter}{\numberline {13}Projections and proximal operators. Differentiation through optimization methods.}{29}{chapter.13}%
+\contentsline {chapter}{\numberline {14}Stochastic optimization.}{31}{chapter.14}%
