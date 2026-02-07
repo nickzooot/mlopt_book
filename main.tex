@@ -27,7 +27,17 @@
 \usepackage{truncate}
 \usepackage{geometry}
 \usepackage{svg}
+\usepackage{import}
+\usepackage{pdfpages}
+\usepackage{transparent}
+\usepackage{xcolor}
 
+\newcommand{\incfig}[2][1]{%
+    \def\svgwidth{#1\columnwidth}
+    \subimport{figures/}{#2.pdf_tex}
+}
+
+\pdfsuppresswarningpagegroup=1
 % Set equation numbering to include chapter number and restart with each chapter
 \numberwithin{equation}{chapter}
 \numberwithin{algorithm}{chapter}
@@ -59,7 +69,7 @@
 {\small
 \begin{center}
 \begin{minipage}{0.9\textwidth}
-\begin{mdframed}[backgroundcolor=gray!10, linewidth=0pt, innertopmargin=10pt, innerbottommargin=10pt, leftmargin=10pt, rightmargin=10pt]
+\begin{mdframed}[backgroundcolor=gray!10, linewidth=0pt, innertopmargin=10pt, innerbottommargin=10pt, leftmargin=10pt, rightmargin=10pt, nobreak=true]
 \noindent\textit{Abstract:}\\}
 {\end{mdframed}
 \end{minipage}
@@ -102,6 +112,7 @@
         linecolor=pastelPurple,
         backgroundcolor=pastelPurple!20,
         roundcorner=5pt,
+        nobreak=true,
     }
 ]{theoremstyle}
 
@@ -112,6 +123,7 @@
         linecolor=pastelGreen,
         backgroundcolor=pastelGreen!20,
         roundcorner=5pt,
+        nobreak=true,
     }
 ]{claimstyle}
 
@@ -122,6 +134,7 @@
         linecolor=pastelYellow,
         backgroundcolor=pastelYellow!20,
         roundcorner=5pt,
+        nobreak=true,
     }
 ]{lemmastyle}
 
@@ -132,6 +145,7 @@
         linecolor=pastelBlue,
         backgroundcolor=pastelBlue!20,
         roundcorner=5pt,
+        nobreak=true,
     }
 ]{definitionstyle}
 
@@ -142,6 +156,7 @@
         linecolor=pastelOrange,
         backgroundcolor=pastelOrange!20,
         roundcorner=5pt,
+        nobreak=true,
     }
 ]{examplestyle}
 
@@ -184,19 +199,19 @@ This book covers various optimization methods used in machine learning, from fun
 
 \mainmatter
 
-\input{chapters/01_introduction/chapter}
-\input{chapters/02_gradient_descent/chapter}
-\input{chapters/03_newton_method/chapter}
-\input{chapters/04_conjugate_gradient/chapter}
-\input{chapters/05_hessian_free_newton/chapter}
-\input{chapters/06_quasi_newton_methods/chapter}
-\input{chapters/07_constrained_optimization/chapter}
-\input{chapters/08_dual_optimization/chapter}
-\input{chapters/09_linear_programming/chapter}
-\input{chapters/10_nonsmooth_optimization/chapter}
-\input{chapters/11_proximal_gradient/chapter}
-\input{chapters/12_projections_proximal/chapter}
-\input{chapters/13_stochastic_optimization/chapter}
+\subimport{chapters/01_introduction/}{chapter}
+\subimport{chapters/02_gradient_descent/}{chapter}
+\subimport{chapters/03_newton_method/}{chapter}
+\subimport{chapters/04_conjugate_gradient/}{chapter}
+\subimport{chapters/05_hessian_free_newton/}{chapter}
+\subimport{chapters/06_quasi_newton_methods/}{chapter}
+\subimport{chapters/07_constrained_optimization/}{chapter}
+\subimport{chapters/08_dual_optimization/}{chapter}
+\subimport{chapters/09_linear_programming/}{chapter}
+\subimport{chapters/10_nonsmooth_optimization/}{chapter}
+\subimport{chapters/11_proximal_gradient/}{chapter}
+\subimport{chapters/12_projections_proximal/}{chapter}
+\subimport{chapters/13_stochastic_optimization/}{chapter}
 
 \backmatter
 \chapter{Basic notation}

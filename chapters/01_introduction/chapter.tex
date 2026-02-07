@@ -22,19 +22,23 @@ are denoted by
 \nabla^{2} f(x)=\left\{\frac{\partial^{2} f}{\partial x_{i}\partial x_{j}}
 \right\}_{i, j=1}^{n} \in \mathbb{R}^{n \times n} .
 \]
-\begin{figure}[h]
+
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{global_flat.pdf}
-   \caption{Rugged nonconvex loss with many minima and a sharp 
-   global minimum.}\label{fig:global_flat}
+    \incfig{global-and-flat-local-minima}
+    \caption{Rugged nonconvex loss with many minima and a sharp 
+    global minimum.}
+    \label{fig:global-and-flat-local-minima}
 \end{figure}
+
 %\hfill
 \noindent Many ML losses are highly nonconvex, with numerous sharp minima 
-(see \Cref{fig:global_flat}). The sharp global minimum can make the final 
-model sensitive to inputs and noise, while flatter local minima often yield 
+(see \cref{fig:global-and-flat-local-minima}). The sharp global minimum can make the final 
+model sensitive to inputs and noise, while flatter local minima often yield
 more robust solutions even if their objective value is slightly higher. 
 In general, finding a good local minimum can be more valuable than finding
-the global minimum.
+the global minimum. Moreover, in ML we work with multidimensional spaces so it
+makes a task of finding a global minimum very complicated if even viable.
 Therefore, our first goal is not necessarily to rush toward the 
 global minimum, but to find a good local minimum: this is often easier and 
 can lead to better results. We start by reviewing basic optimality 
@@ -94,19 +98,19 @@ $d^\top\nabla^2 f(x)\,d\ge 0$ for all $d$, i.e.\ $\nabla^2 f(x)\succeq 0$.
 \end{proof}
 
 \textbf{Why just necessary?}
-\begin{figure}[h]
-  \centering
-  \includesvg[width=0.85\textwidth]{why_notsuff}
-  \caption{Explanation why $\nabla^2 f\succeq 0$  and $ \nabla f = 0$
-  just necessary conditions.}
-  \label{fig:why}
+\begin{figure}[ht]
+    \centering
+    \incfig{why-just-necessary}
+    \caption{Explanation why $\nabla^2 f\succeq 0$  and $ \nabla f = 0$
+    are just necessary conditions.}
+    \label{fig:why-just-necessary}
 \end{figure}
 
 \noindent A stationary point with $\nabla f(x)=0$ can be a local minimum, 
 a local maximum, or a saddle point.
 The condition $\nabla^2 f(x)\succeq 0$ rules out strict local maxima, 
 but still allows saddle points when the Hessian is only 
-semidefinite (see \Cref{fig:why}).
+semidefinite (see \Cref{fig:why-just-necessary}).
 
 \begin{claim}[Sufficient condition of a local minimum]
 If $f \in C^{2}$, $x \in \operatorname{int}(\operatorname{dom} f)$, 
@@ -158,13 +162,12 @@ Let $f(x)=\frac{1}{3}\|x\|_2^3=\frac{1}{3}(x^\top x)^{3/2}$. For $x\neq 0$,
   \qquad
   \nabla^2 f(x)=\frac{1}{\|x\|_2}xx^\top+\|x\|_2 I.
 \]
-(At $x=0$ one can take $\nabla f(0)=0$ and $\nabla^2 f(0)=0$.)
 \end{example}
 
 \section{Error analysis and machine precision}
 
 In the algorithms covered in this book we will use only real numbers. However, modern
-computes are not able to store and work with general real numbers. Instead, they
+computers are not able to store and work with general real numbers. Instead, they
 work only with a finite subset known floating-point numbers. It means that
 in computations we will get just approximations of these numbers. So, we want 
 to do this approximations as close to theoretical one as possible.
@@ -184,52 +187,37 @@ Typical values:
 16 & 10^{-3}
 \end{array}
 \]
-\begin{figure}[h]
-  \centering
-  \IfFileExists{chapters/01_introduction/figures/finite_diff_tradeoff.pdf}{%
-    \includegraphics[width=0.6\textwidth]{finite_diff_tradeoff.pdf}%
-  }{%
-    \fbox{\parbox{0.7\textwidth}{\centering
-      TODO figure: \texttt{finite\_diff\_tradeoff.pdf}.\\
-      Plot $\log_{10}(\text{error})$ vs.\ $\log_{10}(\varepsilon)$ showing\\
-      truncation ($\sim\varepsilon$), roundoff
-      ($\sim\varepsilon_m/\varepsilon$), and
-      $\varepsilon_{\text{opt}}\approx\sqrt{\varepsilon_m}$.}}%
-  }
-  \caption{Truncation--roundoff trade-off in finite-difference differentiation.}
-  \label{fig:finite-diff-tradeoff}
+
+In practice for us it means that whenever we look at  the plot of some
+error we want to minimize vs number of iterations we should stop our 
+algorithm when we have numbers proportional to $\varepsilon_m$ because 
+afterwards there are no numbers (see \Cref{fig:finite-difference-tradeoff})
+\begin{figure}[ht]
+    \centering
+    \incfig{finite-difference-tradeoff}
+    \caption{Finite difference tradeoff when 64-bit computations}
+    \label{fig:finite-difference-tradeoff}
 \end{figure}
 \section{ Classes of functions}
+
+
 Unfortunately, the use of Taylor expansion is restricted by the fact that 
 it is useful only in the vicinity of the point. So, in order to prove 
 convergence of optimization algorithms we will need to introduce common
 classes of functions which will work globally rather than locally.
 \subsection{Convexity and strong convexity}
 
-\begin{definition}[Convex function]
+\begin{definition}[Convex function (see \Cref{fig:kinds-of-convexity})]
 A function $f$ is convex if for all $x,y$ and $\alpha\in[0,1]$,
 \[
   f(\alpha x+(1-\alpha)y)\le \alpha f(x)+(1-\alpha)f(y).
 \]
 It is strictly convex if the inequality is strict for $x\ne y$ and 
-$\alpha\in(0,1)$.
+$\alpha\in(0,1)$.\\
+\noindent \textbf{Note:} A function is concave if $-f$ is convex (strictly concave if
+$-f$ is strictly convex).
 \end{definition}
 
-\begin{figure}[h]
-  \centering
-  \IfFileExists{chapters/01_introduction/figures/convex_chord.pdf}{%
-    \includegraphics[width=0.5\textwidth]{convex_chord.pdf}%
-  }{%
-    \fbox{\parbox{0.7\textwidth}{\centering
-      TODO figure: \texttt{convex\_chord.pdf}.\\
-      Draw a convex curve with the chord between $(x,f(x))$ and $(y,f(y))$\\
-      lying above the graph.}}%
-  }
-  \caption{Geometric meaning of convexity: chords lie above the graph.}
-  \label{fig:convex-chord}
-\end{figure}
-\noindent A function is concave if $-f$ is convex (strictly concave if
-$-f$ is strictly convex).
 
 \begin{claim}[Differential criteria of convexity]
 Let $f \in C^{1}$. Then $f$ is convex if and only if for all $x, y$,
@@ -237,14 +225,19 @@ Let $f \in C^{1}$. Then $f$ is convex if and only if for all $x, y$,
 f(y) \geq f(x)+\nabla f(x)^{\top}(y-x) .
 \]
 If $f \in C^{2}$, then $f$ is convex if and only if $\nabla^{2} f(x) 
-\succeq 0$ for all $x$.
+\succeq 0$ for all $x$ (see \Cref{fig:kinds-of-convexity}). 
 \end{claim}
 
-\begin{definition}
+Geometrically this claim means that the graph of the function must be no lower
+than the tangent plane drawn to it in any point.
+
+
+\begin{definition}[$\mu$-strongly convex]
 The function $f$ is $\mu$-strongly convex if for all $x$ the function 
 $f(x)-\frac{\mu}{2}\|x\|^{2}$ is convex.
 \end{definition}
 
+The geometric view can be better understood after following claim.
 \begin{claim}[Differential criteria of strong convexity]
 If $f \in C^{1}$, then $f$ is $\mu$-strongly convex if and only if for 
 all $x, y$,
@@ -252,12 +245,28 @@ all $x, y$,
 f(y) \geq f(x)+\nabla f(x)^{\top}(y-x)+\frac{\mu}{2}\|x-y\|^{2} .
 \]
 If $f \in C^{2}$, then $f$ is $\mu$-strongly convex if and only if
-$\nabla^{2} f(x) \succeq \mu I \succ 0$ for all $x$.
+$\nabla^{2} f(x) \succeq \mu I \succ 0$ for all $x$.\\
+\noindent \textbf{Note:} This is also equivalent to $\lambda_{min}
+(\nabla^2f(x ))\ge \mu$
 \end{claim}
+From this claim it is easy to see that if $f$ is $\mu $-strongly then it is convex and
+from geometric perspective $\mu$-strongly class allows convex functions not too flat 
+with specific curvuture (see \Cref{fig:kinds-of-convexity}).
 
+\begin{figure}[ht]
+    \centering
+    \incfig{kinds-of-convexity}
+    \caption{Kinds of convexity. On the image there are different visual elements 
+    corresponding to definitions and claims stated above. For differential criteria of
+    $\mu$-strong convexity it can be seen that function $f(x)$ must be above dashed quadratic
+    lower bound. For definition of convexity function must be below solid chord. Finally, for 
+    differential criteria of convexity function must be above dotted tangent plane. And this 
+    must hold for any $x$, $y$!}
+    \label{fig:kinds-of-convexity}
+\end{figure}
 \subsection{Lipschitz classes}
 
-\begin{definition}
+\begin{definition}[Lipschitz class $C_L^{k,m}$]
 The function $f$ belongs to the Lipschitz class $C_{L}^{k, m}$ if (i) 
 $f \in C^{k}$, (ii) $m \leq k$, and (iii)
 \[
@@ -265,42 +274,54 @@ $f \in C^{k}$, (ii) $m \leq k$, and (iii)
 \quad \forall x, y .
 \]
 \end{definition}
-\begin{figure}[h]
-  \centering
-  \IfFileExists{chapters/01_introduction/figures/l_smooth_bounds.pdf}{%
-    \includegraphics[width=0.55\textwidth]{l_smooth_bounds.pdf}%
-  }{%
-    \fbox{\parbox{0.7\textwidth}{\centering
-      TODO figure: \texttt{l\_smooth\_bounds.pdf}.\\
-      Sketch tangent at $y$ and the upper/lower quadratic envelopes from\\
-      the $C_L^{1,1}$ inequalities.}}%
-  }
-  \caption{For $C_L^{1,1}$ functions, the graph is sandwiched between two
-    quadratic models around $y$.}
-  \label{fig:l-smooth-bounds}
-\end{figure}
 
-\paragraph{Examples.}
-\begin{enumerate}
-\item If $f \in C_{L}^{0,0}$, then $|f(x)-f(y)| \leq L\|x-y\|$ for all $x, y$,
+Now we will state some claims which we are going to use later and
+we will leave them without proofs (the
+first one is obvious and the second one is more complicated).
+\begin{claim}
+If $f \in C_{L}^{0,0}$, then $|f(x)-f(y)| \leq L\|x-y\|$ for all $x, y$,
   equivalently
 \[
 f(y)-L\|x-y\| \leq f(x) \leq f(y)+L\|x-y\| .
 \]
-\item If $f \in C_{L}^{1,1}$, then
+\end{claim}
+
+\begin{claim}
+If $f \in C_{L}^{1,1}$, then
 \[
 f(x) \geq f(y)+\nabla f(y)^{\top}(x-y)-\frac{L}{2}\|x-y\|^{2},
 \]
 \[
 f(x) \leq f(y)+\nabla f(y)^{\top}(x-y)+\frac{L}{2}\|x-y\|^{2}.
 \]
-\end{enumerate}
+\end{claim}
 
+\begin{figure}[ht]
+    \centering
+    \incfig{examples-of-lipschitz-class}
+    \caption{Examples of Lipschitz class. Solid line corresponds to our function.
+    Dashed space is the space of $C^{0,0}_L$ (blue) and dotted space is the space of 
+    $C^{1,1}_L$ (orange)}
+    \label{fig:examples-of-lipschitz-class}
+\end{figure}
+
+\textbf{How to define certain Lipschitz class?} One way to do it is using
+definition but there exists a claim which simplifies this process. 
 \begin{claim}
 $f \in C_{L}^{k, m-1} \iff \|\nabla^{m} f(x)\| \leq L$.
 \end{claim}
+It also can be easily proved by using mean value theorem. Do it if you are
+an enthusiast!
 
 \section{Finite differentiation}
+When we use optimization algorithms we often use gradients and sometimes
+we may calculate gradients analytically. I guess each of us faced 
+such situation when a complicated derivative wasn't correct making us
+frustrated because we were deriving it for 30 mins\ldots or even more \ldots
+So there is no surprise for us that it might happen but how to check the 
+correctness if we don't have the answers in the end of a textbook? For that
+we can use finite differentiation methods and we will discuss several
+methods.
 
 We approximate directional derivatives $g:=\nabla f(x)^{\top} d$ with
 stepsize $\varepsilon$ in floating-point arithmetic. We write
@@ -403,8 +424,9 @@ so
 The reason why previous schemes were unstable is $a - b $, 
 where $a \approx b$, which is very unstable in floating-point. 
 This method avoids subtracting close numbers, so we can take
-$\varepsilon_{\mathrm{opt}}=\varepsilon_m$.
+$\varepsilon_{\mathrm{opt}}=\varepsilon_m$. This makes this scheme the most
+accurate.
+
 \paragraph{Gradient checking (practical note).}
-Finite differences are a simple sanity check for analytical gradients in
-code: sample a random direction $d$ and compare $\nabla f(x)^\top d$
+Sample a random direction $d$ and compare $\nabla f(x)^\top d$
 with a difference quotient using the recommended $\varepsilon$ scales above.
