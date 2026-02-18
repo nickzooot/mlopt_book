@@ -55,12 +55,12 @@
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{why-just-necessary.pdf}}%
     \put(0.44771582,0.47192249){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{where this claim works}$\end{tabular}}}}%
-    \put(0.44771582,0.44384448){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla^2f(x) \prec 0,\quad \nabla f(x) = 0$\end{tabular}}}}%
+    \put(0.44771582,0.44384448){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla^2 f(\mathbf{x}) \prec 0,\quad \nabla f(\mathbf{x}) = 0$\end{tabular}}}}%
     \put(0.62327754,0.2804842){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{that is why only necessary (saddle point)}$\end{tabular}}}}%
-    \put(0.62327754,0.2522178){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla^2 f(x) = 0, \quad \nabla f(x) =0$\end{tabular}}}}%
+    \put(0.62327754,0.2522178){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla^2 f(\mathbf{x}) = 0, \quad \nabla f(\mathbf{x}) =0$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{why-just-necessary.pdf}}%
     \put(0.72134418,0.18600159){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{local min}$\end{tabular}}}}%
-    \put(0.72134418,0.15840276){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla^2 f(x) \succ 0, \quad f(x) =0$\end{tabular}}}}%
+    \put(0.72134418,0.15840276){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla^2 f(\mathbf{x}) \succ 0, \quad f(\mathbf{x}) =0$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{why-just-necessary.pdf}}%
   \end{picture}%
 \endgroup%

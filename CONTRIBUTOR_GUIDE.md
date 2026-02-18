@@ -71,6 +71,7 @@ To maintain consistency across chapters, please follow these notation convention
 - Functions: Regular lowercase (e.g., $f(x)$)
 - Gradients: $\nabla f(\mathbf{x})$
 - Hessians: $\nabla^2 f(\mathbf{x})$
+- Optimal function and x: x^\star, f^\star
 
 ## Technical Details
 

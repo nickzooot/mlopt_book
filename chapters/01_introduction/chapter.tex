@@ -12,14 +12,14 @@ Lipschitz smoothness facts that will be used throughout the course.
 We will start our course with a study of unconstrained optimization problems 
 of the form
 \[
-  f(x) \rightarrow \min _{x \in \mathbb{R}^{n}} ,
+  f(\mathbf{x}) \rightarrow \min_{\mathbf{x} \in \mathbb{R}^{n}},
 \]
 with the practical goal of finding minima. Gradients and Hessians
 are denoted by
 \[
-\nabla f(x)=\begin{pmatrix} \frac{\partial f}{\partial x_1}\\ \vdots\\ 
+\nabla f(\mathbf{x})=\begin{pmatrix} \frac{\partial f}{\partial x_1}\\ \vdots\\
 \frac{\partial f}{\partial x_n} \end{pmatrix} \in \mathbb{R}^{n }, \qquad
-\nabla^{2} f(x)=\left\{\frac{\partial^{2} f}{\partial x_{i}\partial x_{j}}
+\nabla^{2} f(\mathbf{x})=\left\{\frac{\partial^{2} f}{\partial x_{i}\partial x_{j}}
 \right\}_{i, j=1}^{n} \in \mathbb{R}^{n \times n} .
 \]
 
@@ -32,155 +32,162 @@ are denoted by
 \end{figure}
 
 %\hfill
-\noindent Many ML losses are highly nonconvex, with numerous sharp minima 
-(see \cref{fig:global-and-flat-local-minima}). The sharp global minimum can make the final 
-model sensitive to inputs and noise, while flatter local minima often yield
-more robust solutions even if their objective value is slightly higher. 
-In general, finding a good local minimum can be more valuable than finding
-the global minimum. Moreover, in ML we work with multidimensional spaces so it
-makes a task of finding a global minimum very complicated if even viable.
-Therefore, our first goal is not necessarily to rush toward the 
-global minimum, but to find a good local minimum: this is often easier and 
-can lead to better results. We start by reviewing basic optimality 
-conditions for local minima.
+\noindent Many ML losses are highly nonconvex, with numerous sharp minima
+(see \cref{fig:global-and-flat-local-minima}). The sharp global minimum can make the final
+model sensitive to inputs and noise, while flatter local minima often yield more robust
+solutions even if their objective value is slightly higher. In general, finding a good
+local minimum can be more valuable than finding the global minimum. Moreover, ML
+problems are typically high-dimensional, which makes finding a global minimum very
+complicated, if it is even viable. Therefore, our first goal is not necessarily to rush
+toward the global minimum, but to find a good local minimum: this is often easier and
+can lead to better results. We start by reviewing basic optimality conditions for local minima.
 
-\hfill
 \section{Local optimality conditions}
 In many problems, the first step is to write down optimality 
 conditions: in simple cases they can lead to a closed-form solution, 
 and in iterative algorithms they often serve as stopping criteria.
 
 \begin{definition}[Local minimum]
-A point $x$ is a (non-strict) local minimum of $f$ if there exists 
+A point $\mathbf{x}$ is a (non-strict) local minimum of $f$ if there exists
 $\varepsilon>0$ such that
 
 \[
-  f(y)\ge f(x)\quad \forall y\in O_\varepsilon(x):=\{y:\|y-x\|<\varepsilon\}.
+  f(\mathbf{y})\ge f(\mathbf{x})\quad \forall \mathbf{y}\in
+  O_\varepsilon(\mathbf{x}):=\{\mathbf{y}:\|\mathbf{y}-\mathbf{x}\|<\varepsilon\}.
 \]
 
-If the inequality is strict for all $y\neq x$ in $O_\varepsilon(x)$, 
-then $x$ is a strict local minimum.
+If the inequality is strict for all $\mathbf{y}\neq \mathbf{x}$ in
+$O_\varepsilon(\mathbf{x})$, then $\mathbf{x}$ is a strict local minimum.
 \end{definition}
 
 
 \begin{claim}[Necessary condition of a local minimum]
-If $f \in C^{1}$, $x \in \operatorname{int}(\operatorname{dom} f)$, and $x$ is 
-a local minimum, then $\nabla f(x)=0$. If in addition $f \in C^{2}$, 
-then $\nabla^{2} f(x) \succeq 0$.
+If $f \in C^{1}$, $\mathbf{x} \in \operatorname{int}(\operatorname{dom} f)$,
+and $\mathbf{x}$ is a local minimum, then $\nabla f(\mathbf{x})=0$. If in
+addition $f \in C^{2}$, then $\nabla^{2} f(\mathbf{x}) \succeq 0$.
 \end{claim}
 \begin{proof}
-Let $d\in\mathbb{R}^n$ be arbitrary and define the one-dimensional function
+Let $\mathbf{d}\in\mathbb{R}^n$ be arbitrary and define the one-dimensional function
 \[
-  \varphi(\alpha)=f(x+\alpha d).
+  \varphi(\alpha)=f(\mathbf{x}+\alpha \mathbf{d}).
 \]
-Since $x$ is a local minimum and $x\in \operatorname{int}
+Since $\mathbf{x}$ is a local minimum and $\mathbf{x}\in \operatorname{int}
 (\operatorname{dom} f)$, for sufficiently small $|\alpha|$ we have
-$x+\alpha d\in \operatorname{dom} f$ and $\varphi(\alpha)\ge \varphi(0)$, 
+$\mathbf{x}+\alpha \mathbf{d}\in \operatorname{dom} f$ and $\varphi(\alpha)\ge \varphi(0)$,
 so $\alpha=0$ is a local minimum of $\varphi$.
 Because $f\in C^1$, we can use Taylor expansion:
 \[
-\varphi(\alpha) = \varphi(0) + \varphi'(0)\alpha + o(\alpha) \ge \varphi(0) 
-\overset{{:\alpha}}{\implies} \varphi'(0)+ o(1) \ge 0 
-\overset{\alpha \to 0}{\implies} \varphi'(0) \ge 0
+\varphi(\alpha) = \varphi(0) + \varphi'(0)\alpha + o(\alpha) \ge \varphi(0)
+\quad \overset{:/\alpha}{\Longrightarrow}\quad \varphi'(0)+o(1)\ge 0
+\quad \overset{\alpha\to 0}{\Longrightarrow}\quad \varphi'(0)\ge 0.
 \]
-Hence, we get $\varphi'(0) = \nabla f(x)^{\top} d \ge 0 \:\forall d$. This 
-means that if we take $d$ and $-d$ equation is only possible if $\nabla f(x) = 0$.
+Hence, we have $\varphi'(0) = \nabla f(\mathbf{x})^{\top} \mathbf{d} \ge 0$ for all $\mathbf{d}$.
+This means that if we take $\mathbf{d}$ and $-\mathbf{d}$, the inequality can hold only if
+$\nabla f(\mathbf{x}) = 0$.
 If in addition $f\in C^2$, then for any $d$ we have the second-order 
 expansion
 
 \[
-  f(x+\alpha d)=f(x)+\alpha\nabla f(x)^\top d
-  +\frac{\alpha^2}{2}d^\top\nabla^2 f(x)\,d+o(\alpha^2).
+  f(\mathbf{x}+\alpha \mathbf{d})=f(\mathbf{x})+\alpha\nabla f(\mathbf{x})^\top \mathbf{d}
+  +\frac{\alpha^2}{2}\mathbf{d}^\top\nabla^2 f(\mathbf{x})\,\mathbf{d}+o(\alpha^2).
 \]
 
-Using $\nabla f(x)=0$ and the same logic as above we can get that 
-$d^\top\nabla^2 f(x)\,d\ge 0$ for all $d$, i.e.\ $\nabla^2 f(x)\succeq 0$.
+Using $\nabla f(\mathbf{x})=0$ and the same logic as above, we obtain that
+$\mathbf{d}^\top\nabla^2 f(\mathbf{x})\,\mathbf{d}\ge 0$ for all $\mathbf{d}$,
+i.e.\ $\nabla^2 f(\mathbf{x})\succeq 0$.
 \end{proof}
 
-\textbf{Why just necessary?}
 \begin{figure}[ht]
     \centering
     \incfig{why-just-necessary}
-    \caption{Explanation why $\nabla^2 f\succeq 0$  and $ \nabla f = 0$
-    are just necessary conditions.}
+    \caption{Explanation of why $\nabla^2 f(\mathbf{x})\succeq 0$ and $\nabla f(\mathbf{x})=0$
+    are only necessary conditions.}
     \label{fig:why-just-necessary}
 \end{figure}
 
-\noindent A stationary point with $\nabla f(x)=0$ can be a local minimum, 
+\noindent\textbf{Why only necessary?}
+
+\noindent A stationary point with $\nabla f(\mathbf{x})=0$ can be a local minimum,
 a local maximum, or a saddle point.
-The condition $\nabla^2 f(x)\succeq 0$ rules out strict local maxima, 
+The condition $\nabla^2 f(\mathbf{x})\succeq 0$ rules out strict local maxima,
 but still allows saddle points when the Hessian is only 
 semidefinite (see \Cref{fig:why-just-necessary}).
 
 \begin{claim}[Sufficient condition of a local minimum]
-If $f \in C^{2}$, $x \in \operatorname{int}(\operatorname{dom} f)$, 
-$\nabla f(x)=0$, and $\nabla^{2} f(x) \succ 0$, then $x$ is a local minimum.
+If $f \in C^{2}$, $\mathbf{x} \in \operatorname{int}(\operatorname{dom} f)$,
+$\nabla f(\mathbf{x})=0$, and $\nabla^{2} f(\mathbf{x}) \succ 0$, then
+$\mathbf{x}$ is a local minimum.
 \end{claim}
 \begin{proof}
 By the second-order Taylor expansion,
 \[
-  f(x+h)=f(x)+\nabla f(x)^\top h+\frac{1}{2}h^\top\nabla^2 f(x)\,
-  h+o(\|h\|^2).
+  f(\mathbf{x}+\mathbf{h})=f(\mathbf{x})+\nabla f(\mathbf{x})^\top \mathbf{h}
+  +\frac{1}{2}\mathbf{h}^\top\nabla^2 f(\mathbf{x})\,
+  \mathbf{h}+o(\|\mathbf{h}\|^2).
 \]
-If $\nabla f(x)=0$ and $\nabla^2 f(x)\succ 0$, then
-$h^\top\nabla^2 f(x)\,h>0$ for all $h\ne 0$. Therefore, for sufficiently
-small $h\ne 0$ we have $f(x+h)>f(x)$.
+If $\nabla f(\mathbf{x})=0$ and $\nabla^2 f(\mathbf{x})\succ 0$, then
+$\mathbf{h}^\top\nabla^2 f(\mathbf{x})\,\mathbf{h}>0$ for all $\mathbf{h}\ne 0$.
+Therefore, for sufficiently small $\mathbf{h}\ne 0$ we have
+$f(\mathbf{x}+\mathbf{h})>f(\mathbf{x})$.
 \end{proof}
 
 \section{Differentials}
 
 \begin{definition}
-The function $f$ is differentiable at $x$ if
+The function $f$ is differentiable at $\mathbf{x}$ if
 \[
-f(x+h)-f(x)=\mathrm{d} f(x)[h]+o(\|h\|),
+f(\mathbf{x}+\mathbf{h})-f(\mathbf{x})=\mathrm{d} f(\mathbf{x})[\mathbf{h}]+o(\|\mathbf{h}\|),
 \]
-where $\mathrm{d} f(x)$ is a linear operator.
+where $\mathrm{d} f(\mathbf{x})$ is a linear operator.
 \end{definition}
 
 \begin{definition}
 The second differential is
 \[
-\mathrm{d}^{2} f(x)\left[h_{1}, h_{2}\right]=\mathrm{d}\left(\mathrm{d} 
-f(x)\left[h_{1}\right]\right)(x)\left[h_{2}\right].
+\mathrm{d}^{2} f(\mathbf{x})\left[\mathbf{h}_{1}, \mathbf{h}_{2}\right]=
+\mathrm{d}\left(\mathrm{d} f(\mathbf{x})\left[\mathbf{h}_{1}\right]\right)(\mathbf{x})
+\left[\mathbf{h}_{2}\right].
 \]
 \end{definition}
 
 \noindent For a scalar function $f:\mathbb{R}^n\to\mathbb{R}$, 
 the first differential is the scalar product with the gradient:
 \[
-  \mathrm{d} f(x)[h]=\nabla f(x)^\top h.
+  \mathrm{d} f(\mathbf{x})[\mathbf{h}]=\nabla f(\mathbf{x})^\top \mathbf{h}.
 \]
 The second differential is a bilinear form linked to the Hessian:
 \[
-  \mathrm{d}^2 f(x)[h_1,h_2]=h_1^\top \nabla^2 f(x)\,h_2.
+  \mathrm{d}^2 f(\mathbf{x})[\mathbf{h}_1,\mathbf{h}_2]=
+  \mathbf{h}_1^\top \nabla^2 f(\mathbf{x})\,\mathbf{h}_2.
 \]
 
-\begin{example}[A worked example: $f(x)=\frac{1}{3}\|x\|_2^3$]
-Let $f(x)=\frac{1}{3}\|x\|_2^3=\frac{1}{3}(x^\top x)^{3/2}$. For $x\neq 0$,
+\begin{example}[A worked example: $f(\mathbf{x})=\frac{1}{3}\|\mathbf{x}\|_2^3$]
+Let $f(\mathbf{x})=\frac{1}{3}\|\mathbf{x}\|_2^3=\frac{1}{3}(\mathbf{x}^\top \mathbf{x})^{3/2}$.
+For $\mathbf{x}\neq 0$,
 \[
-  \nabla f(x)=\|x\|_2\,x,
+  \nabla f(\mathbf{x})=\|\mathbf{x}\|_2\,\mathbf{x},
   \qquad
-  \nabla^2 f(x)=\frac{1}{\|x\|_2}xx^\top+\|x\|_2 I.
+  \nabla^2 f(\mathbf{x})=\frac{1}{\|\mathbf{x}\|_2}\mathbf{x}\mathbf{x}^\top
+  +\|\mathbf{x}\|_2 \mathbf{I}.
 \]
 \end{example}
 
 \section{Error analysis and machine precision}
 
-In the algorithms covered in this book we will use only real numbers. However, modern
-computers are not able to store and work with general real numbers. Instead, they
-work only with a finite subset known floating-point numbers. It means that
-in computations we will get just approximations of these numbers. So, we want 
-to do this approximations as close to theoretical one as possible.
-In floating-point arithmetic a real number is stored  in the form 
-$\mathrm{fl}(x)=sM2^E$. Machine precision $\varepsilon_{m}$ 
-bounds the relative representation error:
+In the algorithms covered in this book, we use only real numbers. However, modern
+computers cannot store and manipulate arbitrary real numbers. Instead, they work only
+with a finite subset of numbers known as floating-point numbers. This means that
+computations produce only approximations, so we want these approximations to be as
+close to the theoretical values as possible. In floating-point arithmetic, a real number is
+stored in the form $\mathrm{fl}(x)=sM2^E$. Machine precision $\varepsilon_m$ bounds the
+relative representation error:
 \[
-\left|\frac{\mathrm{fl}(x)-x}{x}\right| \leq \varepsilon_{m}\qquad (x\neq 0).
+\left|\frac{\mathrm{fl}(x)-x}{x}\right| \leq \varepsilon_m\qquad (x\neq 0).
 \]
 Typical values:
 \[
 \begin{array}{c|c}
-\text { bits } & \varepsilon_{m} \\
+\text{bits} & \varepsilon_m \\
 \hline
 64 & 10^{-16} \\
 32 & 10^{-7} \\
@@ -188,31 +195,29 @@ Typical values:
 \end{array}
 \]
 
-In practice for us it means that whenever we look at  the plot of some
-error we want to minimize vs number of iterations we should stop our 
-algorithm when we have numbers proportional to $\varepsilon_m$ because 
-afterwards there are no numbers (see \Cref{fig:finite-difference-tradeoff})
+\noindent In practice, this means that when we plot an error versus the number of
+iterations, we should stop our algorithm once the error is on the order of $\varepsilon_m$,
+because improvements beyond that are below machine precision (see \Cref{fig:finite-difference-tradeoff}).
 \begin{figure}[ht]
     \centering
     \incfig{finite-difference-tradeoff}
-    \caption{Finite difference tradeoff when 64-bit computations}
+    \caption{Finite-difference tradeoff in 64-bit computations.}
     \label{fig:finite-difference-tradeoff}
 \end{figure}
-\section{ Classes of functions}
+\section{Classes of functions}
 
-
-Unfortunately, the use of Taylor expansion is restricted by the fact that 
-it is useful only in the vicinity of the point. So, in order to prove 
-convergence of optimization algorithms we will need to introduce common
-classes of functions which will work globally rather than locally.
+Unfortunately, Taylor expansions are useful only in a neighborhood of a point. To prove
+convergence of optimization algorithms, we therefore need to introduce common classes
+of functions whose defining properties hold globally rather than locally.
 \subsection{Convexity and strong convexity}
 
 \begin{definition}[Convex function (see \Cref{fig:kinds-of-convexity})]
-A function $f$ is convex if for all $x,y$ and $\alpha\in[0,1]$,
+A function $f$ is convex if for all $\mathbf{x},\mathbf{y}$ and $\alpha\in[0,1]$,
 \[
-  f(\alpha x+(1-\alpha)y)\le \alpha f(x)+(1-\alpha)f(y).
+  f(\alpha \mathbf{x}+(1-\alpha)\mathbf{y})
+  \le \alpha f(\mathbf{x})+(1-\alpha)f(\mathbf{y}).
 \]
-It is strictly convex if the inequality is strict for $x\ne y$ and 
+It is strictly convex if the inequality is strict for $\mathbf{x}\ne \mathbf{y}$ and
 $\alpha\in(0,1)$.\\
 \noindent \textbf{Note:} A function is concave if $-f$ is convex (strictly concave if
 $-f$ is strictly convex).
@@ -220,148 +225,164 @@ $-f$ is strictly convex).
 
 
 \begin{claim}[Differential criteria of convexity]
-Let $f \in C^{1}$. Then $f$ is convex if and only if for all $x, y$,
+Let $f \in C^{1}$. Then $f$ is convex if and only if for all $\mathbf{x}, \mathbf{y}$,
 \[
-f(y) \geq f(x)+\nabla f(x)^{\top}(y-x) .
+f(\mathbf{y}) \geq f(\mathbf{x})+\nabla f(\mathbf{x})^{\top}(\mathbf{y}-\mathbf{x}) .
 \]
-If $f \in C^{2}$, then $f$ is convex if and only if $\nabla^{2} f(x) 
-\succeq 0$ for all $x$ (see \Cref{fig:kinds-of-convexity}). 
+If $f \in C^{2}$, then $f$ is convex if and only if $\nabla^{2} f(\mathbf{x}) 
+\succeq 0$ for all $\mathbf{x}$ (see \Cref{fig:kinds-of-convexity}). 
 \end{claim}
 
-Geometrically this claim means that the graph of the function must be no lower
-than the tangent plane drawn to it in any point.
+Geometrically, this claim means that the graph of the function must be no lower than
+the tangent plane drawn to it at any point.
 
 
 \begin{definition}[$\mu$-strongly convex]
-The function $f$ is $\mu$-strongly convex if for all $x$ the function 
-$f(x)-\frac{\mu}{2}\|x\|^{2}$ is convex.
+The function $f$ is $\mu$-strongly convex if for all $\mathbf{x}$ the function 
+$f(\mathbf{x})-\frac{\mu}{2}\|\mathbf{x}\|^{2}$ is convex.
 \end{definition}
 
-The geometric view can be better understood after following claim.
-\begin{claim}[Differential criteria of strong convexity]
+The geometric view can be better understood from the following claim.
+\begin{claim}[Differential criteria of strong convexity]\label{clm:diff-strong-conv}
 If $f \in C^{1}$, then $f$ is $\mu$-strongly convex if and only if for 
-all $x, y$,
+all $\mathbf{x}, \mathbf{y}$,
 \[
-f(y) \geq f(x)+\nabla f(x)^{\top}(y-x)+\frac{\mu}{2}\|x-y\|^{2} .
+f(\mathbf{y}) \geq f(\mathbf{x})+\nabla f(\mathbf{x})^{\top}(\mathbf{y}-\mathbf{x})
++\frac{\mu}{2}\|\mathbf{x}-\mathbf{y}\|^{2} .
 \]
 If $f \in C^{2}$, then $f$ is $\mu$-strongly convex if and only if
-$\nabla^{2} f(x) \succeq \mu I \succ 0$ for all $x$.\\
+$\nabla^{2} f(\mathbf{x}) \succeq \mu \mathbf{I} \succ 0$ for all $\mathbf{x}$.\\
 \noindent \textbf{Note:} This is also equivalent to $\lambda_{min}
-(\nabla^2f(x ))\ge \mu$
+(\nabla^2f(\mathbf{x} ))\ge \mu$
 \end{claim}
-From this claim it is easy to see that if $f$ is $\mu $-strongly then it is convex and
-from geometric perspective $\mu$-strongly class allows convex functions not too flat 
-with specific curvuture (see \Cref{fig:kinds-of-convexity}).
+
+\noindent From this claim, it is easy to see that if $f$ is $\mu$-strongly convex, then it
+is convex. From a geometric perspective, the class of $\mu$-strongly convex functions
+includes convex functions that are not too flat and have curvature bounded below (see \Cref{fig:kinds-of-convexity}).
 
 \begin{figure}[ht]
     \centering
     \incfig{kinds-of-convexity}
-    \caption{Kinds of convexity. On the image there are different visual elements 
-    corresponding to definitions and claims stated above. For differential criteria of
-    $\mu$-strong convexity it can be seen that function $f(x)$ must be above dashed quadratic
-    lower bound. For definition of convexity function must be below solid chord. Finally, for 
-    differential criteria of convexity function must be above dotted tangent plane. And this 
-    must hold for any $x$, $y$!}
+    \caption{Kinds of convexity. The figure highlights the definitions and claims stated
+    above. For the differential criterion of $\mu$-strong convexity, the function $f(\mathbf{x})$
+    lies above a dashed quadratic lower bound. For the definition of convexity, the function
+    lies below the solid chord. Finally, for the differential criterion of convexity, the
+    function lies above the dotted tangent plane. All of these properties must hold for any
+    $\mathbf{x}$ and $\mathbf{y}$.}
     \label{fig:kinds-of-convexity}
 \end{figure}
 \subsection{Lipschitz classes}
+
+Convexity describes the shape of $f$, but it does not quantify how rapidly the function (or
+its derivatives) can vary. For gradient-based methods, such quantitative control is crucial:
+it lets us bound Taylor remainders and obtain convergence rates. Lipschitz classes provide
+a compact way to encode these smoothness features.
 
 \begin{definition}[Lipschitz class $C_L^{k,m}$]
 The function $f$ belongs to the Lipschitz class $C_{L}^{k, m}$ if (i) 
 $f \in C^{k}$, (ii) $m \leq k$, and (iii)
 \[
-\left\|\nabla^{m} f(x)-\nabla^{m} f(y)\right\| \leq L\|x-y\|
-\quad \forall x, y .
+\left\|\nabla^{m} f(\mathbf{x})-\nabla^{m} f(\mathbf{y})\right\|
+\leq L\|\mathbf{x}-\mathbf{y}\|
+\quad \forall \mathbf{x}, \mathbf{y} .
 \]
 \end{definition}
 
-Now we will state some claims which we are going to use later and
-we will leave them without proofs (the
-first one is obvious and the second one is more complicated).
+Two special cases are used throughout the book: $C_L^{0,0}$ (Lipschitz continuity of the
+function values) and $C_L^{1,1}$ (Lipschitz continuity of the gradient), also known as
+$L$-smoothness. We now state some claims that we will use later; we omit the proofs (the
+first one is straightforward and the second one is more complicated).
 \begin{claim}
-If $f \in C_{L}^{0,0}$, then $|f(x)-f(y)| \leq L\|x-y\|$ for all $x, y$,
+If $f \in C_{L}^{0,0}$, then $|f(\mathbf{x})-f(\mathbf{y})| \leq L\|\mathbf{x}-\mathbf{y}\|$
+for all $\mathbf{x}, \mathbf{y}$,
   equivalently
 \[
-f(y)-L\|x-y\| \leq f(x) \leq f(y)+L\|x-y\| .
+f(\mathbf{y})-L\|\mathbf{x}-\mathbf{y}\| \leq f(\mathbf{x})
+\leq f(\mathbf{y})+L\|\mathbf{x}-\mathbf{y}\| .
 \]
 \end{claim}
 
 \begin{claim}
 If $f \in C_{L}^{1,1}$, then
 \[
-f(x) \geq f(y)+\nabla f(y)^{\top}(x-y)-\frac{L}{2}\|x-y\|^{2},
+f(\mathbf{x}) \geq f(\mathbf{y})+\nabla f(\mathbf{y})^{\top}(\mathbf{x}-\mathbf{y})
+-\frac{L}{2}\|\mathbf{x}-\mathbf{y}\|^{2},
 \]
 \[
-f(x) \leq f(y)+\nabla f(y)^{\top}(x-y)+\frac{L}{2}\|x-y\|^{2}.
+f(\mathbf{x}) \leq f(\mathbf{y})+\nabla f(\mathbf{y})^{\top}(\mathbf{x}-\mathbf{y})
++\frac{L}{2}\|\mathbf{x}-\mathbf{y}\|^{2}.
 \]
 \end{claim}
 
 \begin{figure}[ht]
     \centering
     \incfig{examples-of-lipschitz-class}
-    \caption{Examples of Lipschitz class. Solid line corresponds to our function.
-    Dashed space is the space of $C^{0,0}_L$ (blue) and dotted space is the space of 
-    $C^{1,1}_L$ (orange)}
+    \caption{Examples of Lipschitz classes. The solid line corresponds to the function.
+    The dashed region is the space of $C_L^{0,0}$ (blue), and the dotted region is the space
+    of $C_L^{1,1}$ (orange).}
     \label{fig:examples-of-lipschitz-class}
 \end{figure}
 
-\textbf{How to define certain Lipschitz class?} One way to do it is using
-definition but there exists a claim which simplifies this process. 
+\noindent How do we identify a Lipschitz class? One way to do it is using the definition,
+but the following claim simplifies this process.
 \begin{claim}
-$f \in C_{L}^{k, m-1} \iff \|\nabla^{m} f(x)\| \leq L$.
+$f \in C_{L}^{k, m-1} \iff \|\nabla^{m} f(\mathbf{x})\| \leq L\quad \forall \mathbf{x}$.
 \end{claim}
-It also can be easily proved by using mean value theorem. Do it if you are
-an enthusiast!
+It can also be proved easily using the mean value theorem. Do it if you are an enthusiast!
 
 \section{Finite differentiation}
-When we use optimization algorithms we often use gradients and sometimes
-we may calculate gradients analytically. I guess each of us faced 
-such situation when a complicated derivative wasn't correct making us
-frustrated because we were deriving it for 30 mins\ldots or even more \ldots
-So there is no surprise for us that it might happen but how to check the 
-correctness if we don't have the answers in the end of a textbook? For that
-we can use finite differentiation methods and we will discuss several
-methods.
-
-We approximate directional derivatives $g:=\nabla f(x)^{\top} d$ with
-stepsize $\varepsilon$ in floating-point arithmetic. We write
+Optimization algorithms often rely on gradients, which we sometimes compute analytically.
+Still, many of us have been in the situation where a complicated derivative turns out to be
+incorrect after spending 30 minutes (or more) deriving it. How can we check correctness
+when there is no answer at the end of the textbook? Finite-difference methods provide a
+simple sanity check; below we discuss several common schemes. At a point $\mathbf{x}$, we sample
+a random direction $\mathbf{d}$ and compare the implemented directional derivative
+$\nabla f(\mathbf{x})^{\top} \mathbf{d}$ with a numerical difference quotient in the same direction.
+We denote
+\[
+  g:=\nabla f(\mathbf{x})^{\top}\mathbf{d},
+\]
+and approximate $g$ with step size $\varepsilon$ in floating-point arithmetic. We write
 $\mathrm{fl}(\cdot)$ for computed quantities and use the model
 \[
-  |\mathrm{fl}(z)-z| \leq |z|\,\varepsilon_{m}.
+  |\mathrm{fl}(z)-z| \leq |z|\,\varepsilon_m.
 \]
+The key point is that we cannot simply take the smallest possible $\varepsilon$: in finite
+differences too small step amplifies roundoff errors (subtractive-cancellation effects), so
+$\varepsilon$ must balance truncation and roundoff errors.
 
 \paragraph{Forward difference.}
 The Taylor expansion gives
 \[
-  f(x+\varepsilon d)=f(x)+g\,\varepsilon+O(\varepsilon^{2}),
+  f(\mathbf{x}+\varepsilon \mathbf{d})=f(\mathbf{x})+g\,\varepsilon+O(\varepsilon^{2}),
 \]
 so
 \[
-  g=\frac{f(x+\varepsilon d)-f(x)}{\varepsilon}+O(\varepsilon).
+  g=\frac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x})}{\varepsilon}+O(\varepsilon).
 \]
 Define the computed estimator
 \[
   \widehat g_{\mathrm{fd}}(\varepsilon)=
-  \mathrm{fl}\!\left(\frac{f(x+\varepsilon d)-f(x)}{\varepsilon}\right).
+  \mathrm{fl}\!\left(\frac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x})}{\varepsilon}\right).
 \]
 Then
 \[
   |g-\widehat g_{\mathrm{fd}}(\varepsilon)|
-  \le |g-\tfrac{f(x+\varepsilon d)-f(x)}{\varepsilon}|
-  +\left|\tfrac{f(x+\varepsilon d)-f(x)}{\varepsilon}
+  \le |g-\tfrac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x})}{\varepsilon}|
+  +\left|\tfrac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x})}{\varepsilon}
   -\widehat g_{\mathrm{fd}}(\varepsilon)\right|.
 \]
-Assume $|f(\cdot)|\le L_0$ in a neighborhood of $x$, and the truncation
+Assume $|f(\cdot)|\le L_0$ in a neighborhood of $\mathbf{x}$, and the truncation
 error satisfies
 \[
-  \left|g-\tfrac{f(x+\varepsilon d)-f(x)}{\varepsilon}\right|
+  \left|g-\tfrac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x})}{\varepsilon}\right|
   \le L_2\,\varepsilon.
 \]
 Then the roundoff term is bounded by
 \[
-  \left|\tfrac{f(x+\varepsilon d)-f(x)}{\varepsilon}
+  \left|\tfrac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x})}{\varepsilon}
   -\widehat g_{\mathrm{fd}}(\varepsilon)\right|
-  \le \varepsilon_m\,\tfrac{|f(x+\varepsilon d)|+|f(x)|}{\varepsilon}
+  \le \varepsilon_m\,\tfrac{|f(\mathbf{x}+\varepsilon \mathbf{d})|+|f(\mathbf{x})|}{\varepsilon}
   \le \tfrac{2L_0\,\varepsilon_m}{\varepsilon}.
 \]
 Therefore
@@ -380,25 +401,25 @@ roundoff. Minimizing the bound gives
 \paragraph{Central difference.}
 Using the expansions
 \[
-  f(x+\varepsilon d)=f(x)+g\,\varepsilon
-  +\tfrac{1}{2}d^\top\nabla^2 f(x)d\,\varepsilon^2+O(\varepsilon^3),
+  f(\mathbf{x}+\varepsilon \mathbf{d})=f(\mathbf{x})+g\,\varepsilon
+  +\tfrac{1}{2}\mathbf{d}^\top\nabla^2 f(\mathbf{x})\mathbf{d}\,\varepsilon^2+O(\varepsilon^3),
 \]
 \[
-  f(x-\varepsilon d)=f(x)-g\,\varepsilon
-  +\tfrac{1}{2}d^\top\nabla^2 f(x)d\,\varepsilon^2+O(\varepsilon^3),
+  f(\mathbf{x}-\varepsilon \mathbf{d})=f(\mathbf{x})-g\,\varepsilon
+  +\tfrac{1}{2}\mathbf{d}^\top\nabla^2 f(\mathbf{x})\mathbf{d}\,\varepsilon^2+O(\varepsilon^3),
 \]
 we get
 \[
-  g=\frac{f(x+\varepsilon d)-f(x-\varepsilon d)}{2\varepsilon}
+  g=\frac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x}-\varepsilon \mathbf{d})}{2\varepsilon}
   +O(\varepsilon^2).
 \]
 With the computed estimator
 \[
   \widehat g_{\mathrm{cd}}(\varepsilon)=
-  \mathrm{fl}\!\left(\frac{f(x+\varepsilon d)-f(x-\varepsilon d)}
+  \mathrm{fl}\!\left(\frac{f(\mathbf{x}+\varepsilon \mathbf{d})-f(\mathbf{x}-\varepsilon \mathbf{d})}
   {2\varepsilon}\right),
 \]
-and assuming $|f(\cdot)|\le L_0$ in the neighborhood of $x$ and 
+and assuming $|f(\cdot)|\le L_0$ in the neighborhood of $\mathbf{x}$ and
 a truncation bound $|O(\varepsilon^2)|\le L_3\varepsilon^2$, we obtain
 \[
   |g-\widehat g_{\mathrm{cd}}(\varepsilon)|
@@ -414,19 +435,13 @@ Minimizing yields
 \paragraph{Complex step.}
 If $f$ is an analytic function, then
 \[
-  f(x+i\varepsilon d)=f(x)+i g\,\varepsilon+O(\varepsilon^2)+iO(\varepsilon^3),
+  f(\mathbf{x}+i\varepsilon \mathbf{d})=f(\mathbf{x})+i g\,\varepsilon+O(\varepsilon^2)+iO(\varepsilon^3),
 \]
 so
 \[
-  g=\frac{\operatorname{Im} f(x+i\varepsilon d)}{\varepsilon}
+  g=\frac{\operatorname{Im} f(\mathbf{x}+i\varepsilon \mathbf{d})}{\varepsilon}
   +O(\varepsilon^2).
 \]
-The reason why previous schemes were unstable is $a - b $, 
-where $a \approx b$, which is very unstable in floating-point. 
-This method avoids subtracting close numbers, so we can take
-$\varepsilon_{\mathrm{opt}}=\varepsilon_m$. This makes this scheme the most
-accurate.
-
-\paragraph{Gradient checking (practical note).}
-Sample a random direction $d$ and compare $\nabla f(x)^\top d$
-with a difference quotient using the recommended $\varepsilon$ scales above.
+The previous schemes can be unstable because they subtract nearly equal numbers ($a-b$
+with $a \approx b$) in floating-point arithmetic. This method avoids that subtraction, so we
+can take $\varepsilon_{\mathrm{opt}}=\varepsilon_m$. This makes the scheme the most accurate.

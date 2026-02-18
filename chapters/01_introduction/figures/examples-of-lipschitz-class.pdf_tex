@@ -54,17 +54,17 @@
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{examples-of-lipschitz-class.pdf}}%
-    \put(0.48471312,0.04289079){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$x$\end{tabular}}}}%
+    \put(0.48471312,0.04289079){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{examples-of-lipschitz-class.pdf}}%
-    \put(0.49655307,0.36692282){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(x)$\end{tabular}}}}%
+    \put(0.49655307,0.36692282){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{x})$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{examples-of-lipschitz-class.pdf}}%
-    \put(0.82632186,0.04453545){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$y$\end{tabular}}}}%
+    \put(0.82632186,0.04453545){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{y}$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{examples-of-lipschitz-class.pdf}}%
-    \put(0.71341133,0.42859459){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(y) + \nabla f(y)^{\top}(x-y) + \frac{L}{2}\|x-y \|^2$\end{tabular}}}}%
-    \put(0.72340527,0.14141159){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(y) + \nabla f(y)^{\top}(x-y) - \frac{L}{2} \|x-y\|^2$\end{tabular}}}}%
+    \put(0.71341133,0.42859459){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{y}) + \nabla f(\mathbf{y})^{\top}(\mathbf{x}-\mathbf{y}) + \frac{L}{2}\|\mathbf{x}-\mathbf{y}\|^2$\end{tabular}}}}%
+    \put(0.72340527,0.14141159){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{y}) + \nabla f(\mathbf{y})^{\top}(\mathbf{x}-\mathbf{y}) - \frac{L}{2}\|\mathbf{x}-\mathbf{y}\|^2$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{examples-of-lipschitz-class.pdf}}%
-    \put(0.42662268,0.42547703){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(y) + L \|x-y\|$\end{tabular}}}}%
+    \put(0.42662268,0.42547703){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{y}) + L\|\mathbf{x}-\mathbf{y}\|$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{examples-of-lipschitz-class.pdf}}%
-    \put(0.37856477,0.10103416){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(y) - L \|x-y\|$\end{tabular}}}}%
+    \put(0.37856477,0.10103416){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{y}) - L\|\mathbf{x}-\mathbf{y}\|$\end{tabular}}}}%
   \end{picture}%
 \endgroup%

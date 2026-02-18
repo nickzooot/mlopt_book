@@ -1,6 +1,6 @@
 %% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
-%% Accompanies image file 'kinds-of-convexity.pdf' (pdf, eps, ps)
+%% Accompanies image file 'gd-zig-zag.pdf' (pdf, eps, ps)
 %%
 %% To include the image in your LaTeX document, write
 %%   \input{<filename>.pdf_tex}
@@ -53,14 +53,16 @@
   \begin{picture}(1,0.5)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
-    \put(0,0){\includegraphics[width=\unitlength,page=1]{kinds-of-convexity.pdf}}%
-    \put(0.14068851,0.12144508){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{x})$\end{tabular}}}}%
-    \put(0.47040914,0.04232826){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}$\end{tabular}}}}%
-    \put(0.83451691,0.04461683){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{y}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=2]{kinds-of-convexity.pdf}}%
-    \put(-0.00606913,0.16743088){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Differential criteria of convexity}$\end{tabular}}}}%
-    \put(0.61285636,0.11896439){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Differential criteria of strong convexity}$\end{tabular}}}}%
-    \put(0.41165565,0.28895702){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Definition of convexity}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=3]{kinds-of-convexity.pdf}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{gd-zig-zag.pdf}}%
+    \put(0.02786394,0.29643472){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$x^\star$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{gd-zig-zag.pdf}}%
+    \put(0.39329952,0.3427892){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(x)$\end{tabular}}}}%
+    \put(0.17952793,0.45092971){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mu \approx L$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{gd-zig-zag.pdf}}%
+    \put(0.54984413,0.30033989){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$x^\star$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{gd-zig-zag.pdf}}%
+    \put(0.96271131,0.43664192){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(x)$\end{tabular}}}}%
+    \put(0.65885765,0.44872661){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mu \ll L$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{gd-zig-zag.pdf}}%
   \end{picture}%
 \endgroup%

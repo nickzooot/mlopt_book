@@ -1,6 +1,6 @@
 %% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
-%% Accompanies image file 'kinds-of-convexity.pdf' (pdf, eps, ps)
+%% Accompanies image file 'behaviour-of-convergence-speeds.pdf' (pdf, eps, ps)
 %%
 %% To include the image in your LaTeX document, write
 %%   \input{<filename>.pdf_tex}
@@ -53,14 +53,19 @@
   \begin{picture}(1,0.5)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
-    \put(0,0){\includegraphics[width=\unitlength,page=1]{kinds-of-convexity.pdf}}%
-    \put(0.14068851,0.12144508){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{x})$\end{tabular}}}}%
-    \put(0.47040914,0.04232826){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}$\end{tabular}}}}%
-    \put(0.83451691,0.04461683){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{y}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=2]{kinds-of-convexity.pdf}}%
-    \put(-0.00606913,0.16743088){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Differential criteria of convexity}$\end{tabular}}}}%
-    \put(0.61285636,0.11896439){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Differential criteria of strong convexity}$\end{tabular}}}}%
-    \put(0.41165565,0.28895702){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Definition of convexity}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=3]{kinds-of-convexity.pdf}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{behaviour-of-convergence-speeds.pdf}}%
+    \put(0.82632186,0.03753446){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$k$\end{tabular}}}}%
+    \put(0.12853624,0.46793067){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\log_{10 }r_k$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{behaviour-of-convergence-speeds.pdf}}%
+    \put(0.72942327,0.13487523){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{linear}$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{behaviour-of-convergence-speeds.pdf}}%
+    \put(0.17197784,0.37153358){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$-4$\end{tabular}}}}%
+    \put(0.17197784,0.30918204){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$-5$\end{tabular}}}}%
+    \put(0.17197784,0.2468305){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$-6$\end{tabular}}}}%
+    \put(0.17197784,0.18447895){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$-7$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{behaviour-of-convergence-speeds.pdf}}%
+    \put(0.64925779,0.24408913){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{superlinear}$\end{tabular}}}}%
+    \put(0.35628599,0.12707265){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{sublinear}$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{behaviour-of-convergence-speeds.pdf}}%
   \end{picture}%
 \endgroup%

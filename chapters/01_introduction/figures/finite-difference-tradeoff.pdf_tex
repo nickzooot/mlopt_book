@@ -54,7 +54,7 @@
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{finite-difference-tradeoff.pdf}}%
-    \put(-0.01508558,0.46813641){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\log_{10}(f(x_k) - f_{\text{opt}})$\end{tabular}}}}%
+    \put(-0.01508558,0.46813641){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\log_{10}(f(\mathbf{x}_k) - f^\star)$\end{tabular}}}}%
     \put(0.82845612,0.03605614){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$k$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{finite-difference-tradeoff.pdf}}%
     \put(0.1626523,0.16386973){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$-16$\end{tabular}}}}%

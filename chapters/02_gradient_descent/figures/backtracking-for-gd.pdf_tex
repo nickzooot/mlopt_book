@@ -1,6 +1,6 @@
 %% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
-%% Accompanies image file 'kinds-of-convexity.pdf' (pdf, eps, ps)
+%% Accompanies image file 'backtracking-for-gd.pdf' (pdf, eps, ps)
 %%
 %% To include the image in your LaTeX document, write
 %%   \input{<filename>.pdf_tex}
@@ -53,14 +53,15 @@
   \begin{picture}(1,0.5)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
-    \put(0,0){\includegraphics[width=\unitlength,page=1]{kinds-of-convexity.pdf}}%
-    \put(0.14068851,0.12144508){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{x})$\end{tabular}}}}%
-    \put(0.47040914,0.04232826){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}$\end{tabular}}}}%
-    \put(0.83451691,0.04461683){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{y}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=2]{kinds-of-convexity.pdf}}%
-    \put(-0.00606913,0.16743088){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Differential criteria of convexity}$\end{tabular}}}}%
-    \put(0.61285636,0.11896439){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Differential criteria of strong convexity}$\end{tabular}}}}%
-    \put(0.41165565,0.28895702){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{Definition of convexity}$\end{tabular}}}}%
-    \put(0,0){\includegraphics[width=\unitlength,page=3]{kinds-of-convexity.pdf}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{backtracking-for-gd.pdf}}%
+    \put(0.14915708,0.47176051){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(x)$\end{tabular}}}}%
+    \put(0.82602397,0.04289079){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$x$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{backtracking-for-gd.pdf}}%
+    \put(0.32181718,0.42188288){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$L_1$\end{tabular}}}}%
+    \put(0.43072112,0.20982437){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$L_3 < L_2$\end{tabular}}}}%
+    \put(0.35026156,0.27876937){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$L_2 < L_1$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{backtracking-for-gd.pdf}}%
+    \put(0.53871752,0.28689213){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$L_4 > L_3$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{backtracking-for-gd.pdf}}%
   \end{picture}%
 \endgroup%

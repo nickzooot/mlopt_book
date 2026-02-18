@@ -1,150 +1,808 @@
-\chapter{Gradient Descent. Convergence speed for different function classes. Examples. Finite-difference methods.}
+\chapter{Gradient descent. Convergence speed and line search.}
 
-% Chapter Abstract/Overview
+\graphicspath{{chapters/02_gradient_descent/figures}}
 \begin{abstract}
-This chapter explores gradient descent methods for optimization in machine learning. We analyze convergence rates for different function classes, provide practical examples, and discuss finite-difference approximations when gradients are not analytically available.
+We introduce standard notions of convergence speed for iterative methods and
+use them to study gradient descent. Under Lipschitz smoothness (and, when
+available, convexity or strong convexity), we derive typical sublinear or
+linear rates. We also describe practical line-search rules for choosing step
+sizes in descent methods. In particular, we discuss the Armijo and Wolfe
+conditions and the basic \emph{expand--zoom} and \emph{backtracking} procedures.
 \end{abstract}
 
-% Introduction Section
-\section{Introduction}
-Gradient descent is one of the most fundamental algorithms in optimization, serving as the cornerstone for many machine learning algorithms. This chapter introduces the method, its variants, convergence properties, and practical implementations.
+\section{Convergence speed}
+\subsection{Residuals}
+Consider an iterative method that produces a sequence $\{\mathbf{x}_k\}_{k\ge 0}$ for
+solving
+\[
+  f(\mathbf{x})\to \min_{\mathbf{x}\in\mathbb{R}^n}.
+\]
+To quantify progress, we track a nonnegative \emph{residual} sequence
+$\{r_k\}_{k\ge 0}$ that measures how far we are from an optimal point
+$\mathbf{x}^\star$ (when it exists) and the optimal value
+$f^\star:=\min_{\mathbf{x}} f(\mathbf{x})$. Typical
+choices are
+\[
+  r_k = \|\mathbf{x}_k-\mathbf{x}^\star\|,
+  \qquad
+  r_k = \|f(\mathbf{x}_k)-f^\star\|,
+  \qquad
+  r_k = \|\nabla f(\mathbf{x}_k)\|.
+\]
+Throughout this section, we assume that $r_k>0$ and $r_k\to 0$ as $k\to\infty$.
 
-\section{The Gradient Descent Algorithm}
-
-\begin{definition}[Gradient Descent]
-Gradient descent is an iterative optimization algorithm that updates parameters in the direction of the negative gradient. Given a function $f: \mathbb{R}^n \rightarrow \mathbb{R}$, the update rule is:
-\[x_{k+1} = x_k - \alpha_k \nabla f(x_k)\]
-where $\alpha_k > 0$ is the step size or learning rate at iteration $k$.
+\subsection{Linear convergence}
+\begin{definition}[Linear convergence (see \Cref{fig:behaviour-of-convergence-speeds})]
+We say that $\{r_k\}$ converges \emph{linearly} if $\exists C>0$,
+$q\in(0,1)$, and $k_0\ge 0$ such that
+\[
+  r_{k}\le C\,q^k\qquad \forall k\ge k_0.
+\]
 \end{definition}
 
-\begin{algorithm}[H]
-\caption{Gradient Descent with Backtracking Line Search}
-\begin{algorithmic}
-\REQUIRE Function $f$, gradient $\nabla f$, initial point $x_0$, tolerance $\epsilon > 0$, maximum iterations $K$
-\REQUIRE Initial step size $\alpha_0 > 0$, backtracking parameters $0 < \beta < 1$, $0 < \sigma < 0.5$
-\ENSURE Approximate minimizer $x^*$
-\STATE $k \gets 0$
-\WHILE{$\|\nabla f(x_k)\| > \epsilon$ and $k < K$}
-    \STATE $d_k \gets -\nabla f(x_k)$ \COMMENT{Descent direction}
-    \STATE $\alpha \gets \alpha_0$ \COMMENT{Reset step size}
-    \WHILE{$f(x_k + \alpha d_k) > f(x_k) + \sigma \alpha \nabla f(x_k)^T d_k$}
-        \STATE $\alpha \gets \beta \alpha$ \COMMENT{Reduce step size}
-    \ENDWHILE
-    \STATE $x_{k+1} \gets x_k + \alpha d_k$ \COMMENT{Update point}
-    \STATE $k \gets k + 1$
-\ENDWHILE
-\RETURN $x_k$
-\end{algorithmic}
-\end{algorithm}
+To see why it is called linear, let us take the logarithm of the bound:
+\[
+\log r_k = k \log q + \log C.
+\]
+Hence, the number of correct significant digits increases linearly with the iteration
+count: to gain one more digit, we need a fixed number of additional iterations.
+\begin{example}[A simple linear sequence]
+Define $r_{k+1}$ by
+\[
+  r_{k+1}=
+  \begin{cases}
+    \frac{r_k}{2}, & k \text{ even},\\[2pt]
+    \frac{r_k}{4}, & k \text{ odd}.
+  \end{cases}
+\]
+Then $r_{k+1}\le \frac12 r_k\le \ldots \le \left(\frac12\right)^{k+1}r_0$ for all $k$,
+so $\{r_k\}$ converges linearly.
+\end{example}
 
-\begin{theorem}[Convergence of Gradient Descent for L-smooth Functions]
-If $f$ is L-smooth and convex, and gradient descent is run with constant step size $\alpha \leq \frac{1}{L}$, then after $k$ iterations:
-\[f(x_k) - f(x^*) \leq \frac{\|x_0 - x^*\|^2}{2\alpha k}\]
-where $x^*$ is a minimizer of $f$.
+\subsection{Sublinear convergence}
+\begin{definition}[Sublinear convergence (see \Cref{fig:behaviour-of-convergence-speeds})]
+We say that $\{r_k\}$ converges \emph{sublinearly} if $\forall C>0$, $q\in(0,1)$, and
+$k_0\ge 0$, $\exists k\ge k_0$ such that
+\[
+  r_k > Cq^{k}.
+\]
+\end{definition}
+A sublinear method converges slower than any linear rate in the long run (for sufficiently large $k$).
+
+\begin{example}
+  The sequence $r_k = \frac{1}{k}$ converges sublinearly because any exponential $q^k$ with
+  $q\in(0,1)$ decays faster than $1/k$.
+\end{example}
+
+\subsection{Superlinear convergence}
+\begin{definition}[Superlinear convergence (see \Cref{fig:behaviour-of-convergence-speeds})]
+We say that $\{r_k\}$ converges \emph{superlinearly} if
+$\forall q\in(0,1)$, $\exists C>0$ and $k_0\ge 0$ such that
+\[
+  r_k \le C q^{k}\qquad \forall k \ge k_0.
+\]
+\end{definition}
+According to these definitions, the class of superlinearly convergent sequences is contained in the
+class of linearly convergent ones and has faster convergence rates.
+\begin{figure}[ht]
+    \centering
+    \incfig{behaviour-of-convergence-speeds}
+    \caption{Usual behavior of different convergence speeds. In linear convergence, each additional
+    significant digit requires the same number of iterations; in sublinear convergence, each
+    new digit requires more iterations than the previous one; in superlinear convergence, each new
+    digit requires fewer iterations than the previous one.}
+    \label{fig:behaviour-of-convergence-speeds}
+\end{figure}
+
+
+\subsection{Superlinear convergence of \texorpdfstring{$p$}{p}-order}
+Among superlinearly convergent algorithms, there are some that converge even faster and form a
+separate subclass.
+\begin{definition}[Superlinear convergence of $p$-order]
+We say that $\{r_k\}$ has \emph{$p$-order superlinear} convergence if 
+$p > 1$ and $\exists C>0$, $q \in (0,1)$, and $k_0 \ge0$ such that
+\[
+  r_{k}\le C q^{p^{k}} \qquad \forall k\ge k_0.
+\]
+In the case $p=2$, we say \emph{quadratic} convergence.
+\end{definition}
+
+
+\noindent \textbf{Remark.} The convergence category depends both on the method
+and on structural assumptions on $f$. For instance, for $L$-smooth
+$\mu$-strongly convex objectives, gradient descent with a suitable step size
+converges linearly, while Newton-type methods are locally superlinear (often
+quadratic). Stochastic gradient methods typically achieve sublinear rates in
+expectation.
+
+\section{Tests for understanding convergence speed}
+In practice, it can be difficult to classify a convergence rate directly from the definitions.
+The following  tests are often easier to apply.
+\subsection{Ratio test}
+\label{sec:ratio-test}
+\begin{theorem}[Ratio test]
+Let $r_k>0$ and $r_k\to 0$. If 
+\[
+  \alpha := \limsup_{k\to\infty}\frac{r_{k+1}}{r_k},\qquad \beta := \liminf_{k \to \infty } \frac{r_{k+1 }}{r_k} 
+\]
+then:
+\begin{itemize}
+  \item if $0\le\alpha<1$, the convergence is linear;
+  \item if $\alpha=0$, the convergence is superlinear;
+  \item if $\beta=1$, the convergence is sublinear;
+  \item if $\beta < 1$ and $\alpha \ge 1$, we cannot state anything definite;
+  \item other cases are impossible.
+\end{itemize}
 \end{theorem}
 
+\begin{example}
+\leavevmode
+\begin{itemize}
+  \item If $r_k=2^{-k}$, then $\frac{r_{k+1}}{r_k}=\tfrac12$, hence the
+  convergence is linear.
+  \item If
+  $
+    r_k=
+    \begin{cases}
+      2^{-k}, & k \text{ even},\\
+      0, & k \text{ odd},
+    \end{cases}
+  $
+  then $\frac{r_{k+1}}{r_k}$ alternates between $0$ and $+\infty$, so the ratio
+  test cannot be applied.
+\end{itemize}
+\end{example}
+
+\begin{theorem}[Ratio test for $p$-order superlinear convergence]
+Let $r_k >0$, $r_k \to 0$, and $p >1$. If
+$\limsup_{k\to \infty} \frac{r_{k+1}}{r_k^{p}} < \infty$, then the convergence is $p$-order
+superlinear.
+\end{theorem}
+\subsection{Roots criterion}
+\begin{theorem}[Roots criterion]
+Let $r_k>0$ and $r_k\to 0$. If 
+\[
+  \alpha := \limsup_{k\to\infty} r_k^{1/k}
+\]
+then:
+\begin{itemize}
+  \item if $0\le\alpha<1$, the convergence is linear;
+  \item if $\alpha=0$, the convergence is superlinear;
+  \item if $\alpha=1$, the convergence is sublinear;
+  \item other cases are impossible.
+\end{itemize}
+\end{theorem}
+
+\begin{theorem}[Roots criterion for $p$-order superlinear convergence]
+  Let $r_k > 0$, $r_k \to 0$ and $p > 1$. If 
+  \[
+  \alpha := \limsup_{k \to  \infty} r_k^{\frac{1}{p^{k}}}
+  .\] 
+then 
+\begin{itemize}
+  \item if $0\le \alpha < 1$, the convergence is superlinear of $p$-order;
+  \item if $\alpha =1$, $\{r_k\}$ does not have superlinear convergence of $p$-order;
+  \item other cases are impossible.
+\end{itemize}
+\end{theorem}
+
+\section{Non-exact one-dimensional minimization}
+
+Many iterative methods update the iterate along some direction $\mathbf{d}_k$ using a
+step size $\alpha_k>0$:
+\[
+  \mathbf{x}_{k+1} = \mathbf{x}_k + \alpha_k \mathbf{d}_k,
+  \qquad
+  \mathbf{x}_k,\mathbf{d}_k\in\mathbb{R}^n,\ \alpha_k\in\mathbb{R}_{+}.
+\]
+Define the one-dimensional function
+\[
+  \varphi(\alpha):= f(\mathbf{x}_k+\alpha \mathbf{d}_k).
+\]
+We want to choose $\mathbf{d}_k$ and $\alpha_k$ so that the next step decreases the objective
+value. Using the first-order Taylor expansion of $\varphi(\alpha)$ around $\alpha=0$ and noting that
+$\varphi'(0)=\nabla f(\mathbf{x}_k)^\top \mathbf{d}_k$, a natural requirement is
+\[
+  \nabla f(\mathbf{x}_k)^\top \mathbf{d}_k < 0.
+\]
+Such a direction is called a \emph{descent direction}. For sufficiently small $\alpha>0$, this ensures that
+$\varphi(\alpha)<\varphi(0)$. However, our goal is to choose a step size that is \emph{not too small} and still
+guarantees progress.
+We could find $\alpha$ exactly by (approximately) solving $\varphi(\alpha)\to \min_{\alpha>0}$, e.g.\ via
+Brent's method, but this is often redundant and adds extra computational overhead. Instead, we focus on
+non-exact one-dimensional minimization rules that guarantee adequate decrease in $f$ at minimal cost.
+
+
+\section{Armijo and Wolfe conditions}
+\subsection{Conditions}
+Let $\varphi(\alpha)=f(\mathbf{x}_k+\alpha \mathbf{d}_k)$, $\varphi'(0)<0$ as above, and let
+$0<c_1\le c_2<1$.
+\begin{definition}[Armijo condition (see \Cref{fig:armijo-wolfe-conditions})]
+We say that $\alpha>0$ satisfies the Armijo condition if
+\[
+  \varphi(\alpha)\le \varphi(0)+c_1\,\alpha\,\varphi'(0).
+\]
+\end{definition}
+
+\begin{definition}[Wolfe conditions (see \Cref{fig:armijo-wolfe-conditions})]
+  We say that $\alpha>0$ satisfies the \emph{weak} Wolfe condition if
+\[
+  \varphi'(\alpha)\ge c_2\,\varphi'(0),
+\]
+and the \emph{strong} Wolfe condition if
+\[
+  |\varphi'(\alpha)|\le c_2\,|\varphi'(0)|.
+\]
+\end{definition}
+
+\begin{figure}[ht]
+    \centering
+    \incfig{armijo-wolfe-conditions}
+    \caption{Armijo--Wolfe conditions.}
+    \label{fig:armijo-wolfe-conditions}
+\end{figure}
+\noindent The Armijo inequality implies a \emph{sufficient decrease} of
+$\varphi$, while the Wolfe inequality is a \emph{curvature condition} that
+prevents steps that are too small.
+The weak Wolfe condition does not rule out step lengths that are far from a minimizer
+(see \Cref{fig:armijo-wolfe-conditions}). However, the strong Wolfe condition forces $\alpha$ to lie in a
+neighborhood of a stationary point (or local minimizer).
+Typical choices are $c_1=10^{-4}$ and
+$c_2\in\{0.9,\,0.1\}$ (often $c_2=0.9$ for Newton/quasi-Newton directions and
+$c_2=0.1$ for nonlinear conjugate-gradient directions).
+
+
+
+\subsection{Existence of a step satisfying Armijo--Wolfe}
+\begin{theorem}[Existence of an Armijo--Wolfe step]
+Assume that $\varphi$ is continuously differentiable, bounded below on
+$[0,\infty)$, and $\varphi'(0)<0$. Let $0<c_1\le c_2<1$. Then there exists
+$\alpha >0$ that satisfies the Armijo condition and the Wolfe conditions (weak and strong).
+\end{theorem}
+
+
 \begin{proof}
-From L-smoothness, we have:
-\[f(x_{k+1}) \leq f(x_k) + \nabla f(x_k)^T(x_{k+1} - x_k) + \frac{L}{2}\|x_{k+1} - x_k\|^2\]
+Define the Armijo line
+$\ell(\alpha):=\varphi(0)+c_1\alpha\varphi'(0)$. Since $\varphi$ is bounded
+below on $[0,\infty)$ while $\ell(\alpha)\to -\infty$ as $\alpha\to\infty$,
+the graphs of $\varphi$ and $\ell$ intersect. Let $\alpha'>0$ be the smallest
+intersection point, so $\varphi(\alpha')=\ell(\alpha')$ and the Armijo
+condition holds for all $\alpha\in(0,\alpha')$.
 
-Substituting $x_{k+1} = x_k - \alpha \nabla f(x_k)$:
-\[f(x_{k+1}) \leq f(x_k) - \alpha\|\nabla f(x_k)\|^2 + \frac{L\alpha^2}{2}\|\nabla f(x_k)\|^2\]
+By the mean value theorem, there exists $\alpha''\in(0,\alpha')$ such that
+\[
+  \varphi'(\alpha'')=\frac{\varphi(\alpha')-\varphi(0)}{\alpha'}
+  =c_1\,\varphi'(0).
+\]
+Since $\varphi'(0)<0$ and $c_1<c_2$, we have
+$\varphi'(\alpha'')=c_1\varphi'(0)\ge c_2\varphi'(0)$, so $\alpha''$ satisfies
+the Wolfe curvature condition. Because $\alpha''<\alpha'$, it also satisfies
+Armijo. Moreover, the strong Wolfe condition is also satisfied because $\varphi'(0) < 0 $.
+\end{proof}
+\section{Practical procedures for line search}
+\subsection{Backtracking}
+\begin{algorithm}[ht]
+  \caption{\textsc{Backtracking}}
+  \label{alg:backtracking}
+  \begin{algorithmic}
+    \REQUIRE $\varphi(\alpha)$, $\varphi'(0)$; $c_1\in(0,1)$; $\alpha_{\mathrm{start}}>0$; $\beta\in(0,1)$
+    \STATE $\alpha\gets \alpha_{\mathrm{start}}$
+    \WHILE{$\varphi(\alpha)>\varphi(0)+c_1\alpha\varphi'(0)$}
+      \STATE $\alpha\gets \beta \alpha$
+    \ENDWHILE
+    \RETURN $\alpha$
+  \end{algorithmic}
+\end{algorithm}
 
-When $\alpha \leq \frac{1}{L}$, we have $\frac{L\alpha^2}{2} \leq \frac{\alpha}{2}$, so:
-\[f(x_{k+1}) \leq f(x_k) - \frac{\alpha}{2}\|\nabla f(x_k)\|^2\]
+\noindent Backtracking is simple and, in practice, often numerically stable, especially when
+we are close to an optimal solution and more advanced methods may produce NaN values.
+Although it does not guarantee any Wolfe condition, it is still very practical: we can start
+from a large $\alpha_{\mathrm{start}}$ and decrease it gradually until Armijo is satisfied.
+\subsection{Line search algorithm for Wolfe conditions}
+The algorithm discussed in this section is more advanced and satisfies the strong Wolfe conditions.
+It consists of two stages. The first stage expands an initial interval until it contains an
+acceptable step length. The second stage successively shrinks (zooms) this interval until a step
+length satisfying the conditions is identified.
 
-By convexity of $f$, we have $f(x_k) - f(x^*) \leq \nabla f(x_k)^T(x_k - x^*)$.
-Using the Cauchy-Schwarz inequality and some algebraic manipulations (omitted for brevity), we can establish the result.
+When expanding the interval, we stop once one of the following conditions is met:
+\begin{enumerate}
+  \item the new right endpoint violates the Armijo condition;
+  \item the derivative $\varphi'(\alpha)$ at the new right endpoint becomes positive;
+  \item $\varphi(\alpha)$ at the new right endpoint is larger than at the previous right endpoint.
+\end{enumerate}
+\begin{algorithm}[ht]
+  \caption{\textsc{Expand}}
+  \label{alg:expand}
+  \begin{algorithmic}
+    \REQUIRE $\varphi(\alpha)$, $\varphi'(\alpha)$; $0<c_1\le c_2<1$; initial
+    steps $\alpha_0=0$, $\alpha_1>0$; maximal step $\alpha_{\max}$
+    \STATE $i\gets 1$
+    \WHILE{not converged}
+      \IF{$\varphi(\alpha_i)>\varphi(0)+c_1\alpha_i\varphi'(0)$
+      \textbf{or} $\varphi(\alpha_i)\ge\varphi(\alpha_{i-1})$}
+        \RETURN \textsc{Zoom}$(\alpha_{i-1},\alpha_i)$
+      \ENDIF
+      \IF{$|\varphi'(\alpha_i)|\le c_2|\varphi'(0)|$}
+        \RETURN $\alpha_i$
+      \ENDIF
+      \IF{$\varphi'(\alpha_i)>0$}
+        \RETURN \textsc{Zoom}$(\alpha_i,\alpha_{i-1})$
+      \ENDIF
+      \STATE Choose $\alpha_{i+1}\in(\alpha_i,\alpha_{\max})$
+      \STATE $i\gets i+1$
+    \ENDWHILE
+  \end{algorithmic}
+\end{algorithm}
+
+\noindent The procedure \textsc{Zoom} takes an interval
+$(\alpha_{\mathrm{low}},\alpha_{\mathrm{high}})$ and repeatedly shrinks it. It
+maintains the following requirements:
+\begin{enumerate}
+  \item $\alpha_\star\in(\alpha_{\mathrm{low}},\alpha_{\mathrm{high}})$, where
+  $\alpha_\star$ is a step satisfying Armijo and Wolfe;
+  \item $\alpha_{\mathrm{low}}$ satisfies Armijo and has the lowest function
+  value among the steps tested so far;
+  \item $\varphi'(\alpha_{\mathrm{low}})
+  (\alpha_{\mathrm{high}}-\alpha_{\mathrm{low}})<0$.
+\end{enumerate}
+
+
+\begin{algorithm}[ht]
+  \caption{\textsc{Zoom}$(\alpha_{\mathrm{low}},\alpha_{\mathrm{high}})$}
+  \label{alg:zoom}
+  \begin{algorithmic}
+    \REQUIRE $\varphi(\alpha)$, $\varphi'(\alpha)$; $0<c_1\le c_2<1$; interval
+    $(\alpha_{\mathrm{low}},\alpha_{\mathrm{high}})$ satisfying the requirements above
+    \WHILE{not converged}
+      \STATE Choose $\alpha\in(\alpha_{\mathrm{low}},\alpha_{\mathrm{high}})$
+      using interpolation or bisection
+      \IF{$\varphi(\alpha)>\varphi(0)+c_1\alpha\varphi'(0)$
+      \textbf{or} $\varphi(\alpha)\ge\varphi(\alpha_{\mathrm{low}})$}
+        \STATE $\alpha_{\mathrm{high}}\gets \alpha$
+      \ELSE
+        \IF{$|\varphi'(\alpha)|\le c_2|\varphi'(0)|$}
+          \RETURN $\alpha$
+        \ENDIF
+        \IF{$\varphi'(\alpha)(\alpha_{\mathrm{high}}-\alpha_{\mathrm{low}})\ge 0$}
+          \STATE $\alpha_{\mathrm{high}}\gets \alpha_{\mathrm{low}}$
+        \ENDIF
+        \STATE $\alpha_{\mathrm{low}}\gets \alpha$
+      \ENDIF
+    \ENDWHILE
+  \end{algorithmic}
+\end{algorithm}
+
+
+\section{Gradient descent}
+\label{sec:gradient-descent}
+\subsection{Steepest descent direction}
+Assume that $f \in C^1$. For a small step $\alpha>0$ and a direction
+$\mathbf{d}$, the first-order Taylor approximation gives
+\[
+  f(\mathbf{x}+\alpha \mathbf{d})\approx f(\mathbf{x})+\alpha\,\mathbf{d}^\top \nabla f(\mathbf{x}).
+\]
+Among all unit directions, the one that decreases this linear model the most
+solves
+\[
+  \min_{\|\mathbf{d}\|=1} \mathbf{d}^\top \nabla f(\mathbf{x}),
+\]
+whose solution is
+$\mathbf{d}_{\mathrm{sd}}=-\nabla f(\mathbf{x})/\|\nabla f(\mathbf{x})\|$. This motivates the
+\emph{gradient descent} update
+\begin{equation}
+  \label{eq:gd-update}
+  \mathbf{x}_{k+1}=\mathbf{x}_k-\alpha_k \nabla f(\mathbf{x}_k),
+  \qquad \alpha_k>0,
+\end{equation}
+
+\subsection{A basic decrease estimate under \texorpdfstring{$L$}{L}-smoothness}
+
+If $f \in C^{1,1}_L$ ($L$-smooth), then for all $\mathbf{x},\mathbf{y}\in\mathbb{R}^n$,
+\begin{equation}
+ \label{eq:l-smooth}
+  f(\mathbf{y})\le f(\mathbf{x})+\nabla f(\mathbf{x})^\top (\mathbf{y}-\mathbf{x})
+  +\frac{L}{2}\|\mathbf{y}-\mathbf{x}\|^2.
+\end{equation}
+
+\noindent Apply this with $\mathbf{y}=\mathbf{x}-\alpha \nabla f(\mathbf{x})$ to obtain
+\begin{equation}
+  \label{eq:gd-descent}
+  f(\mathbf{x}-\alpha \nabla f(\mathbf{x}))
+  \le f(\mathbf{x})-\Bigl(\alpha-\frac{L\alpha^2}{2}\Bigr)\|\nabla f(\mathbf{x})\|^2.
+\end{equation}
+Hence any step size $\alpha\in(0,2/L)$ yields a decrease. The maximal guaranteed
+decrease in \eqref{eq:gd-descent} occurs at $\alpha=1/L$, giving
+\begin{equation}
+  \label{eq:gd-descent-1overL}
+  f(\mathbf{x}_{k+1})\le f(\mathbf{x}_k)-\frac{1}{2L}\|\nabla f(\mathbf{x}_k)\|^2
+  \qquad \mathbf{x}_{k+1}=\mathbf{x}_k-\frac{1}{L}\nabla f(\mathbf{x}_k).
+\end{equation}
+
+
+
+\begin{theorem}[Sublinear rate for L-smooth objectives]
+\label{thm:sublinear-rate-lsmooth}
+Assume that $f$ is $L$-smooth and bounded below. Consider gradient
+descent with step size $\alpha=1/L$. Then
+\[
+  \min_{0\le i\le k}\|\nabla f(\mathbf{x}_i)\|^2
+  \le \frac{2L\bigl(f(\mathbf{x}_0)-f^\star\bigr)}{k+1}.
+\]
+In particular, $\|\nabla f(\mathbf{x}_i)\|\to 0$ as $k\to\infty$ and the convergence speed with respect to
+\[
+  r_k = \min_{0\le i\le k}\|\nabla f(\mathbf{x}_i)\|^2
+\]
+is sublinear. \\
+\textbf{Note.} This theorem guarantees convergence to a stationary point, but does not
+guarantee that we reach a local minimum (the limit point could be a saddle point).
+\end{theorem}
+\begin{proof}
+Sum \eqref{eq:gd-descent-1overL} from $i=0$ to $k$ to get
+\[
+  \frac{1}{2L}\sum_{i=0}^k \|\nabla f(\mathbf{x}_i)\|^2
+  \le f(\mathbf{x}_0)-f(\mathbf{x}_{k+1})
+  \le f(\mathbf{x}_0)-f^\star.
+\]
+The claim follows from $\min_{0\le i\le k}\|\nabla f(\mathbf{x}_i)\|^2\le
+\frac{1}{k+1}\sum_{i=0}^k \|\nabla f(\mathbf{x}_i)\|^2$ and the fact that if a series of
+nonnegative terms has bounded partial sums, then its terms converge to zero.
 \end{proof}
 
-\begin{claim}[Convergence for Strongly Convex Functions]
-If $f$ is $\mu$-strongly convex and L-smooth, gradient descent with constant step size $\alpha = \frac{1}{L}$ converges linearly:
-\[f(x_k) - f(x^*) \leq \left(1 - \frac{\mu}{L}\right)^k [f(x_0) - f(x^*)]\]
-\end{claim}
 
-\begin{example}[Quadratic Function]
-Consider minimizing $f(x) = \frac{1}{2}x^TAx + b^Tx + c$ where $A$ is positive definite. The gradient is $\nabla f(x) = Ax + b$, and gradient descent with optimal step size converges linearly with rate determined by the condition number of $A$.
-\end{example}
+\begin{theorem}[Sublinear rate for convex $L$-smooth objectives]
+\label{thm:convex-sublinear-rate}
+Assume that $f$ is convex and $L$-smooth, and let $\mathbf{x}^\star\in\arg\min f$.
+Then gradient descent with step size $\alpha=1/L$ satisfies
+\[
+  f(\mathbf{x}_k)-f(\mathbf{x}^\star)\le \frac{L\|\mathbf{x}_0-\mathbf{x}^\star\|^2}{2k}
+  \qquad \forall k\ge 1.
+\]
+\end{theorem}
+\begin{proof}
+Using \eqref{eq:gd-update} and expanding norms,
+\[
+  \|\mathbf{x}_{k+1}-\mathbf{x}^\star\|^2
+  =\|\mathbf{x}_k-\mathbf{x}^\star\|^2
+  -2\alpha\,\nabla f(\mathbf{x}_k)^\top(\mathbf{x}_k-\mathbf{x}^\star)
+  +\alpha^2\|\nabla f(\mathbf{x}_k)\|^2.
+\]
+Convexity implies
+$f(\mathbf{x}_k)-f(\mathbf{x}^\star)\le \nabla f(\mathbf{x}_k)^\top(\mathbf{x}_k-\mathbf{x}^\star)$.
+On the
+other hand, \eqref{eq:gd-descent} implies
+$\|\nabla f(\mathbf{x}_k)\|^2\le \frac{2}{\alpha}\bigl(f(\mathbf{x}_k)-f(\mathbf{x}_{k+1})\bigr)$ when
+$\alpha\le 1/L$. Combining these bounds and setting $\alpha=1/L$ gives
+\[
+  \frac{2}{L}\bigl(f(\mathbf{x}_{k+1})-f(\mathbf{x}^\star)\bigr)
+  \le \|\mathbf{x}_k-\mathbf{x}^\star\|^2-\|\mathbf{x}_{k+1}-\mathbf{x}^\star\|^2.
+\]
+Summing over $k$ and using that $f(\mathbf{x}_k)$ is nonincreasing yields the result.
+\end{proof}
 
-\begin{lemma}[Optimal Step Size]
-For minimizing a quadratic function $f(x) = \frac{1}{2}x^TAx + b^Tx + c$, the optimal fixed step size is $\alpha = \frac{2}{\lambda_min(A) + \lambda_max(A)}$.
-\end{lemma}
 
-\begin{example}[Python Implementation of Gradient Descent]
-Below is a pseudocode implementation of gradient descent in Python-like syntax:
-\end{example}
-\begin{algorithm}[H]
-\caption{Gradient Descent Implementation}
-\begin{algorithmic}
-\REQUIRE $f$, $\nabla f$, $x_0$, $\alpha$, $\epsilon$, $max\_iter$
-\STATE $x \gets x_0$
-\STATE $iter \gets 0$
-\STATE $grad\_norm \gets \|\nabla f(x)\|$
-\WHILE{$grad\_norm > \epsilon$ and $iter < max\_iter$}
-    \STATE $x \gets x - \alpha \cdot \nabla f(x)$
-    \STATE $grad\_norm \gets \|\nabla f(x)\|$
-    \STATE $iter \gets iter + 1$
-    \IF{$iter \bmod 100 = 0$}
-        \STATE Print "Iteration:", $iter$, "Function value:", $f(x)$, "Gradient norm:", $grad\_norm$
-    \ENDIF
-\ENDWHILE
-\RETURN $x$
-\end{algorithmic}
+\noindent If $f$ is $\mu$-strongly convex, we obtain a linear rate.
+\begin{theorem}[Linear rate for $\mu$-strongly convex $L$-smooth objectives]
+\label{thm:linear-rate}
+Assume that $f$ is $L$-smooth and $\mu$-strongly convex. Then gradient descent
+with step size $\alpha=1/L$ satisfies
+\[
+  f(\mathbf{x}_k)-f(\mathbf{x}^\star)
+  \le \Bigl(1-\frac{\mu}{L}\Bigr)^k\bigl(f(\mathbf{x}_0)-f(\mathbf{x}^\star)\bigr).
+\]
+\end{theorem}
+\begin{proof}
+Strong convexity implies (e.g.\ by minimizing the quadratic lower model in
+\cref{clm:diff-strong-conv} with respect to $\mathbf{y}$ and substituting this minimizer) that
+\[
+  f(\mathbf{x})-f(\mathbf{x}^\star)\le \frac{1}{2\mu}\|\nabla f(\mathbf{x})\|^2.
+\]
+Combine this bound with \eqref{eq:gd-descent-1overL} to obtain
+\[
+  f(\mathbf{x}_{k+1})-f(\mathbf{x}^\star)
+  \le f(\mathbf{x}_k)-f(\mathbf{x}^\star)-\frac{1}{2L}\|\nabla f(\mathbf{x}_k)\|^2
+  \le \Bigl(1-\frac{\mu}{L}\Bigr)\bigl(f(\mathbf{x}_k)-f(\mathbf{x}^\star)\bigr),
+\]
+and unroll the recursion.
+\end{proof}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Assumptions on $f$ & Residual & Typical rate (GD, $\alpha=1/L$) \\
+    \midrule
+    $L$-smooth & $\min_{0\le i\le k}\|\nabla f(\mathbf{x}_i)\|^2$ & $O(1/k)$ \\
+    convex and $L$-smooth & $f(\mathbf{x}_k)-f(\mathbf{x}^\star)$ & $O(1/k)$ \\
+    $\mu$-strongly convex and $L$-smooth & $f(\mathbf{x}_k)-f(\mathbf{x}^\star)$ & $O((1-\mu/L)^k)$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Typical gradient descent rates under increasing structure on $f$.}
+  \label{tab:gd-rates}
+\end{table}
+
+\subsubsection{When \texorpdfstring{$L$}{L} is unknown: a simple backtracking rule.}
+If the smoothness constant $L$ is unknown, one can choose $\alpha_k=1/L_k$ by
+increasing an estimate $L_k$ until the decrease bound
+\eqref{eq:gd-descent-1overL} is satisfied (this is the main inequality needed from $L$-smoothness for the
+proof of convergence).
+\begin{algorithm}[h]
+  \caption{\textsc{Lipschitz backtracking} for gradient descent}
+  \label{alg:lipschitz-backtracking}
+  \begin{algorithmic}
+    \REQUIRE $f$, $\nabla f$; current iterate $\mathbf{x}_k$; initial $L_k>0$; factors $\delta>1$
+    and $\rho <1$
+    \WHILE{true}
+      \STATE $\alpha\gets 1/L_k$
+      \STATE $\mathbf{x}^+\gets \mathbf{x}_k-\alpha \nabla f(\mathbf{x}_k)$
+      \IF{$f(\mathbf{x}^+)\le f(\mathbf{x}_k)-\frac{1}{2L_k}\|\nabla f(\mathbf{x}_k)\|^2$ }
+        \STATE \textbf{break}
+      \ENDIF
+      \STATE $L_k\gets \delta L_k$
+    \ENDWHILE
+    \STATE $L_k\gets \rho L_k$
+    \RETURN $\mathbf{x}_{k+1}\gets \mathbf{x}^+$
+  \end{algorithmic}
 \end{algorithm}
 
-For functions with expensive gradient computations, we can save computation by reusing the gradient:
+The \cref{alg:lipschitz-backtracking} is adaptive, which is important because the step size is defined by $L$
+(if $L$ is large then the step is small, and vice versa). Due to the parameters
+$\delta$ and $\rho$, it takes into account that the curvature can change
+(see \cref{fig:backtracking-for-gd}). 
+\begin{figure}[ht]
+    \centering
+    \incfig{backtracking-for-gd}
+    \caption{Lipschitz backtracking for GD. The dotted quadratic model comes from \cref{eq:l-smooth}.
+    When the curvature is high, the local Lipschitz constant $L$ is larger, so the step size
+    must be smaller; when the curvature is low, $L$ is smaller and the step size can be larger.}
+    \label{fig:backtracking-for-gd}
+\end{figure}
 
-\begin{algorithm}[H]
-\caption{Memory-Efficient Gradient Descent}
-\begin{algorithmic}
-\REQUIRE $f$, $\nabla f$, $x_0$, $\alpha$, $\epsilon$, $max\_iter$
-\STATE $x \gets x_0$
-\STATE $iter \gets 0$
-\STATE $grad \gets \nabla f(x)$
-\STATE $grad\_norm \gets \|grad\|$
-\WHILE{$grad\_norm > \epsilon$ and $iter < max\_iter$}
-    \STATE $x \gets x - \alpha \cdot grad$
-    \STATE $grad \gets \nabla f(x)$
-    \STATE $grad\_norm \gets \|grad\|$
-    \STATE $iter \gets iter + 1$
-\ENDWHILE
-\RETURN $x$
-\end{algorithmic}
-\end{algorithm}
+More generally, gradient descent is a special case of a \emph{descent
+method} that updates $\mathbf{x}_{k+1}=\mathbf{x}_k+\alpha_k \mathbf{d}_k$ along a
+descent direction $\mathbf{d}_k$.
+A standard way to choose the step size $\alpha_k$ for such methods
+is to perform a (non-exact)
+\emph{line search} along the ray $\{\mathbf{x}_k+\alpha \mathbf{d}_k:\alpha>0\}$.
+For these step sizes there are also convergence guarantees, which we will discuss 
+in the next section.
 
+\subsection{Convergence guarantees under L-smoothness and Armijo--Wolfe conditions}
+Now let us derive an analogue of \cref{eq:gd-descent-1overL} for step sizes defined by the
+Armijo--Wolfe conditions.
+\begin{theorem} \label{thm:armijo-wolfe-gd}
+Consider the iteration $\mathbf{x}_{k+1}=\mathbf{x}_k+\alpha_k \mathbf{d}_k$, where
+$\mathbf{d}_k$ is a descent
+direction and $\alpha_k$ satisfies the Armijo--Wolfe conditions with $0<c_1\le c_2<1$:
+\begin{enumerate}
+  \item $f(\mathbf{x}_{k+1}) \le f(\mathbf{x}_k) + c_1 \alpha_k \nabla f(\mathbf{x}_k)^{\top }\mathbf{d}_k$;
+  \item $\nabla f(\mathbf{x}_{k+1})^{\top }\mathbf{d}_k \ge c_2 \nabla f(\mathbf{x}_k)^{\top }\mathbf{d}_k$.
+\end{enumerate}
+Then
+\[
+  f(\mathbf{x}_{k+1})\le f(\mathbf{x}_k)-\frac{c_1(1-c_2)}{L}\,\cos^2\theta_k\,\|\nabla f(\mathbf{x}_k)\|^2.
+\]
+where $\cos\theta_k := \frac{\nabla f(\mathbf{x}_k)^{\top } \mathbf{d}_k }{\|\nabla f(\mathbf{x}_k)\|\|\mathbf{d}_k\|}$.
+\end{theorem}
+\begin{proof}
+The Armijo--Wolfe conditions and Lipschitz continuity of $\nabla f$
+imply
+\begin{align*}  
+  &(c_2 - 1) \nabla f(\mathbf{x}_k)^{\top } \mathbf{d}_k
+  \le \bigl( \nabla f(\mathbf{x}_{k+1}) - \nabla f(\mathbf{x}_k)\bigr)^{\top }\mathbf{d}_k\\
+  &\le \|\nabla f(\mathbf{x}_{k+1})-\nabla f(\mathbf{x}_k)\|\,\|\mathbf{d}_k\|
+  \le L\|\mathbf{x}_{k+1} - \mathbf{x}_k \|\,\|\mathbf{d}_k \|
+  = L\alpha_k \|\mathbf{d}_k\|^2,
+\end{align*}
+Therefore,
+\[
+  \alpha_k \ge \frac{(c_2 -1) \nabla f(\mathbf{x}_k)^{\top }\mathbf{d}_k }{L \|\mathbf{d}_k\|^2}.
+\]
+Plugging this into the Armijo condition yields
+\begin{equation}
+  \label{eq:armijo-wolfe-norm}
+  f(\mathbf{x}_{k+1})\le f(\mathbf{x}_k)-\frac{c_1(1-c_2)}{L}\,\cos^2\theta_k\,\|\nabla f(\mathbf{x}_k)\|^2.
+\end{equation}
+\end{proof}
 
-\section{Convergence Speed for Different Function Classes}
-\subsection{Convex Functions}
-% Content here
+This theorem is quite important for descent methods in general because, if we assume
+that $\cos \theta_k < -\delta$ and do something like in the proof of 
+\cref{thm:sublinear-rate-lsmooth} we can get that all descent methods are such
+that $\|\nabla f(\mathbf{x}_k)\| \to 0$.
 
-\subsection{Strongly Convex Functions}
-% Content here
+If we use gradient descent, then $\mathbf{d}_k = - \nabla f(\mathbf{x}_k)$ and we get that 
+\[
+  f(\mathbf{x}_{k+1})\le f(\mathbf{x}_k)-\frac{c_1(1-c_2)}{L}\,\|\nabla f(\mathbf{x}_k)\|^2
+.\]
+This can be used in the same way that \cref{eq:gd-descent-1overL} was used to derive
+\cref{thm:sublinear-rate-lsmooth,thm:convex-sublinear-rate,thm:linear-rate}. In particular, one can
+build an analogue of \cref{tab:gd-rates} for step sizes defined by the Armijo--Wolfe conditions.
 
-\subsection{Non-convex Functions}
-% Content here
+One more important thing to note here is that, if we choose optimal $c_1$ and $c_2$, the maximum
+possible decrease size will be $\frac{1}{4L}\|\nabla f(\mathbf{x}_k)\|^2$ versus
+$\frac{1}{2L}\|\nabla f(\mathbf{x}_k)\|^2$ in \cref{eq:gd-descent-1overL}. However, the
+Armijo--Wolfe option might be better for several reasons. One is that, in this case, we do not need
+to think about which $L$ to choose, because Armijo--Wolfe does not use it. Second is that in
+\cref{thm:armijo-wolfe-gd} we use the best possible $L$ for the inequality (which we do not even need
+because of the first reason---magic), while otherwise, in most cases (when we do not know $L$
+analytically), we need to use backtracking, which cannot find the best possible $L$. So there are
+cases when Armijo--Wolfe will have an even better decrease than $\frac{1}{2L}\|\nabla f(\mathbf{x}_k)\|^2$
+in \cref{eq:gd-descent-1overL}.
+\subsection{Quadratic objectives and conditioning}
+\begin{example}
+Consider the quadratic objective
+\[
+  f(\mathbf{x})=\frac{1}{2}\mathbf{x}^{\top}\mathbf{A}\mathbf{x}-\mathbf{x}^{\top}\mathbf{b}
+  \to \min_{\mathbf{x}},
+  \qquad
+  \mathbf{A}=\mathbf{A}^{\top}\succ 0.
+\]
+Then
+\[
+  \nabla f(\mathbf{x})=\mathbf{A}\mathbf{x}-\mathbf{b},
+  \qquad
+  \nabla^{2} f(\mathbf{x})=\mathbf{A},
+\]
+so $\nabla f(\mathbf{x})=0\iff \mathbf{A}\mathbf{x}=\mathbf{b}$ and hence
+$\mathbf{x}^\star=\mathbf{A}^{-1}\mathbf{b}$ and $f^\star=f(\mathbf{x}^\star)$.
+Moreover, $f\in C_{L}^{\infty,1}$, since
+\[
+  \|\nabla^2 f(\mathbf{x})\|=\|\mathbf{A}\|\le L,
+  \qquad
+  L:=\lambda_{\max}(\mathbf{A}).
+\]
+Also, $f$ is $\mu$-strongly convex because
+\[
+  \nabla^{2} f(\mathbf{x})=\mathbf{A}\succeq \mu \mathbf{I},
+  \qquad
+  \mu:=\lambda_{\min}(\mathbf{A})>0.
+\]
+So the rate in \cref{tab:gd-rates} is governed in this case by
+$\kappa := \frac{L}{\mu}$ (condition number). If $\mu \approx L$ (well-conditioned), 
+gradient descent typically follows a direct path; if
+$\mu\ll L$ (ill-conditioned), it may converge slowly with a long ``zig-zag'' trajectory (see
+\cref{fig:gd-zig-zag}).
 
-\section{Variants of Gradient Descent}
-\subsection{Batch Gradient Descent}
-% Content here
+\medskip
+\noindent For a fixed tolerance $\varepsilon>0$, the linear-rate estimate yields
+\[
+  f(\mathbf{x}_k)-f^\star \le \Bigl(1-\frac{\mu}{L}\Bigr)^k\bigl(f(\mathbf{x}_0)-f^\star\bigr)\le \varepsilon.
+\]
+Equivalently, with $r_0:=f(\mathbf{x}_0)-f^\star$, it is enough to take
+\[
+  k(\varepsilon)\ge
+  \frac{\log\!\left(\frac{r_0}{\varepsilon}\right)}{-\log\!\left(1-\frac{\mu}{L}\right)}
+  \approx \frac{L}{\mu}\log\!\left(\frac{r_0}{\varepsilon}\right)
+  =\frac{L}{\mu}\left(\log \frac{1}{\varepsilon}+\log r_0\right).
+\]
+\end{example}
 
-\subsection{Stochastic Gradient Descent}
-% Content here
+\begin{figure}[ht]
+    \centering
+    \incfig{gd-zig-zag}
+    \caption{Behaviour of gradient descent with quadratic objective depending on the condition number.}
+    \label{fig:gd-zig-zag}
+\end{figure}
+The issue discussed in this example is a fundamental limitation of gradient descent and also
+appears for more general objectives. One can see this by deriving the GD step from a quadratic
+model: approximate $f$ by a quadratic function and minimize it:
+\[
+  f(\mathbf{x}) \approx f(\mathbf{x}_k) + \nabla f(\mathbf{x}_k)^{\top}(\mathbf{x}-\mathbf{x}_k) +
+  \frac{\alpha}{2} \|\mathbf{x} - \mathbf{x}_k\|^2 \to \min_{\mathbf{x}}.
+\]
+Then
+\[
+  \nabla f(\mathbf{x}_k) + \alpha (\mathbf{x} - \mathbf{x}_k) = 0
+  \implies
+  \mathbf{x}_{k+1} = \mathbf{x}_k - \frac{1}{\alpha}\nabla f(\mathbf{x}_k).
+\]
+This is exactly the gradient descent step: at each iteration we minimize an isotropic quadratic
+model, which can lead to zig-zagging on ill-conditioned problems. This also helps explain why
+feature normalization (preconditioning) is important in machine learning: it can make level sets
+more spherical and improve the geometry for first-order methods.
 
-\subsection{Mini-batch Gradient Descent}
-% Content here
+\subsection{Additional examples}
 
-\section{Finite-difference Methods}
-\subsection{Forward Difference}
-% Content here
+\begin{example}[A saddle point and sensitivity to initialization]
+Consider $\mathbf{z}=(x,y)\in\mathbb{R}^2$ and the (nonconvex) function
+\[
+  f(\mathbf{z})=\frac{1}{2}x^2-\frac{1}{2}y^2.
+\]
+Then
+\[
+  \nabla f(\mathbf{z})=
+  \begin{pmatrix}
+    x\\
+    -y
+  \end{pmatrix},
+  \qquad
+  \nabla^2 f(\mathbf{z})=
+  \begin{pmatrix}
+    1 & 0\\
+    0 & -1
+  \end{pmatrix},
+\]
+so the origin $\mathbf{0}$ is a saddle point.
+Gradient descent $\mathbf{z}_{k+1}=\mathbf{z}_k-\alpha \nabla f(\mathbf{z}_k)$ with $\alpha>0$ gives
+\[
+  \mathbf{z}_{k+1}=
+  \begin{pmatrix}
+    1-\alpha & 0\\
+    0 & 1+\alpha
+  \end{pmatrix}\mathbf{z}_k,
+  \qquad
+  x_{k}=(1-\alpha)^k x_0,
+  \qquad
+  y_{k}=(1+\alpha)^k y_0.
+\]
+If $y_0=0$ and $0<\alpha<2$, then $x_k\to 0$ and $y_k\equiv 0$, hence $\mathbf{z}_k\to\mathbf{0}$:
+gradient descent converges to the saddle point.
+However, if $y_0\ne 0$, then $|y_k|\to\infty$ for any $\alpha>0$, and the iterates diverge
+along the direction of negative curvature.
+\end{example}
 
-\subsection{Central Difference}
-% Content here
+\begin{example}[A convex objective without strong convexity]
+Consider the one-dimensional function
+\[
+  f(x)=\frac{1}{3}|x|^3.
+\]
+It is convex, since
+\[
+  f'(x)=|x|x,
+  \qquad
+  f''(x)=2|x|\ge 0,
+\]
+but it is not strongly convex globally because $f''(0)=0$.
+Gradient descent with a constant step size $\alpha>0$ gives
+\[
+  x_{k+1}=x_k-\alpha f'(x_k)=x_k-\alpha |x_k|x_k.
+\]
+Assume $x_0>0$ and $0<\alpha<1/x_0$. Then $x_k>0$ for all $k$, and the recursion simplifies to
+\[
+  x_{k+1}=x_k-\alpha x_k^2=x_k(1-\alpha x_k).
+\]
+Using $\frac{1}{1-t}\ge 1+t$ for $t\in[0,1)$, we obtain
+\[
+  \frac{1}{x_{k+1}}
+  =\frac{1}{x_k(1-\alpha x_k)}
+  \ge \frac{1}{x_k}+\alpha,
+\]
+and hence $\frac{1}{x_k}\ge \frac{1}{x_0}+\alpha k$, i.e.
+\[
+  x_k\le \frac{1}{\alpha k+1/x_0}=O(1/k).
+\]
+This illustrates a typical sublinear behavior when strong convexity is absent.
+\end{example}
 
-\subsection{Higher-order Differences}
-% Content here
-
-\section{Applications in Machine Learning}
-% Content here
-
-\section{Conclusion}
-% Summarize key points and prepare for following chapters
+\begin{example}[A diagonal quadratic and the condition number]
+Let $\mathbf{z}=(x,y)\in\mathbb{R}^2$ and
+\[
+  f(\mathbf{z})=\frac{\mu}{2}x^2+\frac{L}{2}y^2,
+  \qquad
+  0<\mu\le L.
+\]
+Then $\nabla f(\mathbf{z})=(\mu x,\; Ly)^\top$ and $f$ is $\mu$-strongly convex and $L$-smooth.
+If we choose the step size $\alpha=1/L$, then
+\[
+  \begin{pmatrix}
+    x_{k+1}\\
+    y_{k+1}
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    x_k\\
+    y_k
+  \end{pmatrix}
+  -\frac{1}{L}
+  \begin{pmatrix}
+    \mu x_k\\
+    Ly_k
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \left(1-\frac{\mu}{L}\right)x_k\\
+    0
+  \end{pmatrix}.
+\]
+Therefore $y_k=0$ for all $k\ge 1$ and $x_k=\left(1-\frac{\mu}{L}\right)^k x_0$, which shows a
+linear rate with contraction factor $1-\mu/L=1-1/\kappa$, where $\kappa:=L/\mu$.
+\end{example}
