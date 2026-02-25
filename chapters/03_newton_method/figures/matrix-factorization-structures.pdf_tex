@@ -1,0 +1,10 @@
+%% Minimal wrapper for \incfig{matrix-factorization-structures}
+\begingroup%
+  \makeatletter%
+  \ifx\svgwidth\undefined%
+    \def\svgwidth{\columnwidth}%
+  \fi%
+  \makeatother%
+  \includegraphics[width=\svgwidth]{matrix-factorization-structures.pdf}%
+\endgroup%
+

@@ -141,8 +141,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.904445"
-     inkscape:cx="505.43219"
-     inkscape:cy="322.26467"
+     inkscape:cx="215.18741"
+     inkscape:cy="17.903593"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -197,14 +197,14 @@
     <text
        style="font-size:2.64583px;font-family:monospace;-inkscape-font-specification:'monospace, Normal';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
-       id="text1-7"
-       y="184.64726"
-       x="-3.6205399"><tspan
+       id="text1-4"
+       y="184.37816"
+       x="8.1656408"><tspan
          sodipodi:role="line"
-         id="tspan1-0"
-         x="-3.6205399"
-         y="184.64726"
-         style="stroke-width:0.264583">$\log_{10}(f(x_k) - f_{\text{opt}})$</tspan></text>
+         id="tspan1-9"
+         x="8.1656408"
+         y="184.37816"
+         style="stroke-width:0.264583">$\log_{10} \frac{f(\mathbf{x_k})-f_{\text{opt}}}{f_{\text{opt}}}$ </tspan></text>
     <text
        style="font-size:2.64583px;font-family:monospace;-inkscape-font-specification:'monospace, Normal';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"

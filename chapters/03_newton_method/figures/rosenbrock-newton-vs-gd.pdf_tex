@@ -1,0 +1,9 @@
+%% Minimal wrapper for \incfig{rosenbrock-newton-vs-gd}
+\begingroup%
+  \makeatletter%
+  \ifx\svgwidth\undefined%
+    \def\svgwidth{\columnwidth}%
+  \fi%
+  \makeatother%
+  \includegraphics[width=\svgwidth]{rosenbrock-newton-vs-gd.pdf}%
+\endgroup%
