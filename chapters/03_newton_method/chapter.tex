@@ -146,25 +146,26 @@ $\mathbf{P}^{\top}\mathbf{A}\mathbf{P}=\mathbf{L}\mathbf{D}\mathbf{L}^{\top}$
 for a symmetric matrix costs
 $\approx \frac{n^3}{3}$ flops (the same order as Cholesky), with a slightly larger constant due to
 pivoting and permutations.
-\subsubsection{Inertia and definiteness.} The block structure of $\mathbf{D}$ encodes 
-the inertia of $\mathbf{A}$, i.e., the numbers of positive, negative, and zero eigenvalues. 
-Concretely, each $1\times 1$ block contributes according to the sign of its scalar entry, 
-and each $2\times 2$ block contributes according to the signs of its two eigenvalues; 
-summing these contributions over all blocks yields the inertia of $\mathbf{A}$.
-
+\subsubsection{Inertia and definiteness.}
+The block structure of $\mathbf{D}$ encodes the inertia of $\mathbf{A}$, i.e.,
+the numbers of positive, negative, and zero eigenvalues.
+Concretely, each $1\times 1$ block contributes according to the sign of its
+scalar entry, while each $2\times 2$ block in $\mathbf{D}$ is indefinite and
+therefore contributes one positive and one negative eigenvalue. 
 
 
 \subsection{LU factorization}
 \label{sec:ch3-lu}
 For a general (not necessarily symmetric) matrix
-$\mathbf{A}\in\mathbb{R}^{m\times n}$ with $m\ge n$, we can use an LU factorization
+$\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. We can use an LU factorization
 \[
   \mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U},
 \]
 where $\mathbf{P}\in\mathbb{R}^{m\times m}$ permutes the rows of $\mathbf{A}$,
-$\mathbf{L}\in\mathbb{R}^{m\times n}$ is \emph{unit lower trapezoidal}
-($L_{ii}=1$ for $i=1,\dots,n$), and $\mathbf{U}\in\mathbb{R}^{n\times n}$ is
-upper triangular. In the square case $m=n$, the cost of this factorization is
+$\mathbf{L}\in\mathbb{R}^{m\times r}$ is \emph{unit lower trapezoidal}
+($L_{ii}=1$ for $i=1,\dots,r$), and $\mathbf{U}\in\mathbb{R}^{r\times n}$ is
+upper trapezoidal (upper triangular when $m\ge n$). In the square case $m=n$,
+the cost of this factorization is
 $\approx \frac{2}{3}n^{3}$ flops.
 
 If $m=n$, solving $\mathbf{A}\mathbf{x}=\mathbf{b}$ reduces to
@@ -178,15 +179,20 @@ overdetermined, and least-squares problems are better handled via QR
 
 \subsection{QR factorization and least squares}
 \label{sec:ch3-qr}
-For $\mathbf{A}\in\mathbb{R}^{m\times n}$, QR factorization writes as
+For $\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. A (possibly
+pivoted) QR factorization can be written as
 \[
   \mathbf{A}\mathbf{P}=\mathbf{Q}\mathbf{R},
 \]
 where $\mathbf{Q}\in\mathbb{R}^{m\times m}$ is orthogonal
-($\mathbf{Q}^{-1}=\mathbf{Q}^\top$) and $\mathbf{R}\in\mathbb{R}^{m\times n}$
-is upper trapezoidal. For a square $n\times n$ matrix, QR costs about
-$\frac{4}{3}n^3$ flops, which is why it is usually not the first choice for
-solving \emph{square} systems (LU is cheaper).
+($\mathbf{Q}^{-1}=\mathbf{Q}^\top$), $\mathbf{P}\in\mathbb{R}^{n\times n}$ is a
+column permutation, and $\mathbf{R}\in\mathbb{R}^{m\times n}$ is upper
+trapezoidal, with the leading $r\times n$ block containing all potentially
+nonzero rows. 
+
+For a square $n\times n$ matrix, QR costs about $\frac{4}{3}n^3$ flops, which
+is why it is usually not the first choice for solving \emph{square} systems (LU
+is cheaper).
 
 \subsubsection{Least squares via QR.}
 For $m>n$, QR is particularly useful for
@@ -207,9 +213,9 @@ and solve for $\mathbf{y}$.}
   \qquad
   \mathbf{Q}=[\mathbf{Q}_1\ \mathbf{Q}_2],
 \]
-where $\mathbf{Q}$ is orthogonal, $\mathbf{Q}_1\in\mathbb{R}^{m\times n}$ has
-orthonormal columns spanning $\operatorname{col}(\mathbf{A})$, and
-$\mathbf{R}_1\in\mathbb{R}^{n\times n}$ is upper triangular.
+where $\mathbf{Q}$ is orthogonal, $\mathbf{Q}_1\in\mathbb{R}^{m\times n}$,
+$\mathbf{Q}_2\in\mathbb{R}^{m\times (m-n)}$, and
+$\mathbf{R}_1\in\mathbb{R}^{n\times n}$.
 Now use that orthogonal maps preserve Euclidean norms: for any $\mathbf{x}$,
 \[
   \|\mathbf{A}\mathbf{x}-\mathbf{b}\|
@@ -270,6 +276,22 @@ The asymptotic complexities above hide an important practical point:
   in memory, so one needs large-scale methods that avoid forming and
   factorizing the Hessian explicitly.
 \end{itemize}
+To visualize the impact of these constants in practice,
+\Cref{fig:ch3-factorization-costs} shows a small timing benchmark for
+standard dense factorizations as a function of $n$.
+\begin{figure}[ht]
+    \centering
+    \incfig{factorization-cost-vs-n}
+    \caption{Measured runtime (seconds, log scale) for dense $n\times n$
+    factorizations (Cholesky, LDL, LU, QR, and symmetric eigendecomposition)
+    computed by standard LAPACK routines on a simple symmetric
+    positive definite Toeplitz ``kernel'' matrix
+    $A_{ij}=\exp(-|i-j|/\ell)+\varepsilon\,\delta_{ij}$ (fixed $\ell$ and small
+    $\varepsilon>0$). Absolute times depend on hardware, but the plot
+    illustrates how different constant factors in the $O(n^3)$ complexity
+    translate into noticeable runtime differences.}
+    \label{fig:ch3-factorization-costs}
+\end{figure}
 
 \section{Newton's method from a quadratic model}
 \label{sec:ch3-newton}
@@ -317,11 +339,19 @@ descent direction:
 	whenever $\nabla f(\mathbf{x}_k)\neq 0$. This is a reason why we require
   $\mathbf{B}_k \succ 0$ in \cref{eq:ch3-quadratic-model}.
 
-Away from the optimum in nonconvex problems, the Hessian may not be positive definite, and
-then the Newton direction may fail to be a descent direction. This is why
-practical Newton-type methods often use either line search (choose
-$\alpha_k$) or a corrected Hessian (choose $\mathbf{B}_k\succ 0$); see
-\Cref{sec:ch3-global-conv,sec:ch3-hessian-corrections}.
+Away from the optimum in nonconvex problems, the Hessian may not be positive
+definite, and then the raw Newton direction may fail to be a descent direction.
+In that case, line search alone cannot help: if
+$\nabla f(\mathbf{x}_k)^\top\mathbf{d}_k\ge 0$, then the directional derivative
+at $\alpha=0$ is nonnegative and $f(\mathbf{x}_k+\alpha\mathbf{d}_k)$ does not
+decrease for any sufficiently small $\alpha>0$.
+Therefore, practical Newton-type methods typically do \emph{both}:
+\begin{itemize}
+  \item enforce a descent direction by using a corrected Hessian
+  ($\mathbf{B}_k\succ 0$);
+  \item use line search to obtain global convergence guarantees.
+\end{itemize}
+See \Cref{sec:ch3-global-conv,sec:ch3-hessian-corrections}.
 
 \subsection{Newton on quadratic objectives}
 If $f$ is a strictly convex quadratic
