@@ -160,7 +160,7 @@ solve costs $O(n^2)$.
 \subsection{LDL\texorpdfstring{$^\top$}{T} factorization}
 \label{sec:ch3-ldl}
 For a general symmetric matrix $\mathbf{A}=\mathbf{A}^\top$ (not necessarily
-positive definite), one often uses a modified LDL factorization (see 
+positive definite), one often uses a modified \emph{LDL factorization} (see 
 \cref{fig:ldl_factorization}):
 \[
   \mathbf{P}^\top \mathbf{A}\mathbf{P}=\mathbf{L}\mathbf{D}\mathbf{L}^\top,
@@ -219,7 +219,9 @@ $2\times 2$ blocks.
     \node[right] at (11.5,1) {$n$};
     \node[below] at (10.5,0) {$n$};
 \end{tikzpicture}
-\caption{The $\mathbf{LDL}^\top$ factorization for a general symmetric matrix. The factors include unit triangular matrices (indicated by the $1$ on the diagonal) and a block diagonal matrix $\mathbf{D}$ containing $1\times 1$ and $2\times 2$ blocks.}
+\caption{The $\mathbf{LDL}^\top$ factorization for a general symmetric matrix. 
+The factors include unit triangular matrices (indicated by the $1$ on the diagonal) 
+and a block diagonal matrix $\mathbf{D}$ containing $1\times 1$ and $2\times 2$ blocks.}
 \label{fig:ldl_factorization}
 \end{figure}
 
@@ -250,7 +252,7 @@ therefore contributes one positive and one negative eigenvalue.
 \subsection{LU factorization}
 \label{sec:ch3-lu}
 For a general (not necessarily symmetric) matrix
-$\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. We can use an LU factorization 
+$\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. We can use an \emph{LU factorization}
 (see \cref{fig:lu_factorization})
 \[
   \mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U},
@@ -296,10 +298,12 @@ upper trapezoidal.
     \node[right] at (8.5, 1.75) {$r$};
     \node[below] at (7.25, 1) {$n$};
 \end{tikzpicture}
-\caption{The LU factorization of a general $m \times n$ matrix $\mathbf{A}$ (with row permutations $\mathbf{P}$). It produces a unit lower trapezoidal matrix $\mathbf{L}$ and an upper trapezoidal matrix $\mathbf{U}$.}
+\caption{The LU factorization of a general $m \times n$ matrix $\mathbf{A}$ (with row permutations 
+$\mathbf{P}$). It produces a unit lower trapezoidal matrix $\mathbf{L}$ and an upper 
+trapezoidal matrix $\mathbf{U}$.}
 \label{fig:lu_factorization}
 \end{figure}
-In the square case $m=n$,
+\noindent In the square case $m=n$,
 the cost of this factorization is
 $\approx \frac{2}{3}n^{3}$ flops.
 
@@ -315,7 +319,7 @@ overdetermined, and least-squares problems are better handled via QR
 \subsection{QR factorization and least squares}
 \label{sec:ch3-qr}
 For $\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. A 
-QR factorization (see \cref{fig:qr_factorization}) can be written as
+\emph{QR factorization} (see \cref{fig:qr_factorization}) can be written as
 \[
   \mathbf{A}\mathbf{P}=\mathbf{Q}\mathbf{R},
 \]
@@ -357,7 +361,9 @@ trapezoidal.
     \node[right] at (8.5, 1.75) {$r$};
     \node[below] at (7.25, 1) {$n$};
 \end{tikzpicture}
-\caption{The reduced (economy) QR factorization. The matrix $\mathbf{A}$ is factored into an $m \times r$ matrix $\mathbf{Q}$ with orthonormal columns, and an $r \times n$ upper trapezoidal matrix $\mathbf{R}$.}
+\caption{QR factorization. 
+The matrix $\mathbf{A}$ is factored into an $m \times r$ matrix $\mathbf{Q}$ with 
+orthonormal columns, and an $r \times n$ upper trapezoidal matrix $\mathbf{R}$.}
 \label{fig:qr_factorization}
 \end{figure}
 
@@ -422,7 +428,7 @@ stable.
 
 \subsection{Spectral decomposition and SVD}
 If $\mathbf{A}=\mathbf{A}^\top$, then it admits an eigenvalue decomposition
-(spectral decomposition)
+(\emph{spectral decomposition})
 \[
   \mathbf{A}=\mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top,
 \]
@@ -430,7 +436,7 @@ where $\mathbf{Q}$ is orthogonal and
 $\boldsymbol{\Lambda}=\operatorname{diag}(\lambda_1,\dots,\lambda_n)$ contains
 the eigenvalues. This decomposition is extremely expensive.
 
-For rectangular matrices, the analogue is the singular value decomposition
+For rectangular matrices, the analogue is the \emph{singular value decomposition}
 (SVD (see \cref{fig:svd_factorization})). In many optimization pipelines, eigen/SVD computations are therefore
 ``methods of last resort'' for large dimensions.
 
@@ -477,7 +483,7 @@ For rectangular matrices, the analogue is the singular value decomposition
     \node[below] at (9.25, 1) {$n$};
     \node[above=0.1cm] at (9.25, 2.5) {$\mathbf{V}^\top \mathbf{V} = \mathbf{I}_r$};
 \end{tikzpicture}
-\caption{The reduced Singular Value Decomposition (SVD) of a general $m \times n$ matrix $\mathbf{A}$, factoring it into an $m \times r$ orthogonal matrix $\mathbf{U}$, an $r \times r$ diagonal matrix $\mathbf{\Sigma}$, and an $r \times n$ orthogonal matrix $\mathbf{V}^\top$. For symmetric matrices ($\mathbf{A}=\mathbf{A}^\top$), this structure is analogous to the spectral (eigenvalue) decomposition $\mathbf{A}=\mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top$, where $\mathbf{U}=\mathbf{V}=\mathbf{Q}$ and the diagonal matrix contains the eigenvalues.}
+\caption{The Singular Value Decomposition (SVD) of a general $m \times n$ matrix $\mathbf{A}$, factoring it into an $m \times r$ orthogonal matrix $\mathbf{U}$, an $r \times r$ diagonal matrix $\mathbf{\Sigma}$, and an $r \times n$ orthogonal matrix $\mathbf{V}^\top$. For symmetric matrices ($\mathbf{A}=\mathbf{A}^\top$), this structure is analogous to the spectral (eigenvalue) decomposition $\mathbf{A}=\mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top$, where $\mathbf{U}=\mathbf{V}=\mathbf{Q}$ and the diagonal matrix contains the eigenvalues.}
 \label{fig:svd_factorization}
 \end{figure}
 
