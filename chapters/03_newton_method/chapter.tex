@@ -108,7 +108,45 @@ triangular matrix $\mathbf{L}$ with positive diagonal such that
 \[
   \mathbf{A}=\mathbf{L}\mathbf{L}^\top.
 \]
-This is the \emph{Cholesky factorization}. It can also be used as a practical
+This is the \emph{Cholesky factorization} (see \cref{fig:cholesky_factorization}). 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+    
+    % Properties above
+    \node at (1, 2.4) {$\mathbf{A} = \mathbf{A}^\top \succ 0$};
+
+    % A (n x n, Symmetric Positive Definite)
+    \draw[thick, fill=blue!10] (0,0) rectangle (2,2);
+    \node at (1,1) {$\mathbf{A}$};
+    \node[left] at (0,1) {$n$};
+    \node[below] at (1,0) {$n$};
+
+    \node at (2.75,1) {$=$};
+
+    % L (n x n, Lower Triangular)
+    \draw[thick, fill=white] (3.5,0) rectangle (5.5,2); 
+    \fill[green!20] (3.5,2) -- (3.5,0) -- (5.5,0) -- cycle;
+    \draw[thick] (3.5,0) rectangle (5.5,2); 
+    \draw[thick, blue] (3.5,2) -- (5.5,0) node[midway, sloped, above=-1pt] {\tiny $L_{ii} > 0$};
+    \node at (4.1, 0.6) {$\mathbf{L}$};
+    \node[left] at (3.5,1) {$n$};
+    \node[below] at (4.5,0) {$n$};
+
+    % L^T (n x n, Upper Triangular)
+    \draw[thick, fill=white] (6.5,0) rectangle (8.5,2);
+    \fill[green!20] (6.5,2) -- (8.5,2) -- (8.5,0) -- cycle;
+    \draw[thick] (6.5,0) rectangle (8.5,2); 
+    \draw[thick, blue] (6.5,2) -- (8.5,0) node[midway, sloped, below=-1pt] {\tiny $L_{ii} > 0$};
+    \node at (7.9, 1.4) {$\mathbf{L}^\top$};
+    \node[right] at (8.5,1) {$n$};
+    \node[below] at (7.5,0) {$n$};
+\end{tikzpicture}
+\caption{Visual representation of the Cholesky factorization. A symmetric positive definite matrix $\mathbf{A}$ is decomposed into a lower triangular matrix $\mathbf{L}$ and its transpose $\mathbf{L}^\top$, both with strictly positive diagonals.}
+\label{fig:cholesky_factorization}
+\end{figure}
+
+It can also be used as a practical
 test of positive definiteness: if the factorization algorithm runs to
 completion with all $L_{ii}$ well-defined\footnote{i.e., not NaN} and positive,
 then $\mathbf{A}$ is positive definite.
@@ -122,13 +160,68 @@ solve costs $O(n^2)$.
 \subsection{LDL\texorpdfstring{$^\top$}{T} factorization}
 \label{sec:ch3-ldl}
 For a general symmetric matrix $\mathbf{A}=\mathbf{A}^\top$ (not necessarily
-positive definite), one often uses a modified LDL factorization:
+positive definite), one often uses a modified LDL factorization (see 
+\cref{fig:ldl_factorization}):
 \[
   \mathbf{P}^\top \mathbf{A}\mathbf{P}=\mathbf{L}\mathbf{D}\mathbf{L}^\top,
 \]
 where $\mathbf{P}$ is a permutation matrix, $\mathbf{L}$ is unit lower
 triangular ($L_{ii}=1$), and $\mathbf{D}$ is block diagonal with $1\times 1$ and
 $2\times 2$ blocks.
+% ========================================================
+% 2. LDL^T FACTORIZATION
+% ========================================================
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+    
+    % Properties above
+    \node at (1, 2.4) {$\mathbf{A} = \mathbf{A}^\top$};
+
+    % P^T A P (n x n)
+    \draw[thick, fill=blue!10] (0,0) rectangle (2,2);
+    \node at (1,1) {$\mathbf{P}^\top \mathbf{A} \mathbf{P}$};
+    \node[left] at (0,1) {$n$};
+    \node[below] at (1,0) {$n$};
+
+    \node at (2.75,1) {$=$};
+
+    % L (n x n, Unit Lower Triangular)
+    \draw[thick, fill=white] (3.5,0) rectangle (5.5,2);
+    \fill[green!20] (3.5,2) -- (3.5,0) -- (5.5,0) -- cycle;
+    \draw[thick] (3.5,0) rectangle (5.5,2);
+    \draw[thick, red] (3.5,2) -- (5.5,0) node[midway, sloped, above=-1pt] {\tiny $1$};
+    \node at (4.1, 0.6) {$\mathbf{L}$};
+    \node[left] at (3.5,1) {$n$};
+    \node[below] at (4.5,0) {$n$};
+
+    % D (n x n, Block Diagonal)
+    \draw[thick, fill=white] (6.5,0) rectangle (8.5,2);
+    
+    % Precisely scaled blocks: 1x1 is 0.35 units, 2x2 is 0.65 units (Total = 2.0 units)
+    \draw[thick, fill=orange!50] (6.5,2.0) rectangle (6.85,1.65);  % 1x1 block
+    \draw[thick, fill=orange!50] (6.85,1.65) rectangle (7.5,1.0);  % 2x2 block
+    \draw[thick, fill=orange!50] (7.5,1.0) rectangle (7.85,0.65);  % 1x1 block
+    \draw[thick, fill=orange!50] (7.85,0.65) rectangle (8.5,0.0);  % 2x2 block
+    
+    \node[above=0.1cm] at (7.5,2) {Block Diag};
+    % D placed neatly in the bottom-left white (zero) area
+    \node at (6.9, 0.4) {\large $\mathbf{D}$}; 
+    \node[below] at (7.5,0) {$n$};
+
+    % L^T (n x n, Unit Upper Triangular)
+    \draw[thick, fill=white] (9.5,0) rectangle (11.5,2);
+    \fill[green!20] (9.5,2) -- (11.5,2) -- (11.5,0) -- cycle;
+    \draw[thick] (9.5,0) rectangle (11.5,2);
+    \draw[thick, red] (9.5,2) -- (11.5,0) node[midway, sloped, below=-1pt] {\tiny $1$};
+    \node at (10.9, 1.4) {$\mathbf{L}^\top$};
+    \node[right] at (11.5,1) {$n$};
+    \node[below] at (10.5,0) {$n$};
+\end{tikzpicture}
+\caption{The $\mathbf{LDL}^\top$ factorization for a general symmetric matrix. The factors include unit triangular matrices (indicated by the $1$ on the diagonal) and a block diagonal matrix $\mathbf{D}$ containing $1\times 1$ and $2\times 2$ blocks.}
+\label{fig:ldl_factorization}
+\end{figure}
 
 To solve $\mathbf{A}\mathbf{x}=\mathbf{b}$ using the factorization, write
 \[
@@ -157,14 +250,56 @@ therefore contributes one positive and one negative eigenvalue.
 \subsection{LU factorization}
 \label{sec:ch3-lu}
 For a general (not necessarily symmetric) matrix
-$\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. We can use an LU factorization
+$\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. We can use an LU factorization 
+(see \cref{fig:lu_factorization})
 \[
   \mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U},
 \]
 where $\mathbf{P}\in\mathbb{R}^{m\times m}$ permutes the rows of $\mathbf{A}$,
 $\mathbf{L}\in\mathbb{R}^{m\times r}$ is \emph{unit lower trapezoidal}
 ($L_{ii}=1$ for $i=1,\dots,r$), and $\mathbf{U}\in\mathbb{R}^{r\times n}$ is
-upper trapezoidal (upper triangular when $m\ge n$). In the square case $m=n$,
+upper trapezoidal. 
+% ========================================================
+% 3. LU FACTORIZATION (General m x n)
+% ========================================================
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+    
+    % Properties above
+    \node at (1.25, 2.9) {$r = \min(m,n)$};
+
+    % PA (m x n)
+    \draw[thick, fill=blue!10] (0,0) rectangle (2.5,2.5);
+    \node at (1.25,1.25) {$\mathbf{P}\mathbf{A}$};
+    \node[left] at (0, 1.25) {$m$};
+    \node[below] at (1.25, 0) {$n$};
+
+    \node at (3.25,1.25) {$=$}; 
+
+    % L (m x r, lower trapezoidal)
+    \draw[thick, fill=white] (4,0) rectangle (5.5,2.5); 
+    \fill[green!20] (4,2.5) -- (4,0) -- (5.5,0) -- (5.5,1) -- cycle;
+    \draw[thick] (4,0) rectangle (5.5,2.5);
+    \draw[thick, red] (4,2.5) -- (5.5,1) node[midway, sloped, above=-1pt] {\tiny $1$};
+    \node at (4.5, 0.75) {$\mathbf{L}$};
+    \node[left] at (4, 1.25) {$m$}; 
+    \node[below] at (4.75, 0) {$r$};
+
+    % U (r x n, upper trapezoidal)
+    \draw[thick, fill=white] (6,1) rectangle (8.5,2.5); 
+    \fill[yellow!30] (6,2.5) -- (8.5,2.5) -- (8.5,1) -- (7.5,1) -- cycle;
+    \draw[thick] (6,1) rectangle (8.5,2.5);
+    \draw[thick] (6,2.5) -- (7.5,1);
+    \node at (7.75, 2.0) {$\mathbf{U}$};
+    \node[right] at (8.5, 1.75) {$r$};
+    \node[below] at (7.25, 1) {$n$};
+\end{tikzpicture}
+\caption{The LU factorization of a general $m \times n$ matrix $\mathbf{A}$ (with row permutations $\mathbf{P}$). It produces a unit lower trapezoidal matrix $\mathbf{L}$ and an upper trapezoidal matrix $\mathbf{U}$.}
+\label{fig:lu_factorization}
+\end{figure}
+In the square case $m=n$,
 the cost of this factorization is
 $\approx \frac{2}{3}n^{3}$ flops.
 
@@ -179,16 +314,52 @@ overdetermined, and least-squares problems are better handled via QR
 
 \subsection{QR factorization and least squares}
 \label{sec:ch3-qr}
-For $\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. A (possibly
-pivoted) QR factorization can be written as
+For $\mathbf{A}\in\mathbb{R}^{m\times n}$, let $r:=\min(m,n)$. A 
+QR factorization (see \cref{fig:qr_factorization}) can be written as
 \[
   \mathbf{A}\mathbf{P}=\mathbf{Q}\mathbf{R},
 \]
-where $\mathbf{Q}\in\mathbb{R}^{m\times m}$ is orthogonal
-($\mathbf{Q}^{-1}=\mathbf{Q}^\top$), $\mathbf{P}\in\mathbb{R}^{n\times n}$ is a
-column permutation, and $\mathbf{R}\in\mathbb{R}^{m\times n}$ is upper
-trapezoidal, with the leading $r\times n$ block containing all potentially
-nonzero rows. 
+where $\mathbf{Q}\in\mathbb{R}^{m\times r}$ is orthogonal
+($\mathbf{Q}^{\top} \mathbf{Q} =\mathbf{I}_r$), $\mathbf{P}\in\mathbb{R}^{n\times n}$ is a
+column permutation, and $\mathbf{R}\in\mathbb{R}^{r\times n}$ is upper
+trapezoidal. 
+% ========================================================
+% 4. QR FACTORIZATION (Reduced / Economy)
+% ========================================================
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+    
+    % Properties above
+    \node at (1.25, 2.9) {$r = \min(m,n)$};
+
+    % AP (m x n)
+    \draw[thick, fill=blue!10] (0,0) rectangle (2.5,2.5);
+    \node at (1.25,1.25) {$\mathbf{A}\mathbf{P}$};
+    \node[left] at (0, 1.25) {$m$};
+    \node[below] at (1.25, 0) {$n$};
+
+    \node at (3.25,1.25) {$=$}; 
+
+    % Q (m x r, Orthogonal)
+    \draw[thick, fill=purple!20] (4,0) rectangle (5.5,2.5);
+    \node at (4.75, 1.25) {$\mathbf{Q}$};
+    \node[left] at (4, 1.25) {$m$}; 
+    \node[below] at (4.75, 0) {$r$};
+    \node[above=0.1cm] at (4.75, 2.5) {$\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}_r$};
+
+    % R (r x n, upper trapezoidal)
+    \draw[thick, fill=white] (6,1) rectangle (8.5,2.5); 
+    \fill[yellow!30] (6,2.5) -- (8.5,2.5) -- (8.5,1) -- (7.5,1) -- cycle; 
+    \draw[thick] (6,1) rectangle (8.5,2.5);
+    \draw[thick] (6,2.5) -- (7.5,1);
+    \node at (7.75, 2.0) {$\mathbf{R}$};
+    \node[right] at (8.5, 1.75) {$r$};
+    \node[below] at (7.25, 1) {$n$};
+\end{tikzpicture}
+\caption{The reduced (economy) QR factorization. The matrix $\mathbf{A}$ is factored into an $m \times r$ matrix $\mathbf{Q}$ with orthonormal columns, and an $r \times n$ upper trapezoidal matrix $\mathbf{R}$.}
+\label{fig:qr_factorization}
+\end{figure}
 
 For a square $n\times n$ matrix, QR costs about $\frac{4}{3}n^3$ flops, which
 is why it is usually not the first choice for solving \emph{square} systems (LU
@@ -260,8 +431,55 @@ $\boldsymbol{\Lambda}=\operatorname{diag}(\lambda_1,\dots,\lambda_n)$ contains
 the eigenvalues. This decomposition is extremely expensive.
 
 For rectangular matrices, the analogue is the singular value decomposition
-(SVD). In many optimization pipelines, eigen/SVD computations are therefore
+(SVD (see \cref{fig:svd_factorization})). In many optimization pipelines, eigen/SVD computations are therefore
 ``methods of last resort'' for large dimensions.
+
+% ========================================================
+% 5. SINGULAR VALUE DECOMPOSITION (Reduced) & SPECTRAL
+% ========================================================
+% ========================================================
+% 5. SINGULAR VALUE DECOMPOSITION (Reduced) & SPECTRAL
+% ========================================================
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+    
+    % Properties above
+    \node at (1.25, 2.9) {$r = \min(m,n)$};
+
+    % A (m x n)
+    \draw[thick, fill=blue!10] (0,0) rectangle (2.5,2.5);
+    \node at (1.25,1.25) {$\mathbf{A}$};
+    \node[left] at (0, 1.25) {$m$};
+    \node[below] at (1.25, 0) {$n$};
+
+    % Perfectly centered equal sign matching LU/QR spacing
+    \node at (3.25,1.25) {$=$}; 
+
+    % U (m x r, Orthogonal Columns)
+    \draw[thick, fill=purple!20] (4,0) rectangle (5.5,2.5);
+    \node at (4.75, 1.25) {$\mathbf{U}$};
+    \node[left] at (4, 1.25) {$m$}; 
+    \node[below] at (4.75, 0) {$r$};
+    \node[above=0.1cm] at (4.75, 2.5) {$\mathbf{U}^\top \mathbf{U} = \mathbf{I}_r$};
+
+    % Sigma (r x r, Diagonal) - Spaced exactly 0.5 units from U
+    \draw[thick, fill=white] (6,1) rectangle (7.5,2.5); 
+    \draw[thick, blue] (6,2.5) -- (7.5,1) node[midway, sloped, above=-1pt] {\tiny $\sigma_i \ge 0$};
+    \node[anchor=north east, xshift=-2pt, yshift=-2pt] at (7.5,2.5) {$\mathbf{\Sigma}$};
+    \node[below] at (6.75, 1) {$r$};
+    \node[above=0.1cm] at (6.75, 2.5) {Diagonal};
+
+    % V^T (r x n, Orthogonal Rows) - Spaced exactly 0.5 units from Sigma
+    \draw[thick, fill=purple!20] (8,1) rectangle (10.5,2.5);
+    \node at (9.25, 1.75) {$\mathbf{V}^\top$};
+    \node[right] at (10.5, 1.75) {$r$};
+    \node[below] at (9.25, 1) {$n$};
+    \node[above=0.1cm] at (9.25, 2.5) {$\mathbf{V}^\top \mathbf{V} = \mathbf{I}_r$};
+\end{tikzpicture}
+\caption{The reduced Singular Value Decomposition (SVD) of a general $m \times n$ matrix $\mathbf{A}$, factoring it into an $m \times r$ orthogonal matrix $\mathbf{U}$, an $r \times r$ diagonal matrix $\mathbf{\Sigma}$, and an $r \times n$ orthogonal matrix $\mathbf{V}^\top$. For symmetric matrices ($\mathbf{A}=\mathbf{A}^\top$), this structure is analogous to the spectral (eigenvalue) decomposition $\mathbf{A}=\mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top$, where $\mathbf{U}=\mathbf{V}=\mathbf{Q}$ and the diagonal matrix contains the eigenvalues.}
+\label{fig:svd_factorization}
+\end{figure}
 
 \subsection{Practical takeaway: small vs.\ large scale}
 \label{sec:ch3-linear-algebra-takeaway}
