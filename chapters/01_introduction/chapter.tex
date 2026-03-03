@@ -210,8 +210,10 @@ Unfortunately, Taylor expansions are useful only in a neighborhood of a point. T
 convergence of optimization algorithms, we therefore need to introduce common classes
 of functions whose defining properties hold globally rather than locally.
 \subsection{Convexity and strong convexity}
+\label{sec:ch1-convexity}
 
 \begin{definition}[Convex function (see \Cref{fig:kinds-of-convexity})]
+\label{def:ch1-convex-function}
 A function $f$ is convex if for all $\mathbf{x},\mathbf{y}$ and $\alpha\in[0,1]$,
 \[
   f(\alpha \mathbf{x}+(1-\alpha)\mathbf{y})
@@ -225,6 +227,7 @@ $-f$ is strictly convex).
 
 
 \begin{claim}[Differential criteria of convexity]
+\label{clm:ch1-diff-convexity}
 Let $f \in C^{1}$. Then $f$ is convex if and only if for all $\mathbf{x}, \mathbf{y}$,
 \[
 f(\mathbf{y}) \geq f(\mathbf{x})+\nabla f(\mathbf{x})^{\top}(\mathbf{y}-\mathbf{x}) .

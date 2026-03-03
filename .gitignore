@@ -28,7 +28,7 @@
 *.ist
 
 # ===== PDFs (обычно генерятся из .tex) =====
-main.pdf
+!main.pdf
 *.pdf
 
 # ===== Разрешим chapter/**/figures =====

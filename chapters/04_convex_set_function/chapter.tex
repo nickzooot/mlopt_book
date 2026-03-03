@@ -1,1 +1,594 @@
-\chapter{Conjugate Gradient method for solving linear systems, its convergence properties. Preconditioning. Non-linear CG.}
+\chapter{Convex sets and convex functions.}
+
+\graphicspath{{chapters/04_convex_set_function/figures}}
+\begin{abstract}
+Convexity is the structural assumption that turns many optimization problems
+from ``hard in principle'' into ``tractable in practice''. In this chapter we
+study: convex \emph{sets} and convex \emph{functions}.
+We focus on geometric intuition, standard examples, and
+closure properties (operations that preserve convexity) that let us build new
+convex objects from old ones.
+\end{abstract}
+
+% ---------------------------------------------------------------------------
+% Chapter 4 figures: a light "Tufte-ish" TikZ style (local to this chapter).
+% We avoid changing the global styles in main.tex, and instead use `ch4-*`
+% styles inside Chapter 4 figures.
+% ---------------------------------------------------------------------------
+\tikzset{
+  ch4-axis/.style={-latex, line width=0.45pt, draw=slate!90},
+  ch4-label/.style={font=\footnotesize, text=slate!95},
+  ch4-label-it/.style={font=\footnotesize\itshape, text=slate!95},
+  ch4-set/.style={draw=slate!85, fill=slate!6, fill opacity=0.75, line width=0.55pt},
+  ch4-fill/.style={fill=slate!6, fill opacity=0.75},
+  ch4-curve/.style={draw=deepblue, line width=0.85pt, line cap=round},
+  ch4-curve-soft/.style={draw=slate!85, line width=0.55pt, line cap=round},
+  ch4-curve-dash/.style={draw=slate!85, line width=0.55pt, dashed, line cap=round},
+  ch4-point/.style={draw=deepblue, fill=deepblue},
+}
+
+\section{Introduction}
+Convex sets and functions appear throughout optimization: constrained problems
+are built from convex feasible regions, and many machine-learning losses are
+convex (or nearly so) in the parameters. Later, when we introduce constrained
+optimization and projections, we will repeatedly rely on the basic facts
+collected here.
+
+\section{Convex sets}
+\label{sec:ch4-convex-sets}
+\subsection{Definition and geometric picture}
+\begin{definition}[Convex set]
+Let $U$ be a real vector space and let $\mathcal{Q}\subseteq U$.
+We say that $\mathcal{Q}$ is \emph{convex} if for all $\mathbf{x},\mathbf{y}\in\mathcal{Q}$
+and all $\lambda\in[0,1]$,
+\[
+  \lambda \mathbf{x}+(1-\lambda)\mathbf{y}\in\mathcal{Q}.
+\]
+\end{definition}
+
+Geometrically, convexity means that for any two points in the set, the whole
+line segment between them stays in the set (see \cref{fig:convex-and-nonconvex}).
+\begin{figure}[ht]
+    \centering
+    \incfig{convex-and-nonconvex}
+    \caption{A set is convex if it contains the entire segment between any two
+  of its point.}
+    \label{fig:convex-and-nonconvex}
+\end{figure}
+
+\subsection{Standard examples}
+\label{sec:ch4-examples-convex-sets}
+Many convex sets can be checked directly from the definition by ``plugging in''
+$\lambda \mathbf{x}+(1-\lambda)\mathbf{y}$.
+
+\begin{example}[Simple convex sets]
+\leavevmode
+\begin{itemize}
+  \item The empty set $\varnothing$ and any singleton $\{\mathbf{a}\}$ are convex.
+  \item $\{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{a_i}^{\top} \mathbf{x}\ \ 
+  [\,\le\, \mid\, =\, \mid\, \ge\, \mid\, <\, \mid\, >\,]\ \  b_i, i \in I\}$, where 
+  $I$ is uncountable, finite or countable set.
+  Special cases:
+  \begin{itemize}
+    \item Any polyhedron (finite intersection of halfspaces/hyperplanes) is convex:
+  \[
+    \{\mathbf{x}\in\mathbb{R}^n:\mathbf{A}\mathbf{x}\le \mathbf{b},\ \mathbf{C}\mathbf{x}=\mathbf{d}\}.
+  \]
+  \item The probability simplex is convex:
+  \[
+    \Delta_n:=\Bigl\{\mathbf{x}\in\mathbb{R}^n:\ \mathbf{x}\ge 0,\ \sum_{i=1}^n x_i=1\Bigr\}.
+  \]
+  \end{itemize}
+  
+\end{itemize}
+\end{example}
+
+\begin{example}[Balls]
+For a norm $\|\cdot\|$ on $\mathbb{R}^n$, the ball
+\[
+  \mathcal{B}_r(\mathbf{a}):=\{\mathbf{x}\in\mathbb{R}^n:\ \|\mathbf{x}-\mathbf{a}\|\le r\}
+\]
+is convex: if $\|\mathbf{x}-\mathbf{a}\|\le r$ and $\|\mathbf{y}-\mathbf{a}\|\le r$, then by the
+triangle inequality and homogeneity,
+\[
+  \|\lambda(\mathbf{x}-\mathbf{a})+(1-\lambda)(\mathbf{y}-\mathbf{a})\|
+  \le \lambda\|\mathbf{x}-\mathbf{a}\|+(1-\lambda)\|\mathbf{y}-\mathbf{a}\|\le r.
+\]
+\end{example}
+
+
+\begin{example}[Positive (semi)definite matrices are convex]
+Let $\mathbb{S}^n:=\{\mathbf{A}\in\mathbb{R}^{n\times n}:\mathbf{A}=\mathbf{A}^\top\}$,
+and define the cones
+\[
+  \mathbb{S}^n_{++}:=\{\mathbf{A}\in\mathbb{S}^n:\mathbf{A}\succ 0\},
+  \qquad
+  \mathbb{S}^n_{+}:=\{\mathbf{A}\in\mathbb{S}^n:\mathbf{A}\succeq 0\}.
+\]
+Both sets are convex. For example, if $\mathbf{A},\mathbf{B}\in\mathbb{S}^n_{++}$ and $\lambda\in[0,1]$, then for any
+nonzero $\mathbf{x}$,
+\[
+  \mathbf{x}^\top(\lambda\mathbf{A}+(1-\lambda)\mathbf{B})\mathbf{x}
+  =\lambda\,\mathbf{x}^\top\mathbf{A}\mathbf{x}+(1-\lambda)\,\mathbf{x}^\top\mathbf{B}\mathbf{x}>0,
+\]
+so $\lambda\mathbf{A}+(1-\lambda)\mathbf{B}\in\mathbb{S}^n_{++}$. The same argument with $\ge 0$ shows convexity of
+$\mathbb{S}^n_{+}$.
+\end{example}
+
+\subsection{Operations that preserve convexity of sets}
+\label{sec:ch4-set-operations}
+Convex sets are closed under several basic constructions. These ``closure rules'' are practical:
+they let us recognize convex feasible regions without going back to the definition every time.
+
+\begin{claim}[Intersection]
+If $\{\mathcal{Q}_i\}_{i\in I}$ is a family of convex sets, then $\bigcap_{i\in I}\mathcal{Q}_i$ is convex.
+\end{claim}
+\begin{proof}
+Take $\mathbf{x},\mathbf{y}\in\bigcap_{i\in I}\mathcal{Q}_i$. Then $\mathbf{x},\mathbf{y}\in\mathcal{Q}_i$ for all
+$i$, hence $\lambda\mathbf{x}+(1-\lambda)\mathbf{y}\in\mathcal{Q}_i$ for all $i$ by convexity of each $\mathcal{Q}_i$.
+Therefore $\lambda\mathbf{x}+(1-\lambda)\mathbf{y}\in\bigcap_{i\in I}\mathcal{Q}_i$.
+\end{proof}
+
+\begin{claim}[Affine images and preimages]
+\label{clm:affine-images-preimages}
+Let $A:U\to V$ be an affine map, $A(\mathbf{x})=\mathbf{L}\mathbf{x}+\mathbf{b}$.
+\begin{itemize}
+  \item If $\mathcal{Q}\subseteq U$ is convex, then its image $A(\mathcal{Q}):=\{A(\mathbf{x}):\mathbf{x}\in\mathcal{Q}\}\subseteq V$
+  is convex.
+  \item If $\mathcal{S}\subseteq V$ is convex, then its preimage $A^{-1}(\mathcal{S}):=\{\mathbf{x}\in U:A(\mathbf{x})\in\mathcal{S}\}\subseteq U$
+  is convex.
+\end{itemize}
+\end{claim}
+\begin{proof}
+For the image: take $\mathbf{u}=A(\mathbf{x})$ and $\mathbf{v}=A(\mathbf{y})$ with $\mathbf{x},\mathbf{y}\in\mathcal{Q}$.
+Then
+\[
+  \lambda \mathbf{u}+(1-\lambda)\mathbf{v}
+  =\lambda(\mathbf{L}\mathbf{x}+\mathbf{b})+(1-\lambda)(\mathbf{L}\mathbf{y}+\mathbf{b})
+  =\mathbf{L}(\lambda\mathbf{x}+(1-\lambda)\mathbf{y})+\mathbf{b}.
+\]
+Since $\lambda\mathbf{x}+(1-\lambda)\mathbf{y}\in\mathcal{Q}$, the right-hand side lies in $A(\mathcal{Q})$.
+
+For the preimage: if $A(\mathbf{x}),A(\mathbf{y})\in\mathcal{S}$, then by convexity of $\mathcal{S}$ and affinity of $A$,
+\[
+  A(\lambda\mathbf{x}+(1-\lambda)\mathbf{y})=\lambda A(\mathbf{x})+(1-\lambda)A(\mathbf{y})\in\mathcal{S}.
+\]
+Hence $\lambda\mathbf{x}+(1-\lambda)\mathbf{y}\in A^{-1}(\mathcal{S})$.
+\end{proof}
+
+\begin{claim}[Cartesian products]
+If $\mathcal{Q}_1\subseteq U_1$ and $\mathcal{Q}_2\subseteq U_2$ are convex, then $\mathcal{Q}_1\times \mathcal{Q}_2$ is convex in
+$U_1\times U_2$.
+\end{claim}
+\begin{proof}
+If $(\mathbf{x}_1,\mathbf{x}_2),(\mathbf{y}_1,\mathbf{y}_2)\in\mathcal{Q}_1\times\mathcal{Q}_2$, then
+\[
+  \lambda(\mathbf{x}_1,\mathbf{x}_2)+(1-\lambda)(\mathbf{y}_1,\mathbf{y}_2)
+  =(\lambda\mathbf{x}_1+(1-\lambda)\mathbf{y}_1,\ \lambda\mathbf{x}_2+(1-\lambda)\mathbf{y}_2),
+\]
+and each component lies in the corresponding set by convexity.
+\end{proof}
+
+\begin{example}[Intersections, products, and affine preimages]
+\leavevmode
+\begin{itemize}
+  \item The set
+  \[
+    \Bigl\{\mathbf{x}\in\mathbb{R}^2:\ x_1^2+x_2^2\le 1,\ x_2\ge 0\Bigr\}
+  \]
+  is convex because it is an intersection of two convex sets: the Euclidean unit ball and a halfspace.
+  \item The set
+  \[
+    \Bigl\{\mathbf{x}\in\mathbb{R}^3:\ x_1^2+x_2^2\le 1,\ |x_3|\le 1\Bigr\}
+  \]
+  is convex because it is a Cartesian product:
+  \[
+    \Bigl\{(x_1,x_2)\in\mathbb{R}^2:\ x_1^2+x_2^2\le 1\Bigr\}\times \Bigl\{x_3\in\mathbb{R}:\ |x_3|\le 1\Bigr\}.
+  \]
+  \item Fix $\mathbf{A}_1,\ldots,\mathbf{A}_k,\mathbf{B}\in\mathbb{S}^n$ and consider
+  \[
+    \mathcal{Q}:=\Bigl\{\mathbf{x}\in\mathbb{R}^k:\ \mathbf{B}-\sum_{i=1}^k x_i \mathbf{A}_i \succeq 0\Bigr\}.
+  \]
+  The map $\mathbf{x}\mapsto \mathbf{B}-\sum_{i=1}^k x_i\mathbf{A}_i$ is affine, and image $\in \mathbb{S}^n_+$ 
+  is convex;
+  therefore $\mathcal{Q}$ is convex due to \cref{clm:affine-images-preimages}
+\end{itemize}
+\end{example}
+
+\section{Convex hulls and cones}
+\label{sec:ch4-convex-hull-cones}
+\subsection{Convex combinations and convex hull}
+\begin{definition}[Convex combination]
+Given points $\mathbf{x}_1,\ldots,\mathbf{x}_m$ in a vector space and weights
+$\lambda_1,\ldots,\lambda_m\ge 0$ with $\sum_{i=1}^m \lambda_i=1$, the point
+\[
+  \sum_{i=1}^m \lambda_i \mathbf{x}_i
+\]
+is called a \emph{convex combination} of $\{\mathbf{x}_i\}_{i=1}^m$.
+\end{definition}
+
+\begin{claim}[A set is convex iff it contains all finite convex combinations]
+Let $\mathcal{M}\subseteq U$. Then $\mathcal{M}$ is convex if and only if for every $m\ge 2$,
+every $\mathbf{x}_1,\ldots,\mathbf{x}_m\in\mathcal{M}$, and every $\lambda_i\ge 0$ with $\sum_{i=1}^m\lambda_i=1$,
+we have $\sum_{i=1}^m \lambda_i \mathbf{x}_i\in\mathcal{M}$.
+\end{claim}
+\begin{proof}
+If $\mathcal{M}$ contains all finite convex combinations, then the case $m=2$ is exactly the definition of convexity.
+
+Conversely, assume $\mathcal{M}$ is convex in the sense of $m=2$. We prove the statement for general $m$ by induction.
+The case $m=2$ holds by assumption. Suppose it holds for $m$, and consider $m+1$ points with weights
+$\lambda_1,\ldots,\lambda_{m+1}\ge 0$, $\sum_{i=1}^{m+1}\lambda_i=1$.
+If $\lambda_{m+1}=1$ the claim is trivial; otherwise define $\alpha:=\lambda_{m+1}\in[0,1)$ and
+\[
+  \mathbf{z}:=\sum_{i=1}^{m}\frac{\lambda_i}{1-\alpha}\mathbf{x}_i.
+\]
+By the induction hypothesis, $\mathbf{z}\in\mathcal{M}$. Then
+\[
+  \sum_{i=1}^{m+1}\lambda_i\mathbf{x}_i=(1-\alpha)\mathbf{z}+\alpha \mathbf{x}_{m+1}\in\mathcal{M}
+\]
+by convexity of $\mathcal{M}$.
+\end{proof}
+
+\begin{definition}[Convex hull (see \cref{fig:conv-cone-hull})]
+For $\mathcal{M}\subseteq U$, the \emph{convex hull} of $\mathcal{M}$, denoted $\operatorname{conv}(\mathcal{M})$,
+is the smallest convex set that contains $\mathcal{M}$.
+Equivalently,
+\[
+  \operatorname{conv}(\mathcal{M})
+  =\Bigl\{\sum_{i=1}^m \lambda_i \mathbf{x}_i:\ m\in\mathbb{N},\ \mathbf{x}_i\in\mathcal{M},\ \lambda_i\ge 0,\ \sum_{i=1}^m \lambda_i=1\Bigr\}.
+\]
+\end{definition}
+
+\begin{figure}[ht]
+    \centering
+    \incfig{conv-cone-hull}
+    \caption{Convex hull versus conic hull}
+    \label{fig:conv-cone-hull}
+\end{figure}
+
+\subsection{Cones and convex cones}
+\begin{definition}[Cone and convex cone]
+A set $\mathcal{K}\subseteq U$ is a \emph{cone} if
+\[
+  \mathbf{x}\in\mathcal{K},\ \alpha\ge 0\quad\Longrightarrow\quad \alpha\mathbf{x}\in\mathcal{K}.
+\]
+It is a \emph{convex cone} if, in addition,
+\[
+  \mathbf{x},\mathbf{y}\in\mathcal{K},\ \alpha,\beta\ge 0\quad\Longrightarrow\quad \alpha\mathbf{x}+\beta\mathbf{y}\in\mathcal{K}.
+\]
+\end{definition}
+
+\begin{definition}[Conic hull (see \cref{fig:conv-cone-hull})]
+For $\mathcal{M}\subseteq U$, the (conic) hull of $\mathcal{M}$ is
+\[
+  \operatorname{cone}(\mathcal{M})
+  :=\Bigl\{\sum_{i=1}^m \lambda_i \mathbf{x}_i:\ m\in\mathbb{N},\ \mathbf{x}_i\in\mathcal{M},\ \lambda_i\ge 0\Bigr\}.
+\]
+\end{definition}
+
+\begin{example}[Second-order cone (see \cref{fig:soc})]
+The set
+\[
+  \mathcal{K}_{\mathrm{soc}}
+  :=\{(\mathbf{x},t)\in\mathbb{R}^n\times \mathbb{R}:\ \|\mathbf{x}\|_2\le t\}
+\]
+is a convex cone. Indeed, for $\alpha,\beta\ge 0$,
+\[
+  \|\alpha\mathbf{x}+\beta\mathbf{y}\|_2
+  \le \alpha\|\mathbf{x}\|_2+\beta\|\mathbf{y}\|_2
+  \le \alpha t_x+\beta t_y,
+\]
+so $(\alpha\mathbf{x}+\beta\mathbf{y},\alpha t_x+\beta t_y)\in\mathcal{K}_{\mathrm{soc}}$ whenever
+$(\mathbf{x},t_x),(\mathbf{y},t_y)\in\mathcal{K}_{\mathrm{soc}}$.
+\end{example}
+
+\begin{figure}[ht]
+    \centering
+    \incfig{soc}
+    \caption{A 2D visualization of the second-order cone}
+    \label{fig:soc}
+\end{figure}
+
+\begin{example}
+Consider the set
+\[
+  \mathcal{Q}:=\{\mathbf{x}\in\mathbb{R}^n:\ \|\mathbf{A}\mathbf{x}+\mathbf{b}\|_2\le \mathbf{c}^\top \mathbf{x}+d\},
+  \qquad
+  \mathbf{A}\in\mathbb{R}^{m\times n},\ \mathbf{b}\in\mathbb{R}^m,\ \mathbf{c}\in\mathbb{R}^n,\ d\in\mathbb{R}.
+\]
+Introduce the augmented variable $\tilde{\mathbf{x}}:=(\mathbf{x},1)\in\mathbb{R}^{n+1}$ and matrices
+\[
+  \tilde{\mathbf{A}}:=[\mathbf{A}\ \mathbf{b}]\in\mathbb{R}^{m\times (n+1)},
+  \qquad
+  \tilde{\mathbf{c}}:=(\mathbf{c},d)\in\mathbb{R}^{n+1}.
+\]
+Then $\|\mathbf{A}\mathbf{x}+\mathbf{b}\|_2\le \mathbf{c}^\top \mathbf{x}+d$ becomes
+\[
+  \|\tilde{\mathbf{A}}\tilde{\mathbf{x}}\|_2\le \tilde{\mathbf{c}}^\top \tilde{\mathbf{x}}.
+\]
+Define the set
+\[
+  \mathcal{M}:=\{\tilde{\mathbf{x}}\in\mathbb{R}^{n+1}:\ \|\tilde{\mathbf{A}}\tilde{\mathbf{x}}\|_2\le \tilde{\mathbf{c}}^\top \tilde{\mathbf{x}}\}.
+\]
+By the same triangle-inequality argument as in the second-order cone example, $\mathcal{M}$ is a convex cone.
+Finally, $\mathcal{Q}$ is the affine preimage (a ``slice'') of $\mathcal{M}$:
+\[
+  \mathcal{Q}=\{\mathbf{x}\in\mathbb{R}^n:\ (\mathbf{x},1)\in \mathcal{M}\},
+\]
+so $\mathcal{Q}$ is convex by the affine-preimage rule from \Cref{sec:ch4-set-operations}.
+\end{example}
+
+
+\section{Convex functions}
+\label{sec:ch4-convex-functions}
+\subsection{Definition and basic examples}
+\label{sec:ch4-def-convex-function}
+We already introduced convexity of functions in \Cref{sec:ch1-convexity}. We
+repeat the definition here.
+
+\begin{definition}[Convex function]
+Let $\mathcal{Q}\subseteq \mathbb{R}^n$ be a convex set and let $f:\mathcal{Q}\to\mathbb{R}$.
+We say that $f$ is \emph{convex} if for all $\mathbf{x},\mathbf{y}\in\mathcal{Q}$ and $\lambda\in[0,1]$,
+\[
+  f(\lambda\mathbf{x}+(1-\lambda)\mathbf{y})
+  \le \lambda f(\mathbf{x})+(1-\lambda)f(\mathbf{y}).
+\]
+If the inequality is strict for $\mathbf{x}\neq \mathbf{y}$ and $\lambda\in(0,1)$, then $f$ is \emph{strictly convex}.
+\end{definition}
+
+\begin{example}[Three important convex functions]
+\leavevmode
+\begin{itemize}
+  \item Any affine function $f(\mathbf{x})=\mathbf{a}^\top \mathbf{x}+b$ is convex (and concave).
+  \item Any norm $\|\mathbf{x}\|$ is convex.
+  \item If $\mathcal{Q}\subseteq \mathbb{R}^n$ is convex, the \emph{indicator function}
+  \[
+    \iota_{\mathcal{Q}}(\mathbf{x}):=
+    \begin{cases}
+      0, & \mathbf{x}\in\mathcal{Q},\\
+      +\infty, & \mathbf{x}\notin\mathcal{Q},
+    \end{cases}
+  \]
+  is convex.
+\end{itemize}
+\end{example}
+
+\begin{claim}[Jensen's inequality]
+\label{clm:ch4-jensen}
+Let $\mathcal{Q}\subseteq\mathbb{R}^n$ be convex and let $f:\mathcal{Q}\to\mathbb{R}$ be convex.
+Then for any $\mathbf{x}_1,\ldots,\mathbf{x}_m\in\mathcal{Q}$ and any weights $\lambda_i\ge 0$ with $\sum_{i=1}^m\lambda_i=1$,
+\[
+  f\Bigl(\sum_{i=1}^m \lambda_i \mathbf{x}_i\Bigr)\le \sum_{i=1}^m \lambda_i f(\mathbf{x}_i).
+\]
+\end{claim}
+\begin{proof}
+For $m=2$ this is the definition of convexity. Assume the statement holds for $m$, and consider $m+1$ points with weights
+$\lambda_1,\ldots,\lambda_{m+1}\ge 0$, $\sum_{i=1}^{m+1}\lambda_i=1$. If $\lambda_{m+1}=1$ the claim is trivial; otherwise define
+$\alpha:=\lambda_{m+1}\in[0,1)$ and
+\[
+  \mathbf{z}:=\sum_{i=1}^{m}\frac{\lambda_i}{1-\alpha}\mathbf{x}_i.
+\]
+By the induction hypothesis,
+$f(\mathbf{z})\le \sum_{i=1}^m \frac{\lambda_i}{1-\alpha} f(\mathbf{x}_i)$. Using convexity of $f$ once more,
+\[
+  f\Bigl(\sum_{i=1}^{m+1}\lambda_i\mathbf{x}_i\Bigr)
+  =f\bigl((1-\alpha)\mathbf{z}+\alpha \mathbf{x}_{m+1}\bigr)
+  \le (1-\alpha)f(\mathbf{z})+\alpha f(\mathbf{x}_{m+1})
+  \le \sum_{i=1}^{m+1}\lambda_i f(\mathbf{x}_i),
+\]
+which completes the induction.
+\end{proof}
+
+
+\subsection{Epigraphs and sublevel sets}
+\label{sec:ch4-epigraph}
+\begin{definition}[Epigraph (see \cref{fig:epigraph})]
+For a function $f:\mathcal{Q}\to\mathbb{R}$, its \emph{epigraph} is
+\[
+  \operatorname{epi} f:=\{(\mathbf{x},t)\in\mathcal{Q}\times\mathbb{R}:\ f(\mathbf{x})\le t\}.
+\]
+\end{definition}
+
+\begin{figure}[ht]
+    \centering
+    \incfig{epigraph}
+    \caption{Epigraph of an arbitrary function.}
+    \label{fig:epigraph}
+\end{figure}
+
+
+\begin{theorem}[Epigraph criterion]
+\label{thm:ch4-epi-criterion}
+A function $f$ is convex if and only if $\operatorname{epi} f$ is a convex set.
+\end{theorem}
+\begin{proof}
+Assume $f$ is convex. Take $(\mathbf{x},t_x),(\mathbf{y},t_y)\in \operatorname{epi} f$, i.e.,
+$f(\mathbf{x})\le t_x$ and $f(\mathbf{y})\le t_y$. By convexity of $f$,
+\[
+  f(\lambda\mathbf{x}+(1-\lambda)\mathbf{y})
+  \le \lambda f(\mathbf{x})+(1-\lambda)f(\mathbf{y})
+  \le \lambda t_x+(1-\lambda)t_y,
+\]
+so $(\lambda\mathbf{x}+(1-\lambda)\mathbf{y},\,\lambda t_x+(1-\lambda)t_y)\in \operatorname{epi} f$.
+Hence $\operatorname{epi} f$ is convex.
+
+Conversely, assume $\operatorname{epi} f$ is convex. For any $\mathbf{x},\mathbf{y}\in\mathcal{Q}$, the points
+$(\mathbf{x},f(\mathbf{x}))$ and $(\mathbf{y},f(\mathbf{y}))$ lie in $\operatorname{epi} f$. Convexity of the epigraph
+implies
+$(\lambda\mathbf{x}+(1-\lambda)\mathbf{y},\,\lambda f(\mathbf{x})+(1-\lambda)f(\mathbf{y}))\in\operatorname{epi} f$,
+which is exactly the defining inequality of convexity of $f$.
+\end{proof}
+
+\begin{example}[Epigraph of a norm and the second-order cone]
+For the Euclidean norm, the epigraph is exactly the second-order cone:
+\[
+  \operatorname{epi}\|\cdot\|_2=\{(\mathbf{x},t)\in\mathbb{R}^n\times\mathbb{R}:\ \|\mathbf{x}\|_2\le t\}.
+\]
+\end{example}
+
+\begin{claim}[Sublevel sets of convex functions are convex]
+If $f$ is convex, then for every $\alpha\in\mathbb{R}$ the sublevel set
+\[
+  \{\mathbf{x}\in\mathcal{Q}:\ f(\mathbf{x})\le \alpha\}
+\]
+is convex.
+\end{claim}
+\begin{proof}
+If $f(\mathbf{x})\le \alpha$ and $f(\mathbf{y})\le \alpha$, then by convexity,
+$f(\lambda\mathbf{x}+(1-\lambda)\mathbf{y})\le \lambda\alpha+(1-\lambda)\alpha=\alpha$.
+\end{proof}
+
+\paragraph{Remark (quasi-convexity).}
+The converse statement is false in general: there exist nonconvex functions whose sublevel sets are all convex
+(e.g. $x^{3}$).
+Such functions are called \emph{quasi-convex}. 
+
+\subsection{Differential criteria}
+\label{sec:ch4-diff-criteria}
+The next two characterizations connect convexity to gradients and Hessians. We stated these in
+\Cref{clm:ch1-diff-convexity}, but for consistency repeat here.
+
+\begin{claim}[First-order criterion]
+\label{clm:ch4-first-order}
+Let $f\in C^1$ on a convex set $\mathcal{Q}$. Then $f$ is convex if and only if for all $\mathbf{x},\mathbf{y}\in\mathcal{Q}$,
+\[
+  f(\mathbf{y})\ge f(\mathbf{x})+\nabla f(\mathbf{x})^\top(\mathbf{y}-\mathbf{x}).
+\]
+\end{claim}
+
+\begin{claim}[Second-order criterion]
+\label{clm:ch4-second-order}
+Let $f\in C^2$ on a convex set $\mathcal{Q}$. Then $f$ is convex if and only if $\nabla^2 f(\mathbf{x})\succeq 0$
+for all $\mathbf{x}\in\mathcal{Q}$.
+\end{claim}
+
+\begin{example}[The exponential is convex]
+For $f(x)=e^{x}$ on $\mathbb{R}$, we have $f''(x)=e^{x}>0$ for all $x$, hence $f$ is convex by \Cref{clm:ch4-second-order}.
+\end{example}
+
+\begin{example}[The log-sum-exp function is convex]
+Define $f:\mathbb{R}^n\to\mathbb{R}$ by
+\[
+  f(\mathbf{x})=\log\Bigl(\sum_{i=1}^n e^{x_i}\Bigr).
+\]
+Let $s(\mathbf{x}):=\sum_{i=1}^n e^{x_i}$ and define the softmax weights
+\[
+  \pi_i(\mathbf{x}):=\frac{e^{x_i}}{s(\mathbf{x})},\qquad \boldsymbol{\pi}(\mathbf{x})\in\mathbb{R}^n,\ \sum_{i=1}^n\pi_i(\mathbf{x})=1.
+\]
+Then $\nabla f(\mathbf{x})=\boldsymbol{\pi}(\mathbf{x})$ and
+\[
+  \nabla^2 f(\mathbf{x})
+  =\operatorname{diag}(\boldsymbol{\pi}(\mathbf{x}))-\boldsymbol{\pi}(\mathbf{x})\boldsymbol{\pi}(\mathbf{x})^\top.
+\]
+For any $\mathbf{d}\in\mathbb{R}^n$,
+\[
+  \mathbf{d}^\top \nabla^2 f(\mathbf{x})\,\mathbf{d}
+  =\sum_{i=1}^n \pi_i(\mathbf{x})\,d_i^2-\Bigl(\sum_{i=1}^n \pi_i(\mathbf{x})\,d_i\Bigr)^2\ge 0,
+\]
+where the inequality follows from Cauchy--Schwarz:
+$\left(\sum_i \pi_i d_i\right)^2\le \left(\sum_i \pi_i\right)\left(\sum_i \pi_i d_i^2\right)=\sum_i \pi_i d_i^2$.
+Hence $\nabla^2 f(\mathbf{x})\succeq 0$ and $f$ is convex by \Cref{clm:ch4-second-order}.
+\end{example}
+
+\subsection{Operations that preserve convexity of functions}
+\label{sec:ch4-function-operations}
+\begin{claim}[Convexity-preserving operations]
+  Let $\{f_i\}_{i\in I}$ be convex functions on a common convex domain, 
+  where $I$ is an index set (finite, noncountable or countable),
+  and let $c_i\ge 0$.
+\begin{itemize}
+  \item (Nonnegative sums) $f(\mathbf{x})=\sum_{i\in I} c_i f_i(\mathbf{x})$ is convex.
+  \item (Affine composition) If $f$ is convex and $A(\mathbf{x})=\mathbf{L}\mathbf{x}+\mathbf{b}$ is affine, then $f\circ A$ is convex.
+  \item (Pointwise supremum) $f(\mathbf{x})=\sup_{i\in I} f_i(\mathbf{x})$ is convex.
+  \item (Monotone composition) If $f$ is convex and $g:\mathbb{R}\to\mathbb{R}$ is convex and nondecreasing, then $g\circ f$ is convex.
+  \item (Partial minimization) If $f(\mathbf{x},\mathbf{y})$ is convex jointly in $(\mathbf{x},\mathbf{y})$, then
+  \[
+    \varphi(\mathbf{x})=\inf_{\mathbf{y}} f(\mathbf{x},\mathbf{y})
+  \]
+  is convex. 
+\end{itemize}
+\end{claim}
+
+
+\begin{example}[Convex ML losses: multinomial logistic regression]
+Let $\{(\mathbf{x}_i,y_i)\}_{i=1}^N$ be data with classes $y_i\in\{1,\ldots,K\}$ and parameters
+$\mathbf{W}=[\mathbf{w}_1^\top;\ldots;\mathbf{w}_K^\top]\in\mathbb{R}^{K\times d}$. The negative log-likelihood 
+(up to constants) can be written as
+\[
+  F(\mathbf{W})
+  =\sum_{i=1}^N\Bigl(-\mathbf{w}_{y_i}^\top \mathbf{x}_i+\log\sum_{j=1}^K \exp(\mathbf{w}_j^\top \mathbf{x}_i)\Bigr).
+\]
+Each term $-\mathbf{w}_{y_i}^\top \mathbf{x}_i$ is affine, hence convex.
+The log-sum-exp term is convex by the previous example, and the map 
+$\mathbf{W}\mapsto(\mathbf{w}_1^\top\mathbf{x}_i,\ldots,\mathbf{w}_K^\top\mathbf{x}_i)$
+is affine. Therefore each summand is convex, and so is $F$ by the nonnegative-sum rule.
+\end{example}
+
+\begin{example}[The function $\|\mathbf{x}\|^p$ is convex for $p\ge 1$]
+Let $f(\mathbf{x})=\|\mathbf{x}\|$ (convex) and $g(t)=t^p$ on $t\ge 0$.
+For $p\ge 1$, $g$ is convex and nondecreasing on $\mathbb{R}_+$. Hence $g\circ f(\mathbf{x})=\|\mathbf{x}\|^p$ is convex.
+\end{example}
+
+\begin{example}[Largest eigenvalue is convex]
+For $\mathbf{A}\in\mathbb{S}^n$, the largest eigenvalue admits the variational representation
+\[
+  \lambda_{\max}(\mathbf{A})=\max_{\|\mathbf{x}\|_2=1}\ \mathbf{x}^\top \mathbf{A}\mathbf{x}.
+\]
+For fixed $\mathbf{x}$, the map $\mathbf{A}\mapsto \mathbf{x}^\top \mathbf{A}\mathbf{x}$ is linear in $\mathbf{A}$.
+Hence $\lambda_{\max}$ is a pointwise supremum of linear functions of $\mathbf{A}$ and is therefore convex.
+Similarly,
+\[
+  \lambda_{\min}(\mathbf{A})=\min_{\|\mathbf{x}\|_2=1}\ \mathbf{x}^\top \mathbf{A}\mathbf{x}
+  =-\lambda_{\max}(-\mathbf{A})
+\]
+is concave.
+\end{example}
+
+\begin{example}[Distance to a convex set is convex]
+Let $\mathcal{Q}\subseteq\mathbb{R}^n$ be convex and define the distance
+\[
+  \operatorname{dist}(\mathbf{x},\mathcal{Q}):=\inf_{\mathbf{y}\in\mathcal{Q}}\|\mathbf{x}-\mathbf{y}\|.
+\]
+Using the indicator function from \Cref{sec:ch4-def-convex-function},
+\[
+  \operatorname{dist}(\mathbf{x},\mathcal{Q})
+  =\inf_{\mathbf{y}\in\mathbb{R}^n}\bigl(\|\mathbf{x}-\mathbf{y}\|+\iota_{\mathcal{Q}}(\mathbf{y})\bigr).
+\]
+The function $(\mathbf{x},\mathbf{y})\mapsto \|\mathbf{x}-\mathbf{y}\|$ is convex, and $\iota_{\mathcal{Q}}$ is convex when $\mathcal{Q}$ is convex.
+Due to partial minimization operation  the infimum over $\mathbf{y}$ preserves convexity, 
+so $\mathbf{x}\mapsto\operatorname{dist}(\mathbf{x},\mathcal{Q})$ is convex.
+\end{example}
+
+\begin{example}[Input-convex neural networks (ICNNs)]
+In some applications we want to represent a convex function by a neural network, so that minimizing it is a convex optimization problem.
+For example, in control or reinforcement learning one may wish to choose a deterministic action by solving
+$\mathbf{a}^\star\in\arg\max_{\mathbf{a}} Q_\theta(\mathbf{s},\mathbf{a})$ for a fixed state $\mathbf{s}$.
+If we model $Q_\theta(\mathbf{s},\mathbf{a})=-f_\theta(\mathbf{s},\mathbf{a})$ with $f_\theta(\mathbf{s},\cdot)$ convex,
+then greedy action selection reduces to minimizing $f_\theta(\mathbf{s},\mathbf{a})$ and gives deterministic answer.
+Therefore, we don't stuck in the local minimum which is a crucial thing in this case.
+
+One simple way to ensure convexity in $\mathbf{a}$ is an \emph{input-convex neural network} (ICNN).
+Consider a feedforward network with hidden variables $\mathbf{z}_0=\mathbf{0}$ and
+\[
+  \mathbf{z}_{i+1}
+  =g_i\bigl(\mathbf{W}_i^{z}\mathbf{z}_i+\mathbf{W}_i^{a}\mathbf{a}+\mathbf{b}_i\bigr),
+  \qquad i=0,\ldots,N-1,
+\]
+where each $g_i$ is applied componentwise. Assume that
+\begin{itemize}
+  \item each activation $g_i:\mathbb{R}\to\mathbb{R}$ is convex and nondecreasing, and
+  \item every entry of $\mathbf{W}_i^{z}$ is nonnegative: $(\mathbf{W}_i^{z})_{pq}\ge 0$.
+\end{itemize}
+Then every component of $\mathbf{z}_i(\mathbf{a})$ is convex in $\mathbf{a}$, hence the scalar output
+$f_\theta(\mathbf{s},\mathbf{a})=\mathbf{z}_N(\mathbf{a})$ (take the last layer to have size $1$) is convex in $\mathbf{a}$.
+The proof is an induction: nonnegative sums and affine additions preserve convexity, and composing with a convex nondecreasing map preserves
+convexity by the monotone-composition rule in \Cref{sec:ch4-function-operations}.
+
+In practice one often enforces $\mathbf{W}_i^{z}\ge 0$ by a reparameterization, for example
+\[
+  (\mathbf{W}_i^{z})_{pq}=\log\bigl(1+\exp((\tilde{\mathbf{W}}_i^{z})_{pq})\bigr),
+\]
+so that the entries are automatically nonnegative.
+\end{example}
+
+
