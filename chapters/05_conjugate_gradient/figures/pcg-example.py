@@ -19,26 +19,42 @@ SLATE = "#47515c"
 
 plt.rcParams.update(
     {
-        "figure.figsize": (4.4, 2.8),
+        "figure.figsize": (5.4, 3.4),
         "figure.facecolor": "white",
         "axes.facecolor": "white",
         "axes.edgecolor": SLATE,
-        "axes.labelcolor": SLATE,
+        "axes.labelcolor": "black",
         "axes.linewidth": 0.8,
-        "axes.labelsize": 9,
-        "xtick.color": SLATE,
-        "ytick.color": SLATE,
-        "xtick.labelsize": 8,
-        "ytick.labelsize": 8,
-        "font.family": "serif",
-        "font.size": 9,
-        "mathtext.fontset": "cm",
+        "axes.labelsize": 10,
+        "axes.titlesize": 11,
+        "xtick.color": "black",
+        "ytick.color": "black",
+        "xtick.labelsize": 9,
+        "ytick.labelsize": 9,
+        "font.family": "sans-serif",
+        "font.size": 10,
+        "mathtext.fontset": "dejavusans",
         "axes.unicode_minus": False,
         "legend.frameon": False,
         "svg.fonttype": "none",
         "savefig.bbox": "tight",
     }
 )
+
+
+def write_incfig_wrapper(out_dir: Path, stem: str, pdf_name: str) -> None:
+    wrapper = (
+        f"%% Minimal wrapper for \\\\incfig{{{stem}}}\n"
+        "\\begingroup%\n"
+        "  \\makeatletter%\n"
+        "  \\ifx\\svgwidth\\undefined%\n"
+        "    \\def\\svgwidth{\\columnwidth}%\n"
+        "  \\fi%\n"
+        "  \\makeatother%\n"
+        f"  \\includegraphics[width=\\svgwidth]{{{pdf_name}}}%\n"
+        "\\endgroup%\n"
+    )
+    (out_dir / f"{stem}.pdf_tex").write_text(wrapper, encoding="utf-8")
 
 
 def build_note_matrix(n: int = 500) -> np.ndarray:
@@ -96,7 +112,8 @@ def pcg_history(A: np.ndarray, b: np.ndarray, M_inv: np.ndarray, max_iters: int 
 
 def main() -> None:
     out_dir = Path(__file__).resolve().parent
-    out_pdf = out_dir / "pcg-example.pdf"
+    wrapper_stem = "pcg-example-embed"
+    out_pdf = out_dir / "pcg-example-embed.pdf"
     out_svg = out_dir / "pcg-example.svg"
     out_png = out_dir / "pcg-example.png"
 
@@ -110,25 +127,24 @@ def main() -> None:
     cg /= cg[0]
     pcg /= pcg[0]
 
-    fig, ax = plt.subplots()
-    fig.subplots_adjust(left=0.15, right=0.995, bottom=0.22, top=0.95)
+    fig, ax = plt.subplots(constrained_layout=True)
 
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.grid(True, axis="y", which="major", ls=":", lw=0.55, alpha=0.28)
+    ax.grid(True, which="major", ls=":", lw=0.7, alpha=0.6)
 
-    ax.semilogy(np.arange(len(cg)), cg, color=CRIMSON, lw=1.9, label="CG")
-    ax.semilogy(np.arange(len(pcg)), pcg, color=DEEPBLUE, lw=1.9, label="PCG")
+    ax.semilogy(np.arange(len(cg)), cg, color=CRIMSON, lw=1.8, label="CG")
+    ax.semilogy(np.arange(len(pcg)), pcg, color=DEEPBLUE, lw=2.0, label="PCG")
     ax.set_xlim(0.0, 170.0)
     ax.set_ylim(5e-7, 2.0)
     ax.set_xticks([0, 40, 80, 120, 160])
+    ax.set_title("CG vs preconditioned CG")
     ax.set_xlabel("iteration")
     ax.set_ylabel("relative residual")
-    ax.legend(loc="upper right", fontsize=8.0, handlelength=2.4, borderaxespad=0.3)
+    ax.legend(loc="upper right", fontsize=8.0, handlelength=2.4)
 
     fig.savefig(out_pdf)
     fig.savefig(out_svg)
     fig.savefig(out_png, dpi=220)
+    write_incfig_wrapper(out_dir, wrapper_stem, out_pdf.name)
     print(f"Wrote {out_pdf}")
     print(f"Wrote {out_svg}")
 

@@ -1,0 +1,9 @@
+%% Minimal wrapper for \\incfig{linear-cg-behaviour-embed}
+\begingroup%
+  \makeatletter%
+  \ifx\svgwidth\undefined%
+    \def\svgwidth{\columnwidth}%
+  \fi%
+  \makeatother%
+  \includegraphics[width=\svgwidth]{linear-cg-behaviour-embed.pdf}%
+\endgroup%

@@ -1,0 +1,90 @@
+%% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'pcg-example.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{397.19952393bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.6374618)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{pcg-example.pdf}}%
+    \put(0.1234345,0.05727562){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{pcg-example.pdf}}%
+    \put(0.32542004,0.05727562){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}40\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{pcg-example.pdf}}%
+    \put(0.52740558,0.05727562){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}80\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{pcg-example.pdf}}%
+    \put(0.72939112,0.05727562){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}120\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{pcg-example.pdf}}%
+    \put(0.9313767,0.05727562){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}160\end{tabular}}}}%
+    \put(0.5526538,0.0233628){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}iteration\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{pcg-example.pdf}}%
+    \put(0.05256332,0.10809752){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−6\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{pcg-example.pdf}}%
+    \put(0.05256332,0.18269915){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−5\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{pcg-example.pdf}}%
+    \put(0.05256332,0.25708049){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−4\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{pcg-example.pdf}}%
+    \put(0.05256332,0.33124154){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−3\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{pcg-example.pdf}}%
+    \put(0.05256332,0.40562289){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−2\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{pcg-example.pdf}}%
+    \put(0.05256332,0.48022452){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−1\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{pcg-example.pdf}}%
+    \put(0.06593191,0.55438557){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}100\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{pcg-example.pdf}}%
+    \put(0.03725693,0.33765106){\rotatebox{90}{\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}relative residual\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{pcg-example.pdf}}%
+    \put(0.5526538,0.59829186){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}CG vs preconditioned CG\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{pcg-example.pdf}}%
+    \put(0.92193153,0.54975517){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}CG\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=16]{pcg-example.pdf}}%
+    \put(0.92193153,0.52019194){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}PCG\end{tabular}}}}%
+  \end{picture}%
+\endgroup%

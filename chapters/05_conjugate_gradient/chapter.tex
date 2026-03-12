@@ -795,18 +795,22 @@ with
   \end{cases}
 \]
 Compare the iteration counts of gradient descent and CG as the condition number
-$\kappa$ increases.
+$\kappa$ increases (see \cref{fig:ch5-linear-cg-behaviour}).
 \end{example}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{linear-cg-behaviour.pdf}
+  \incfig{linear-cg-behaviour-embed}
   \caption{A conditioning experiment for gradient descent and conjugate
-  gradient. Left: for
-  gradient descent the iteration count grows roughly linearly with the
-  condition number. Right: for CG the dependence is much weaker, the count
-  stays bounded by $n$ in exact arithmetic, and increasing the dimension is far
-  less damaging than for gradient descent.}
+  gradient. Left: on this random diagonal ensemble, the main visible effect for
+  gradient descent is the roughly linear growth with the condition number; in
+  this test the curves for larger $n$ happen to lie lower, so the point of the
+  panel is the $\kappa$-dependence rather than a monotone dependence on $n$.
+  Right: for CG the growth is much slower and follows the familiar
+  $O(\sqrt{\kappa})$ pattern until the finite-termination ceiling at $n$
+  becomes visible, most clearly for $n=10$. The dashed lines show the
+  corresponding $\kappa$- and $\sqrt{\kappa}$-type approximations for each
+  solid curve.}
   \label{fig:ch5-linear-cg-behaviour}
 \end{figure}
 
@@ -824,7 +828,7 @@ Then
 \[
   \mathbf{A}\mathbf{x}=\mathbf{b}
   \quad \Longleftrightarrow \quad
-  \underbrace{\mathbf{S}^{-\top}\mathbf{A}\mathbf{S}^{-1}}_{=:\tilde{\mathbf{A}}}
+\underbrace{\mathbf{S}^{-\top}\mathbf{A}\mathbf{S}^{-1}}_{=:\tilde{\mathbf{A}} \succ 0}
   \tilde{\mathbf{x}}
   =
   \underbrace{\mathbf{S}^{-\top}\mathbf{b}}_{=:\tilde{\mathbf{b}}}.
@@ -833,66 +837,237 @@ If $\mathbf{S}$ is chosen so that $\tilde{\mathbf{A}}$ is much better
 conditioned than $\mathbf{A}$, then CG on the transformed problem should
 converge much faster.
 
-It is convenient to encode this change of variables through the
-\emph{preconditioner}
+The clean way to derive the method is to apply the ordinary linear CG scheme
+from \cref{sec:ch5-linear-cg} to the transformed system and then map every
+quantity back to the original variables.
+
+\begin{claim}[PCG as linear CG in transformed coordinates]
+\label{clm:ch5-pcg-derivation}
+Let
 \[
-  \mathbf{M}:=\mathbf{S}^{\top}\mathbf{S}.
+  \tilde{\mathbf{g}}_k:=\tilde{\mathbf{A}}\tilde{\mathbf{x}}_k-\tilde{\mathbf{b}},
+  \qquad
+  \tilde{\mathbf{d}}_0=-\tilde{\mathbf{g}}_0,
+  \qquad
+  \tilde{\mathbf{d}}_{k+1}
+  =-\tilde{\mathbf{g}}_{k+1}+\tilde{\beta}_k \tilde{\mathbf{d}}_k
 \]
-The ideal case would be $\mathbf{M}=\mathbf{A}$, because then
+be the ordinary CG recurrence for the transformed system
+\[
+  \tilde{\mathbf{A}}\tilde{\mathbf{x}}=\tilde{\mathbf{b}}.
+\]
+Define
+\[
+  \mathbf{x}_k:=\mathbf{S}^{-1}\tilde{\mathbf{x}}_k.
+\]
+Since the transformed iterate update is
+\[
+  \tilde{\mathbf{x}}_{k+1}
+  =\tilde{\mathbf{x}}_k+\tilde{\alpha}_k \tilde{\mathbf{d}}_k,
+\]
+the corresponding search directions in the original variables must be pulled
+back as
+\[
+  \mathbf{d}_k:=\mathbf{S}^{-1}\tilde{\mathbf{d}}_k,
+\]
+because then
+\[
+  \mathbf{x}_{k+1}
+  =\mathbf{S}^{-1}\tilde{\mathbf{x}}_{k+1}
+  =\mathbf{S}^{-1}(\tilde{\mathbf{x}}_k+\tilde{\alpha}_k \tilde{\mathbf{d}}_k)
+  =\mathbf{x}_k+\tilde{\alpha}_k \mathbf{d}_k.
+\]
+Finally define the residuals of the original system by
+\[
+  \mathbf{g}_k:=\mathbf{A}\mathbf{x}_k-\mathbf{b}.
+\]
+Set
+\[
+  \alpha_k:=\tilde{\alpha}_k,
+  \qquad
+  \beta_k:=\tilde{\beta}_k.
+\]
+Then
+\[
+  \tilde{\mathbf{g}}_k=\mathbf{S}^{-\top}\mathbf{g}_k,
+  \qquad
+  \mathbf{d}_0=-\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_0,
+  \qquad
+  \mathbf{x}_{k+1}=\mathbf{x}_k+\alpha_k \mathbf{d}_k,
+  \qquad
+  \mathbf{g}_{k+1}=\mathbf{g}_k+\alpha_k \mathbf{A}\mathbf{d}_k,
+\]
+and
+\[
+  \mathbf{d}_{k+1}
+  =-\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_{k+1}+\beta_k \mathbf{d}_k.
+\]
+Moreover, the transformed CG coefficients become
+\[
+  \alpha_k=\tilde{\alpha}_k
+  =\frac{\mathbf{g}_k^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_k}
+  {\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k},
+  \qquad
+  \beta_k=\tilde{\beta}_k
+  =\frac{\mathbf{g}_{k+1}^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_{k+1}}
+  {\mathbf{g}_k^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_k}.
+\]
+\end{claim}
+\begin{proof}
+The update formula for $\mathbf{x}_{k+1}$ was already built into the definition
+of $\mathbf{d}_k$, so it remains to identify how the gradients transform and
+then substitute that relation into the CG recurrence.
+
+\noindent First,
+\[
+  \tilde{\mathbf{g}}_k
+  =\tilde{\mathbf{A}}\tilde{\mathbf{x}}_k-\tilde{\mathbf{b}}
+  =\mathbf{S}^{-\top}\mathbf{A}\mathbf{S}^{-1}\tilde{\mathbf{x}}_k
+   -\mathbf{S}^{-\top}\mathbf{b}
+  =\mathbf{S}^{-\top}(\mathbf{A}\mathbf{x}_k-\mathbf{b})
+  =\mathbf{S}^{-\top}\mathbf{g}_k.
+\]
+Therefore
+\[
+  \mathbf{d}_0
+  =\mathbf{S}^{-1}\tilde{\mathbf{d}}_0
+  =-\mathbf{S}^{-1}\tilde{\mathbf{g}}_0
+  =-\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_0.
+\]
+Substituting this into the definition of $\mathbf{g}_{k+1}$ gives
+\[
+  \mathbf{g}_{k+1}
+  =\mathbf{A}\mathbf{x}_{k+1}-\mathbf{b}
+  =\mathbf{A}(\mathbf{x}_k+\tilde{\alpha}_k \mathbf{d}_k)-\mathbf{b}
+  =\mathbf{g}_k+\tilde{\alpha}_k \mathbf{A}\mathbf{d}_k.
+\]
+Finally,
+\[
+  \mathbf{d}_{k+1}
+  =\mathbf{S}^{-1}\tilde{\mathbf{d}}_{k+1}
+  =-\mathbf{S}^{-1}\tilde{\mathbf{g}}_{k+1}+\tilde{\beta}_k \mathbf{S}^{-1}\tilde{\mathbf{d}}_k
+  =-\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_{k+1}+\tilde{\beta}_k \mathbf{d}_k.
+\]
+\noindent For the coefficients, the transformed CG formulas give
+\[
+  \tilde{\alpha}_k
+  =\frac{\tilde{\mathbf{g}}_k^{\top}\tilde{\mathbf{g}}_k}
+  {\tilde{\mathbf{d}}_k^{\top}\tilde{\mathbf{A}}\tilde{\mathbf{d}}_k}.
+\]
+The numerator satisfies
+\[
+  \tilde{\mathbf{g}}_k^{\top}\tilde{\mathbf{g}}_k
+  =\mathbf{g}_k^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_k,
+\]
+while the denominator becomes
+\[
+  \tilde{\mathbf{d}}_k^{\top}\tilde{\mathbf{A}}\tilde{\mathbf{d}}_k
+  =(\mathbf{S}\mathbf{d}_k)^{\top}
+   (\mathbf{S}^{-\top}\mathbf{A}\mathbf{S}^{-1})
+   (\mathbf{S}\mathbf{d}_k)
+  =\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k.
+\]
+Hence
+\[
+  \tilde{\alpha}_k
+  =\frac{\mathbf{g}_k^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_k}
+  {\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k}.
+\]
+Likewise,
+\[
+  \tilde{\beta}_k
+  =\frac{\tilde{\mathbf{g}}_{k+1}^{\top}\tilde{\mathbf{g}}_{k+1}}
+  {\tilde{\mathbf{g}}_k^{\top}\tilde{\mathbf{g}}_k}
+  =\frac{\mathbf{g}_{k+1}^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_{k+1}}
+  {\mathbf{g}_k^{\top}\mathbf{S}^{-1}\mathbf{S}^{-\top}\mathbf{g}_k}.
+\]
+Renaming $\tilde{\alpha}_k,\tilde{\beta}_k$ as $\alpha_k,\beta_k$ in the
+original coordinates gives the stated recurrence and coefficient formulas.
+\end{proof}
+
+At this point the matrix
+\[
+  \mathbf{S}^{-1}\mathbf{S}^{-\top}
+\]
+appears everywhere. It is therefore natural to encode the change of variables
+through the SPD matrix
+\[
+  \mathbf{M}:=\mathbf{S}^{\top}\mathbf{S},
+  \qquad
+  \mathbf{M}^{-1}=\mathbf{S}^{-1}\mathbf{S}^{-\top}.
+\]
+This matrix is the \emph{preconditioner}. 
+The ideal case would be $\mathbf{M}= \mathbf{S}^{\top}\mathbf{S}=\mathbf{A}$
+, because then
 \[
   \tilde{\mathbf{A}}
   =\mathbf{S}^{-\top}\mathbf{A}\mathbf{S}^{-1}
   =\mathbf{I}.
 \]
-Of course, the ideal preconditioner is usually as hard to build as solving the
-original problem, so in practice one looks for a matrix that is only an
-approximation to $\mathbf{A}$ but is cheap to invert or apply.
+In that ideal situation, CG would solve the transformed problem in one step in
+exact arithmetic. Of course, such a preconditioner is usually as hard to build
+as solving the original system, so in practice one looks for a matrix that only
+approximates $\mathbf{A}$ but is cheap to invert or apply (e.g. diagonal).
 
-Running linear CG in the transformed variables and mapping the formulas back
-gives the preconditioned recurrence
-\[
-  \mathbf{d}_0=-\mathbf{M}^{-1}\mathbf{g}_0,
-  \qquad
-  \mathbf{d}_{k+1}=-\mathbf{M}^{-1}\mathbf{g}_{k+1}+\beta_k \mathbf{d}_k.
-\]
-If we define
-\[
-  \mathbf{z}_k:=\mathbf{M}^{-1}\mathbf{g}_k,
-\]
-then the coefficients become
-\begin{equation}
-  \label{eq:ch5-pcg-coeffs}
-  \alpha_k=\frac{\mathbf{g}_k^{\top}\mathbf{z}_k}
-  {\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k},
-  \qquad
-  \beta_k=\frac{\mathbf{g}_{k+1}^{\top}\mathbf{z}_{k+1}}
-  {\mathbf{g}_k^{\top}\mathbf{z}_k}.
-\end{equation}
+Final prseudocode for preconditioned CG can be viewed in \cref{alg:ch5-pcg}. The terms
+colored in \textcolor{crimson}{crimson} are precisely the replacements that
+turn \cref{alg:ch5-linear-cg} into its preconditioned version.
 
 \begin{algorithm}[ht]
-  \caption{\textsc{Preconditioned Conjugate Gradient}}
+  \caption{Linear CG and preconditioned CG. In the right column, the terms
+  colored in \textcolor{crimson}{crimson} are the only changes relative to the
+  linear method.}
   \label{alg:ch5-pcg}
-  \begin{algorithmic}
-    \REQUIRE SPD matrix $\mathbf{A}$, right-hand side $\mathbf{b}$, SPD preconditioner $\mathbf{M}$, initial guess $\mathbf{x}_0$, tolerance $\varepsilon>0$
-    \STATE $\mathbf{g}_0\gets \mathbf{A}\mathbf{x}_0-\mathbf{b}$, \ $\mathbf{z}_0\gets \mathbf{M}^{-1}\mathbf{g}_0$, \ $\mathbf{d}_0\gets -\mathbf{z}_0$, \ $k\gets 0$
-    \WHILE{$\|\mathbf{g}_k\|>\varepsilon$}
-      \STATE $\alpha_k\gets \dfrac{\mathbf{g}_k^{\top}\mathbf{z}_k}{\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k}$
-      \STATE $\mathbf{x}_{k+1}\gets \mathbf{x}_k+\alpha_k \mathbf{d}_k$
-      \STATE $\mathbf{g}_{k+1}\gets \mathbf{g}_k+\alpha_k \mathbf{A}\mathbf{d}_k$
-      \STATE $\mathbf{z}_{k+1}\gets \mathbf{M}^{-1}\mathbf{g}_{k+1}$
-      \STATE $\beta_k\gets \dfrac{\mathbf{g}_{k+1}^{\top}\mathbf{z}_{k+1}}{\mathbf{g}_k^{\top}\mathbf{z}_k}$
-      \STATE $\mathbf{d}_{k+1}\gets -\mathbf{z}_{k+1}+\beta_k \mathbf{d}_k$
-      \STATE $k\gets k+1$
-    \ENDWHILE
-    \RETURN $\mathbf{x}_k$
-  \end{algorithmic}
+  \centering
+  \begin{minipage}[t]{0.48\linewidth}
+    \hrule
+    \vspace{3pt}
+    {\bfseries \textsc{Linear CG}}\par
+    \vspace{3pt}
+    \hrule
+    \vspace{3pt}
+    \small
+    \begin{algorithmic}
+      \REQUIRE SPD matrix $\mathbf{A}$, vector $\mathbf{b}$, initial guess $\mathbf{x}_0$, tolerance $\varepsilon>0$
+      \STATE $\mathbf{g}_0\gets \mathbf{A}\mathbf{x}_0-\mathbf{b}$, \ $\mathbf{d}_0\gets -\mathbf{g}_0$, \ $k\gets 0$
+      \WHILE{$\|\mathbf{g}_k\|>\varepsilon \max\{1,\|\mathbf{b}\|\}$}
+        \STATE $\alpha_k\gets \dfrac{\mathbf{g}_k^{\top}\mathbf{g}_k}{\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k}$
+        \STATE $\mathbf{x}_{k+1}\gets \mathbf{x}_k+\alpha_k \mathbf{d}_k$
+        \STATE $\mathbf{g}_{k+1}\gets \mathbf{g}_k+\alpha_k \mathbf{A}\mathbf{d}_k$
+        \STATE $\beta_k\gets \dfrac{\mathbf{g}_{k+1}^{\top}\mathbf{g}_{k+1}}{\mathbf{g}_k^{\top}\mathbf{g}_k}$
+        \STATE $\mathbf{d}_{k+1}\gets -\mathbf{g}_{k+1}+\beta_k \mathbf{d}_k$
+        \STATE $k\gets k+1$
+      \ENDWHILE
+      \RETURN $\mathbf{x}_k$
+    \end{algorithmic}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \hrule
+    \vspace{3pt}
+    {\bfseries \textsc{Preconditioned CG}}\par
+    \vspace{3pt}
+    \hrule
+    \vspace{3pt}
+    \small
+    \begin{algorithmic}
+      \REQUIRE SPD matrix $\mathbf{A}$, vector $\mathbf{b}$, SPD preconditioner $\mathbf{M}$, initial guess $\mathbf{x}_0$, tolerance $\varepsilon>0$
+      \STATE $\mathbf{g}_0\gets \mathbf{A}\mathbf{x}_0-\mathbf{b}$, \ $\mathbf{d}_0\gets -\textcolor{crimson}{\mathbf{M}^{-1}\mathbf{g}_0}$, \ $k\gets 0$
+      \WHILE{$\|\mathbf{g}_k\|>\varepsilon \max\{1,\|\mathbf{b}\|\}$}
+        \STATE $\alpha_k\gets \dfrac{\textcolor{crimson}{\mathbf{g}_k^{\top}\mathbf{M}^{-1}\mathbf{g}_k}}{\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k}$
+        \STATE $\mathbf{x}_{k+1}\gets \mathbf{x}_k+\alpha_k \mathbf{d}_k$
+        \STATE $\mathbf{g}_{k+1}\gets \mathbf{g}_k+\alpha_k \mathbf{A}\mathbf{d}_k$
+        \STATE $\beta_k\gets \dfrac{\textcolor{crimson}{\mathbf{g}_{k+1}^{\top}\mathbf{M}^{-1}\mathbf{g}_{k+1}}}{\textcolor{crimson}{\mathbf{g}_k^{\top}\mathbf{M}^{-1}\mathbf{g}_k}}$
+        \STATE $\mathbf{d}_{k+1}\gets -\textcolor{crimson}{\mathbf{M}^{-1}\mathbf{g}_{k+1}}+\beta_k \mathbf{d}_k$
+        \STATE $k\gets k+1$
+      \ENDWHILE
+      \RETURN $\mathbf{x}_k$
+    \end{algorithmic}
+  \end{minipage}
 \end{algorithm}
 
-The extra procedure in PCG is the application of $\mathbf{M}^{-1}$ to a
-vector. So preconditioning is only worthwhile when
-$\mathbf{M}^{-1}\mathbf{v}$ is cheap for the chosen preconditioner.
 
-\begin{example}[Diagonal preconditioning]
+\begin{example}[Diagonal preconditioning (see \cref{fig:ch5-pcg-example})]
 Consider
 \[
   \mathbf{A}\mathbf{x}=\mathbf{b},
@@ -910,14 +1085,14 @@ with
     0, & \text{otherwise},
   \end{cases}
   \qquad
-  \mathbf{M}=\operatorname{Diag}(\mathbf{A}).
+  \mathbf{M}=\operatorname{Diag}(\mathbf{A}) \approx \mathbf{A}.
 \]
 This is the simplest diagonal preconditioner.
 \end{example}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.74\linewidth]{pcg-example.pdf}
+  \incfig[0.74]{pcg-example-embed}
   \caption{A preconditioning example. Even the basic diagonal
   preconditioner $\mathbf{M}=\operatorname{Diag}(\mathbf{A})$ reduces the
   residual much faster than plain CG on the same structured SPD system.}
@@ -953,34 +1128,71 @@ nonlinear CG keeps the same update pattern as linear CG:
 The difference is that the step size is no longer given by
 \eqref{eq:ch5-alpha-cg}. One now chooses $\alpha_k$ by a line search, for
 example using the Armijo--Wolfe conditions from Chapter~2.
+\Cref{alg:ch5-nonlinear-cg} places linear CG and Fletcher--Reeves side by
+side. The terms colored in \textcolor{crimson}{crimson} are exactly the parts
+that change when we pass from the quadratic model to a general smooth
+objective.
 
 \begin{algorithm}[ht]
-  \caption{\textsc{Nonlinear Conjugate Gradient} (Fletcher--Reeves)}
+  \caption{Linear CG and Fletcher--Reeves nonlinear CG. In the right column,
+  the terms colored in \textcolor{crimson}{crimson} are the only changes
+  relative to the linear method.}
   \label{alg:ch5-nonlinear-cg}
-  \begin{algorithmic}
-    \REQUIRE $f$, $\nabla f$, initial point $\mathbf{x}_0$, tolerance $\varepsilon>0$
-    \STATE $\mathbf{g}_0\gets \nabla f(\mathbf{x}_0)$, \ $\mathbf{d}_0\gets -\mathbf{g}_0$, \ $k\gets 0$
-    \WHILE{$\|\mathbf{g}_k\|>\varepsilon \|\nabla f(\mathbf{x}_0)\|$}
-      \STATE Choose $\alpha_k$ by a line search
-      \STATE $\mathbf{x}_{k+1}\gets \mathbf{x}_k+\alpha_k \mathbf{d}_k$
-      \STATE $\mathbf{g}_{k+1}\gets \nabla f(\mathbf{x}_{k+1})$
-      \STATE $\beta_k\gets \dfrac{\mathbf{g}_{k+1}^{\top}\mathbf{g}_{k+1}}{\mathbf{g}_k^{\top}\mathbf{g}_k}$
-      \STATE $\mathbf{d}_{k+1}\gets -\mathbf{g}_{k+1}+\beta_k \mathbf{d}_k$
-      \STATE $k\gets k+1$
-    \ENDWHILE
-    \RETURN $\mathbf{x}_k$
-  \end{algorithmic}
+  \centering
+  \begin{minipage}[t]{0.48\linewidth}
+    \hrule
+    \vspace{3pt}
+    {\bfseries \textsc{Linear CG}}\par
+    \vspace{3pt}
+    \hrule
+    \vspace{3pt}
+    \small
+    \begin{algorithmic}
+      \REQUIRE SPD matrix $\mathbf{A}$, vector $\mathbf{b}$, initial guess $\mathbf{x}_0$, tolerance $\varepsilon>0$
+      \STATE $\mathbf{g}_0\gets \mathbf{A}\mathbf{x}_0-\mathbf{b}$, \ $\mathbf{d}_0\gets -\mathbf{g}_0$, \ $k\gets 0$
+      \WHILE{$\|\mathbf{g}_k\|>\varepsilon \max\{1,\|\mathbf{b}\|\}$}
+        \STATE $\alpha_k\gets \dfrac{\mathbf{g}_k^{\top}\mathbf{g}_k}{\mathbf{d}_k^{\top}\mathbf{A}\mathbf{d}_k}$
+        \STATE $\mathbf{x}_{k+1}\gets \mathbf{x}_k+\alpha_k \mathbf{d}_k$
+        \STATE $\mathbf{g}_{k+1}\gets \mathbf{g}_k+\alpha_k \mathbf{A}\mathbf{d}_k$
+        \STATE $\beta_k\gets \dfrac{\mathbf{g}_{k+1}^{\top}\mathbf{g}_{k+1}}{\mathbf{g}_k^{\top}\mathbf{g}_k}$
+        \STATE $\mathbf{d}_{k+1}\gets -\mathbf{g}_{k+1}+\beta_k \mathbf{d}_k$
+        \STATE $k\gets k+1$
+      \ENDWHILE
+      \RETURN $\mathbf{x}_k$
+    \end{algorithmic}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \hrule
+    \vspace{3pt}
+    {\bfseries \textsc{Fletcher--Reeves}}\par
+    \vspace{3pt}
+    \hrule
+    \vspace{3pt}
+    \small
+    \begin{algorithmic}
+      \REQUIRE \textcolor{crimson}{$f$, $\nabla f$}, initial point $\mathbf{x}_0$, tolerance $\varepsilon>0$
+      \STATE $\mathbf{g}_0\gets \textcolor{crimson}{\nabla f(\mathbf{x}_0)}$, \ $\mathbf{d}_0\gets -\mathbf{g}_0$, \ $k\gets 0$
+      \WHILE{$\|\mathbf{g}_k\|>\textcolor{crimson}{\varepsilon \|\nabla f(\mathbf{x}_0)\|}$}
+        \STATE $\alpha_k\gets \textcolor{crimson}{\text{line search}}$
+        \STATE $\mathbf{x}_{k+1}\gets \mathbf{x}_k+\alpha_k \mathbf{d}_k$
+        \STATE $\mathbf{g}_{k+1}\gets \textcolor{crimson}{\nabla f(\mathbf{x}_{k+1})}$
+        \STATE $\beta_k\gets \dfrac{\mathbf{g}_{k+1}^{\top}\mathbf{g}_{k+1}}{\mathbf{g}_k^{\top}\mathbf{g}_k}$
+        \STATE $\mathbf{d}_{k+1}\gets -\mathbf{g}_{k+1}+\beta_k \mathbf{d}_k$
+        \STATE $k\gets k+1$
+      \ENDWHILE
+      \RETURN $\mathbf{x}_k$
+    \end{algorithmic}
+  \end{minipage}
 \end{algorithm}
 
 For general objectives, Fletcher--Reeves does \emph{not} automatically
 guarantee that every $\mathbf{d}_k$ is a descent direction. A standard
 safeguard is to require the strong Wolfe conditions with $c_2<1/2$; then the
-generated direction is still a descent direction. This is exactly why the
-line-search material from \Cref{alg:expand,alg:zoom} matters here and was not
-just a preliminary detour.
+generated direction is still a descent direction. 
 
 \subsection{Other \texorpdfstring{$\beta_k$}{beta} formulas}
-Different nonlinear-CG schemes differ only in how the coefficient $\beta_k$ is
+Different nonlinear-CG schemes differ in how the coefficient $\beta_k$ is
 chosen. Let
 \[
   \mathbf{y}_k:=\mathbf{g}_{k+1}-\mathbf{g}_k.
@@ -1012,6 +1224,7 @@ Common formulas are
   {\mathbf{d}_k^{\top}\mathbf{y}_k}.
 \end{array}
 \]
+Out of this set the most popural option is Polak--Ribiere.
 On a strictly convex quadratic with exact line search, all of these formulas
 collapse to the same method. That is why the linear theory remains the right
 local model for nonlinear CG near a quadratic-like minimizer.
@@ -1033,9 +1246,9 @@ A standard restart condition is
 \end{equation}
 The idea is simple and geometric: on a quadratic model, neighboring gradients
 are orthogonal, so a serious loss of orthogonality is a natural signal to throw
-away the accumulated direction history and restart from steepest descent.
+away the accumulated direction history and restart from gradient descent. 
 
-\begin{example}[Two standard test problems]
+\begin{example}[Two standard test problems (see \cref{fig:ch5-nonlinear-cg-comparison})]
 Two standard test problems are:
 \begin{itemize}
   \item the Rosenbrock function
@@ -1057,9 +1270,17 @@ on a large smooth problem, nonlinear CG can be substantially more effective
 than plain gradient descent at the same line-search accuracy.
 \end{example}
 
+The memory footprint of nonlinear CG is small and equals $O(n)$. The cost of one
+iteration is $O(n)$. In
+problems where gradient descent and nonlinear CG use the same line-search
+accuracy, nonlinear CG is usually faster in practice because the search
+direction reuses curvature information from previous steps instead of restarting
+from the steepest-descent direction every iteration. So, CG and GD have the same memory
+and computational cost, but CG converges, usually, much faster.
+
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{nonlinear-cg-comparison.pdf}
+  \incfig{nonlinear-cg-comparison-embed}
   \caption{Two nonlinear-CG examples. Left: on Rosenbrock,
   Polak--Ribiere and restarts improve substantially over plain
   Fletcher--Reeves. Right: on a regularized logistic example, nonlinear CG is

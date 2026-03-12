@@ -1,0 +1,133 @@
+%% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'nonlinear-cg-comparison.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{728.39953613bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.42668826)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{nonlinear-cg-comparison.pdf}}%
+    \put(0.13873216,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}50\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{nonlinear-cg-comparison.pdf}}%
+    \put(0.20471836,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}100\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{nonlinear-cg-comparison.pdf}}%
+    \put(0.27070456,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}150\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{nonlinear-cg-comparison.pdf}}%
+    \put(0.33669076,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}200\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{nonlinear-cg-comparison.pdf}}%
+    \put(0.40267698,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}250\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{nonlinear-cg-comparison.pdf}}%
+    \put(0.46866315,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}300\end{tabular}}}}%
+    \put(0.28390181,0.01273984){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}function evaluations\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{nonlinear-cg-comparison.pdf}}%
+    \put(0.02866301,0.04685628){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−15\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{nonlinear-cg-comparison.pdf}}%
+    \put(0.02866301,0.08683293){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−13\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{nonlinear-cg-comparison.pdf}}%
+    \put(0.02866301,0.12704984){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−11\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{nonlinear-cg-comparison.pdf}}%
+    \put(0.03409959,0.1670265){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−9\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{nonlinear-cg-comparison.pdf}}%
+    \put(0.03409959,0.20724341){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−7\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{nonlinear-cg-comparison.pdf}}%
+    \put(0.03409959,0.24734019){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−5\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{nonlinear-cg-comparison.pdf}}%
+    \put(0.03409959,0.28731685){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−3\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{nonlinear-cg-comparison.pdf}}%
+    \put(0.03409959,0.32753376){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−1\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{nonlinear-cg-comparison.pdf}}%
+    \put(0.04138954,0.36763055){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}101\end{tabular}}}}%
+    \put(0.01975865,0.19242735){\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\textsl{f}\textsl{x}\textsl{f}()−\textsl{k}⋆\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=16]{nonlinear-cg-comparison.pdf}}%
+    \put(0.28390181,0.40532636){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Rosenbrock\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=17]{nonlinear-cg-comparison.pdf}}%
+    \put(0.11777619,0.09464201){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}FR\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=18]{nonlinear-cg-comparison.pdf}}%
+    \put(0.11777619,0.07852106){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}FR + restart\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=19]{nonlinear-cg-comparison.pdf}}%
+    \put(0.11777619,0.06240011){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}PR\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=20]{nonlinear-cg-comparison.pdf}}%
+    \put(0.62194612,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}50\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=21]{nonlinear-cg-comparison.pdf}}%
+    \put(0.67608867,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}100\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=22]{nonlinear-cg-comparison.pdf}}%
+    \put(0.73023114,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}150\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=23]{nonlinear-cg-comparison.pdf}}%
+    \put(0.78437373,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}200\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=24]{nonlinear-cg-comparison.pdf}}%
+    \put(0.83851624,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}250\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=25]{nonlinear-cg-comparison.pdf}}%
+    \put(0.89265875,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}300\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=26]{nonlinear-cg-comparison.pdf}}%
+    \put(0.94680126,0.03123265){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}350\end{tabular}}}}%
+    \put(0.77895942,0.01273984){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}function evaluations\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=27]{nonlinear-cg-comparison.pdf}}%
+    \put(0.52372066,0.04673615){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−12\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=28]{nonlinear-cg-comparison.pdf}}%
+    \put(0.52372066,0.09889118){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−10\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=29]{nonlinear-cg-comparison.pdf}}%
+    \put(0.52915724,0.15104622){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−8\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=30]{nonlinear-cg-comparison.pdf}}%
+    \put(0.52915724,0.20320125){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−6\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=31]{nonlinear-cg-comparison.pdf}}%
+    \put(0.52915724,0.25547641){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−4\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=32]{nonlinear-cg-comparison.pdf}}%
+    \put(0.52915724,0.30751131){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}10−2\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=33]{nonlinear-cg-comparison.pdf}}%
+    \put(0.53644719,0.35966635){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}100\end{tabular}}}}%
+    \put(0.51481629,0.19242735){\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}\textsl{f}\textsl{x}\textsl{f}()−\textsl{k}⋆\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=34]{nonlinear-cg-comparison.pdf}}%
+    \put(0.73433422,0.40620585){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}logistic + \textsl{ℓ}2\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=35]{nonlinear-cg-comparison.pdf}}%
+    \put(0.96326358,0.37885908){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}GD\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=36]{nonlinear-cg-comparison.pdf}}%
+    \put(0.96326358,0.36273812){\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}PR\end{tabular}}}}%
+  \end{picture}%
+\endgroup%

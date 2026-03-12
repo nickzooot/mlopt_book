@@ -1,0 +1,9 @@
+%% Minimal wrapper for \\incfig{nonlinear-cg-comparison-embed}
+\begingroup%
+  \makeatletter%
+  \ifx\svgwidth\undefined%
+    \def\svgwidth{\columnwidth}%
+  \fi%
+  \makeatother%
+  \includegraphics[width=\svgwidth]{nonlinear-cg-comparison-embed.pdf}%
+\endgroup%

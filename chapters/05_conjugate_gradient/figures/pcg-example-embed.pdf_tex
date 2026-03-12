@@ -1,0 +1,9 @@
+%% Minimal wrapper for \\incfig{pcg-example-embed}
+\begingroup%
+  \makeatletter%
+  \ifx\svgwidth\undefined%
+    \def\svgwidth{\columnwidth}%
+  \fi%
+  \makeatother%
+  \includegraphics[width=\svgwidth]{pcg-example-embed.pdf}%
+\endgroup%

@@ -19,30 +19,48 @@ DEEPBLUE = "#2c3e7c"
 CRIMSON = "#c23b22"
 TEAL = "#168f89"
 SLATE = "#47515c"
+FOREST = "#2f6a3d"
+SOFTBLUE = "#4f6fa8"
 
 
 plt.rcParams.update(
     {
-        "figure.figsize": (6.0, 2.95),
+        "figure.figsize": (10.0, 4.2),
         "figure.facecolor": "white",
         "axes.facecolor": "white",
         "axes.edgecolor": SLATE,
-        "axes.labelcolor": SLATE,
+        "axes.labelcolor": "black",
         "axes.linewidth": 0.8,
-        "axes.labelsize": 9,
-        "xtick.color": SLATE,
-        "ytick.color": SLATE,
-        "xtick.labelsize": 8,
-        "ytick.labelsize": 8,
-        "font.family": "serif",
-        "font.size": 9,
-        "mathtext.fontset": "cm",
+        "axes.labelsize": 10,
+        "axes.titlesize": 11,
+        "xtick.color": "black",
+        "ytick.color": "black",
+        "xtick.labelsize": 9,
+        "ytick.labelsize": 9,
+        "font.family": "sans-serif",
+        "font.size": 10,
+        "mathtext.fontset": "dejavusans",
         "axes.unicode_minus": False,
         "legend.frameon": False,
         "svg.fonttype": "none",
         "savefig.bbox": "tight",
     }
 )
+
+
+def write_incfig_wrapper(out_dir: Path, stem: str, pdf_name: str) -> None:
+    wrapper = (
+        f"%% Minimal wrapper for \\\\incfig{{{stem}}}\n"
+        "\\begingroup%\n"
+        "  \\makeatletter%\n"
+        "  \\ifx\\svgwidth\\undefined%\n"
+        "    \\def\\svgwidth{\\columnwidth}%\n"
+        "  \\fi%\n"
+        "  \\makeatother%\n"
+        f"  \\includegraphics[width=\\svgwidth]{{{pdf_name}}}%\n"
+        "\\endgroup%\n"
+    )
+    (out_dir / f"{stem}.pdf_tex").write_text(wrapper, encoding="utf-8")
 
 
 def rosenbrock(x: np.ndarray) -> float:
@@ -205,7 +223,8 @@ def logistic_reference_value(fun: callable, grad: callable, n: int) -> float:
 
 def main() -> None:
     out_dir = Path(__file__).resolve().parent
-    out_pdf = out_dir / "nonlinear-cg-comparison.pdf"
+    wrapper_stem = "nonlinear-cg-comparison-embed"
+    out_pdf = out_dir / "nonlinear-cg-comparison-embed.pdf"
     out_svg = out_dir / "nonlinear-cg-comparison.svg"
     out_png = out_dir / "nonlinear-cg-comparison.png"
 
@@ -221,37 +240,35 @@ def main() -> None:
     gd_evals, gd_gap = run_gd(fun_log, grad_log, x0_log, f_star_log, max_iters=35)
     prlog_evals, prlog_gap = run_ncg(fun_log, grad_log, x0_log, f_star_log, "pr", restart=False, max_iters=35)
 
-    fig, (ax0, ax1) = plt.subplots(1, 2)
-    fig.subplots_adjust(left=0.08, right=0.995, bottom=0.22, top=0.95, wspace=0.18)
+    fig, (ax0, ax1) = plt.subplots(1, 2, constrained_layout=True)
     gap_floor = 1e-12
 
     for ax in (ax0, ax1):
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.grid(True, axis="y", which="major", ls=":", lw=0.55, alpha=0.28)
+        ax.grid(True, which="major", ls=":", lw=0.7, alpha=0.6)
         ax.set_xlabel("function evaluations")
         ax.set_ylabel(r"$f(x_k)-f^\star$")
 
-    ax0.semilogy(fr_evals, np.maximum(fr_gap, gap_floor), color=SLATE, lw=1.9, label="FR")
-    ax0.semilogy(frr_evals, np.maximum(frr_gap, gap_floor), color=CRIMSON, lw=1.9, label="FR + restart")
-    ax0.semilogy(pr_evals, np.maximum(pr_gap, gap_floor), color=DEEPBLUE, lw=1.9, label="PR")
+    ax0.semilogy(fr_evals, np.maximum(fr_gap, gap_floor), color=FOREST, lw=1.8, label="FR")
+    ax0.semilogy(frr_evals, np.maximum(frr_gap, gap_floor), color=CRIMSON, lw=2.0, label="FR + restart")
+    ax0.semilogy(pr_evals, np.maximum(pr_gap, gap_floor), color=DEEPBLUE, lw=1.8, label="PR")
     ax0.set_xlim(0.0, 320.0)
     ax0.set_ylim(1e-15, 2.0e2)
     ax0.set_xticks([50, 100, 150, 200, 250, 300])
-    ax0.text(0.03, 0.96, "Rosenbrock", transform=ax0.transAxes, ha="left", va="top", color=SLATE, fontsize=8.5)
-    ax0.legend(loc="lower left", fontsize=7.8, handlelength=2.4, borderaxespad=0.3)
+    ax0.set_title("Rosenbrock")
+    ax0.legend(loc="lower left", fontsize=8.0, handlelength=2.4)
 
-    ax1.semilogy(gd_evals, np.maximum(gd_gap, gap_floor), color=SLATE, lw=1.9, label="GD")
-    ax1.semilogy(prlog_evals, np.maximum(prlog_gap, gap_floor), color=TEAL, lw=1.9, label="PR")
+    ax1.semilogy(gd_evals, np.maximum(gd_gap, gap_floor), color=SOFTBLUE, lw=1.8, label="GD")
+    ax1.semilogy(prlog_evals, np.maximum(prlog_gap, gap_floor), color=TEAL, lw=2.0, label="PR")
     ax1.set_xlim(0.0, 390.0)
     ax1.set_ylim(1e-12, 2.0e1)
     ax1.set_xticks([50, 100, 150, 200, 250, 300, 350])
-    ax1.text(0.03, 0.96, r"logistic + $\ell_2$", transform=ax1.transAxes, ha="left", va="top", color=SLATE, fontsize=8.5)
-    ax1.legend(loc="upper right", fontsize=7.8, handlelength=2.4, borderaxespad=0.3)
+    ax1.set_title(r"logistic + $\ell_2$")
+    ax1.legend(loc="upper right", fontsize=8.0, handlelength=2.4)
 
     fig.savefig(out_pdf)
     fig.savefig(out_svg)
     fig.savefig(out_png, dpi=220)
+    write_incfig_wrapper(out_dir, wrapper_stem, out_pdf.name)
     print(f"Wrote {out_pdf}")
     print(f"Wrote {out_svg}")
 
