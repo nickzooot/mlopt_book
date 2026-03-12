@@ -1,0 +1,79 @@
+%% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'coordinate-conjugate.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{680.31496063bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.5)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{coordinate-conjugate.pdf}}%
+    \put(0.25632,0.02375005){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hat{x}_1$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{coordinate-conjugate.pdf}}%
+    \put(0.03340156,0.24250005){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hat{x}_2$\end{tabular}}}}}%
+    \put(0.52382828,0.24250005){\color[rgb]{0,0,0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$x_2$\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{coordinate-conjugate.pdf}}%
+    \put(0.76276245,0.02375005){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$x_1$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{coordinate-conjugate.pdf}}%
+    \put(0.83877088,0.32588792){\color[rgb]{0.79607843,0.09411765,0.11372549}\transparent{0.42000002}\rotatebox{32.913495}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\ldots$\end{tabular}}}}}%
+    \put(0.59822521,0.11139323){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}^0$\end{tabular}}}}%
+    \put(0.57271055,0.17521381){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}^1$\end{tabular}}}}%
+    \put(0.85639839,0.38164762){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}^2 = \mathbf{x}^{\star}$\end{tabular}}}}%
+    \put(0.07789037,0.16620064){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hat{\mathbf{x}}^0$\end{tabular}}}}%
+    \put(0.42136253,0.16620064){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hat{\mathbf{x}}^1$\end{tabular}}}}%
+    \put(0.36003844,0.34428202){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hat{\mathbf{x}}^2 = \hat{\mathbf{x}}^{\star}$\end{tabular}}}}%
+    \put(0.32957115,0.42137934){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\hat{f}(\hat{\mathbf{x}})$\end{tabular}}}}%
+    \put(0.75035496,0.42236824){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(\mathbf{x})$\end{tabular}}}}%
+    \put(0.84681129,0.14150238){\color[rgb]{0.64705882,0.05882353,0.08235294}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{GD}$\end{tabular}}}}%
+    \put(0.66529001,0.37561239){\color[rgb]{0.03137255,0.18823529,0.41960784}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\text{CG}$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{coordinate-conjugate.pdf}}%
+    \put(0.24332231,0.21617966){\color[rgb]{0.74117647,0.74117647,0.74117647}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x} + \operatorname{span}\{\mathbf{d}_0\} $\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{coordinate-conjugate.pdf}}%
+  \end{picture}%
+\endgroup%
