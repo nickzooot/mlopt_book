@@ -1,0 +1,9 @@
+%% Minimal wrapper for \\incfig{kkt-disk-example-embed}
+\begingroup%
+  \makeatletter%
+  \ifx\svgwidth\undefined%
+    \def\svgwidth{\columnwidth}%
+  \fi%
+  \makeatother%
+  \includegraphics[width=\svgwidth]{kkt-disk-example-embed.pdf}%
+\endgroup%
