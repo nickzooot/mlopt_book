@@ -1,11 +1,11 @@
-\chapter{Constrained Optimization: KKT Conditions, Duality, and Reformulations}
+\chapter{Constrained Optimization: KKT Conditions and Second-Order Tests}
 
 \graphicspath{{chapters/07_constrained_optimization/figures}}
 
 \begin{abstract}
-This chapter develops KKT conditions, second-order tests, duality, and common
-reformulations for constrained optimization, together with the standard convex
-classes LP, QP, QCQP, SOCP, and SDP.
+This chapter develops local optimality conditions for constrained problems:
+feasible directions, tangent cones, constraint qualifications, first-order KKT
+conditions, second-order tests, and representative examples.
 \end{abstract}
 
 \tikzset{
@@ -26,18 +26,10 @@ Chapter~1 explained first- and second-order optimality conditions for
 unconstrained problems, and Chapter~4 introduced the convex sets and convex
 constraint classes that appear in constrained models. The new issue here is
 that, near a feasible point, not every direction is admissible. Constrained
-optimization therefore has two natural questions. First, how can one recognize
-or certify a minimizer when the feasible set blocks most directions? Second,
-how can one rewrite a constrained problem into a form that is easier to solve
-or analyze?
+optimization therefore starts with a local question: how can one recognize or
+certify a minimizer when the feasible set blocks most directions?
 
-The chapter follows this split. The first part develops local optimality
-conditions: feasible sets, feasible directions and tangent cones, constraint
-qualifications, the KKT system, and second-order tests, together with
-analytical examples. The second part turns to duality and reformulations:
-Lagrange duality, dual decomposition,
-Wasserstein duality, epigraph and reparameterization constructions, and the
-standard convex classes LP, QP, QCQP, SOCP, and SDP.
+
 
 \section{Problem statement}
 \label{sec:ch7-problem}
@@ -88,7 +80,8 @@ active constraints at $\mathbf{x}$ by
   \left\{h_j : j=1,\dots,p\right\}.
 \]
 Thus the active constraints are precisely the active inequalities together with
-all equality constraints.
+all equality constraints. When active indices are meant, we use the same
+notation $\operatorname{Active}(\mathbf{x})$.
 \end{definition}
 
 \begin{definition}[Lagrangian]
@@ -244,8 +237,26 @@ every feasible first-order direction, the objective must not decrease.
 \begin{figure}[ht]
     \centering
     \incfig{kkt-condition}
-    \caption{kkt condition}
-    \label{fig:kkt-condition}
+    \caption[Geometry of equality and inequality KKT conditions]{Geometry of the
+    first-order KKT conditions in the two basic cases. The gradients
+    $\nabla h(\mathbf{x}^\star)$ and $\nabla g(\mathbf{x}^\star)$ are normal to
+    their level sets because, along a level set, the constraint is constant and 
+    therefore the directional derivative is
+    zero. Left: for $h(\mathbf{x})=0$, feasible directions satisfy
+    $\nabla h(\mathbf{x}^\star)^\top\mathbf{d}=0$, so
+    $T_F(\mathbf{x}^\star)$ is the tangent space. Since both $\mathbf{d}$ and
+    $-\mathbf{d}$ are feasible, first-order optimality forces
+    $\nabla f(\mathbf{x}^\star)$ to have no tangent component:
+    $\nabla f(\mathbf{x}^\star)=-\mu\nabla h(\mathbf{x}^\star)$, with
+    $\mu\in\mathbb{R}$ free in sign. Right: for $g(\mathbf{x})\le0$,
+    $\nabla g(\mathbf{x}^\star)$ points toward increasing $g$, hence outward
+    from the feasible side $g<0$. Feasible directions satisfy
+    $\nabla g(\mathbf{x}^\star)^\top\mathbf{d}\le0$, and the condition
+    $\nabla f(\mathbf{x}^\star)^\top\mathbf{d}\ge0 \ \forall
+    \mathbf{d}\in T_F(\mathbf{x}^\star)$ forces
+    $\nabla f(\mathbf{x}^\star)=-\lambda\nabla g(\mathbf{x}^\star)$ with
+    $\lambda\ge0$.}
+    \label{fig:ch7-kkt-condition}
 \end{figure}
 
 If $\mathbf{x}^\star\in \operatorname{int} F$, then
@@ -276,6 +287,7 @@ the tangent cone is
     \nabla h(\mathbf{x}^\star)^\top \mathbf{d}=0
   \right\}.
 \end{equation}
+This geometry is shown in the left panel of \Cref{fig:ch7-kkt-condition}.
 Indeed, first-order feasibility means that along every feasible curve the
 constraint stays constant, so its derivative at $t=0$ must vanish.
 
@@ -292,7 +304,7 @@ forces equality:
   \qquad \forall \mathbf{d}\in T_F(\mathbf{x}^\star).
 \]
 So $\nabla f(\mathbf{x}^\star)$ is orthogonal to the tangent space
-\eqref{eq:ch7-tangent-equality}. The normal space is one-dimensional and is
+\eqref{eq:ch7-tangent-equality}. The normal space is
 spanned by $\nabla h(\mathbf{x}^\star)$, hence $\exists\, \mu\in\mathbb{R}$ such
 that
 \[
@@ -306,10 +318,9 @@ Two edge cases are worth keeping in mind.
   the unconstrained one from Chapter~1.
   \item If $\nabla h(\mathbf{x}^\star)=\mathbf{0}$, then the linearized
   constraint becomes trivial and imposes no restriction on the direction
-  $\mathbf{d}$. As a consequence,  every direction is feasible, whereas 
-  the actual feasible set may admit only a
-  much smaller set of directions (in our case\footnote{see left part of \cref{fig:kkt-condition}} this set is still $T_F(\mathbf{x}^\star)$ because this geometric
-  object doesn't depend on whether $\nabla h (\mathbf{x}^\star)$ is 0 or not). This is the first sign that a constraint
+  $\mathbf{d}$. As a consequence, the first-order approximation suggests that
+  every direction is feasible, whereas the actual feasible set may admit only a
+  much smaller set of directions. This is the first sign that a constraint
   qualification is needed.
 \end{itemize}
 
@@ -327,12 +338,14 @@ At a feasible point $\mathbf{x}^\star\in F$, each of the following is a standard
 constraint qualification.
 \begin{enumerate}
   \item \textbf{LCQ (linear constraint qualification).}
-  All constraint functions are affine.
+  All constraint functions are affine with nonzero linear part.
 
   \item \textbf{LICQ (linear independence constraint qualification).}
   The family
   \[
-    \left\{\nabla g_i(\mathbf{x}^\star),\nabla h_j(\mathbf{x}^\star): i,j \in Active(\mathbf{x}^\star)\right\}
+    \left\{\nabla g_i(\mathbf{x}^\star): i\in\operatorname{Active}(\mathbf{x}^\star)\right\}
+    \cup
+    \left\{\nabla h_j(\mathbf{x}^\star): j\in\operatorname{Active}(\mathbf{x}^\star)\right\}
   \]
   is linearly independent.
 
@@ -361,10 +374,8 @@ constraint qualification.
 \end{definition}
 
 The convexity assumptions in the Slater-type conditions refer back to the
-material of Chapter~4: in the standard convex setting, the functions
-$g_i$ are convex and the equalities $h_j$ are affine. A
-practical rule of thumb is that at least one applicable constraint qualification should
-hold at the point we want to analyze.
+material of Chapter~4: in the standard convex setting 
+the functions $g_i$ are convex and the equalities $h_j$ are affine.
 
 \subsection{Case 2: one inequality constraint}
 Now consider
@@ -374,9 +385,15 @@ Now consider
   g(\mathbf{x}) \le 0.
 \]
 If $\mathbf{x}^\star\in \operatorname{int} F$, we are back in the unconstrained
-case and $\nabla f(\mathbf{x}^\star)=\mathbf{0}$. So the genuinely constrained
-situation is a boundary point with
-$g(\mathbf{x}^\star)=0$ and $\nabla g(\mathbf{x}^\star)\neq \mathbf{0}$. Then
+case and $\nabla f(\mathbf{x}^\star)=\mathbf{0}$. So we are more interested in
+a boundary point with
+$g(\mathbf{x}^\star)=0$. We know that $\nabla g(\mathbf{x})$ will be orthogonal
+to the level set and directed outward because, inside the blue region
+(see \Cref{fig:ch7-kkt-condition}), the value of $g$ is negative, on the
+boundary it is zero, and the gradient is always directed toward increasing
+values of the function.
+Then see the right panel of
+\Cref{fig:ch7-kkt-condition}:
 \begin{equation}
   \label{eq:ch7-tangent-one-inequality}
   T_F(\mathbf{x}^\star)
@@ -386,37 +403,123 @@ $g(\mathbf{x}^\star)=0$ and $\nabla g(\mathbf{x}^\star)\neq \mathbf{0}$. Then
     \nabla g(\mathbf{x}^\star)^\top \mathbf{d}\le 0
   \right\}.
 \end{equation}
-Geometrically, feasible first-order motions are exactly those that do not
-leave the feasible side of the boundary.
 
 The tangent-cone condition
 \[
   \nabla f(\mathbf{x}^\star)^\top \mathbf{d}\ge 0
   \qquad \forall \mathbf{d}\in T_F(\mathbf{x}^\star)
 \]
-is now equivalent to the existence of a multiplier $\lambda\ge 0$ such that
+requires $\nabla f(\mathbf{x}^\star)$ to have only one possible direction, like
+the one shown in the right panel of \Cref{fig:ch7-kkt-condition}. Equivalently,
+\(\exists\, \lambda\ge 0\) such that
 \[
   \nabla f(\mathbf{x}^\star)+\lambda \nabla g(\mathbf{x}^\star)=\mathbf{0}.
 \]
-This is the one-constraint inequality version of KKT.
+This is the one-constraint inequality version of KKT. As in the case 1 the same notes about 
+constraint qualifications can be made here.
 
 The fourth KKT condition,
 \[
   \lambda g(\mathbf{x}^\star)=0,
 \]
-is the bookkeeping device that separates the two cases:
+just covers all possible cases, which can be separated into two cases:
 \begin{itemize}
-  \item if $g(\mathbf{x}^\star)<0$, then the point is interior and necessarily
-  $\lambda=0$;
-  \item if $\lambda>0$, then the constraint must be active, so
-  $g(\mathbf{x}^\star)=0$.
+  \item if $\lambda=0$, then $(\mathbf{x}^\star \in \operatorname{int} F$ if $g(\mathbf{x}^\star) <0$ or
+  $\mathbf{x}^\star \in \partial F$ if $g(\mathbf{x}^\star) =0$) and
+  $\nabla f(\mathbf{x}^\star)=\mathbf{0}$;
+  \item if $g(\mathbf{x}^\star)=0$, then
+  $\mathbf{x}^\star \in \partial F$.
 \end{itemize}
+Therefore, it forbids cases when $\lambda >0$  and $g(\mathbf{x}^\star) <0$, so that if we have
+inner point $\mathbf{x}^{\star}$, $\nabla f(\mathbf{x}^{\star })$ must be always zero.
+
+\subsection{Case 3: two inequality constraints}
+Now consider the next case,
+\[
+  f(\mathbf{x}) \to \min_{\mathbf{x}},
+  \qquad
+  g_1(\mathbf{x})\le 0,
+  \qquad
+  g_2(\mathbf{x})\le 0,
+\]
+and suppose that both constraints are active at $\mathbf{x}^\star$:
+\[
+  g_1(\mathbf{x}^\star)=0,
+  \qquad
+  g_2(\mathbf{x}^\star)=0.
+\]
+Let $F_i:=\{\mathbf{x}:g_i(\mathbf{x})\le0\}$ for $i=1,2$. The two individual
+linearized tangent cones are
+\[
+  T_{F_i}(\mathbf{x}^\star)
+  =
+  \left\{\mathbf{d}\in\mathbb{R}^n:
+  \nabla g_i(\mathbf{x}^\star)^\top\mathbf{d}\le0\right\},
+  \qquad i=1,2.
+\]
+Since the feasible set is $F=F_1\cap F_2$, a direction is feasible to first
+order only if it satisfies both linearized inequalities. Thus
+\[
+  T_F(\mathbf{x}^\star)
+  =
+  T_{F_1}(\mathbf{x}^\star)\cap T_{F_2}(\mathbf{x}^\star)
+  =
+  \left\{\mathbf{d}\in\mathbb{R}^n:
+  \nabla g_1(\mathbf{x}^\star)^\top\mathbf{d}\le0,\ 
+  \nabla g_2(\mathbf{x}^\star)^\top\mathbf{d}\le0
+  \right\}.
+\]
+
+\begin{figure}[ht]
+    \centering
+    \incfig{kkt-general-case}
+    \caption[Two active inequalities and the normal cone]{Two active
+    inequalities. Each active constraint gives one tangent half-space,
+    $T_{F_i}(\mathbf{x}^\star)=\{\mathbf d:
+    \nabla g_i(\mathbf{x}^\star)^\top\mathbf d\le0\}$, and the final tangent
+    cone is their intersection
+    $T_F(\mathbf{x}^\star)=T_{F_1}(\mathbf{x}^\star)\cap
+    T_{F_2}(\mathbf{x}^\star)$. The grey cone is the set of vectors having
+    nonnegative inner product with every direction in this intersection:
+    $\operatorname{cone}\{-\nabla g_1(\mathbf{x}^\star),
+    -\nabla g_2(\mathbf{x}^\star)\}$.
+    By \Cref{clm:ch7-tangent-necessary}, $\nabla f(\mathbf{x}^\star)$ must lie
+    in this grey cone; outside it, the inequality
+    $\nabla f(\mathbf{x}^\star)^\top\mathbf d\ge0 \ \forall
+    \mathbf d\in T_F(\mathbf{x}^\star)$ fails.}
+    \label{fig:ch7-kkt-two-inequalities}
+\end{figure}
+
+The tangent-cone condition
+\[
+  \nabla f(\mathbf{x}^\star)^\top\mathbf{d}\ge0
+  \qquad \forall \mathbf{d}\in T_F(\mathbf{x}^\star)
+\]
+therefore restricts $\nabla f(\mathbf{x}^\star)$ to the grey cone in
+\Cref{fig:ch7-kkt-two-inequalities}. In other words,
+\[
+  \exists\, \lambda_1,\lambda_2\ge0:
+  \qquad
+  \nabla f(\mathbf{x}^\star)
+  =
+  -\lambda_1\nabla g_1(\mathbf{x}^\star)
+  -\lambda_2\nabla g_2(\mathbf{x}^\star).
+\]
+Equivalently,
+\[
+  \nabla f(\mathbf{x}^\star)
+  +\lambda_1\nabla g_1(\mathbf{x}^\star)
+  +\lambda_2\nabla g_2(\mathbf{x}^\star)
+  =
+  \mathbf{0},
+  \qquad
+  \lambda_1,\lambda_2\ge0.
+\]
 
 \subsection{The general case and Farkas' lemma}
 \label{sec:ch7-farkas}
 Once a constraint qualification holds, the tangent cone at a feasible point
-$\mathbf{x}^\star$ admits the linear description suggested by the previous two
-examples:
+$\mathbf{x}^\star$ admits the linear description suggested by the previous cases:
 \begin{equation}
   \label{eq:ch7-general-tangent-cone}
   T_F(\mathbf{x}^\star)
@@ -425,7 +528,7 @@ examples:
     \mathbf{d}\in\mathbb{R}^n:
     \begin{array}{l}
       \nabla g_i(\mathbf{x}^\star)^\top \mathbf{d}\le 0
-      \quad \forall i \text{ such that } g_i(\mathbf{x}^\star)=0, \\
+      \quad \forall i\in \operatorname{Active}(\mathbf{x}^\star)\\
       \nabla h_j(\mathbf{x}^\star)^\top \mathbf{d}=0
       \quad \forall j
     \end{array}
@@ -444,12 +547,12 @@ Let
   K := \left\{B\mathbf{y}+C\mathbf{w}: \mathbf{y}\ge \mathbf{0}\right\},
 \]
 where $B\in\mathbb{R}^{n\times m}$, $C\in\mathbb{R}^{n\times p}$,
-$\mathbf{y}\in\mathbb{R}^m$, and $\mathbf{w}\in\mathbb{R}^p$ is free. Then for
+$\mathbf{y}\in\mathbb{R}^m$, and $\mathbf{w}\in\mathbb{R}^p$. Then for
 every $\mathbf{g}\in\mathbb{R}^n$, exactly one of the following alternatives
 holds:
 \begin{enumerate}
-  \item $\mathbf{g}\in K$;
-  \item $\exists\, \mathbf{d}\in\mathbb{R}^n$ such that
+  \item $\mathbf{g}\in K$ or
+  \item  $\exists\, \mathbf{d}\in\mathbb{R}^n$ such that
   \[
     \mathbf{g}^\top \mathbf{d}<0,
     \qquad
@@ -470,7 +573,7 @@ To use it, introduce the cone generated by the active constraint normals:
   N(\mathbf{x}^\star)
   :=
   \left\{
-    -\sum_{i:\,g_i(\mathbf{x}^\star)=0} \lambda_i \nabla g_i(\mathbf{x}^\star)
+    -\sum_{i\in\operatorname{Active}(\mathbf{x}^\star)} \lambda_i \nabla g_i(\mathbf{x}^\star)
     -\sum_{j=1}^p \mu_j \nabla h_j(\mathbf{x}^\star):
     \lambda_i\ge 0
   \right\}.
@@ -479,50 +582,24 @@ Applying \Cref{lem:ch7-farkas} to
 $\mathbf{g}=\nabla f(\mathbf{x}^\star)$ and the linear system
 \eqref{eq:ch7-general-tangent-cone} gives two possibilities:
 \begin{enumerate}
-  \item $\nabla f(\mathbf{x}^\star)\in N(\mathbf{x}^\star)$;
+  \item $\nabla f(\mathbf{x}^\star)\in N(\mathbf{x}^\star)$ or
   \item $\exists\, \mathbf{d}\in\mathbb{R}^n$ such that
   \[
     \begin{aligned}
       \nabla f(\mathbf{x}^\star)^\top \mathbf{d} &<0, \\
       \nabla g_i(\mathbf{x}^\star)^\top \mathbf{d} &\le 0
-      \quad \forall i \text{ such that } g_i(\mathbf{x}^\star)=0, \\
+      \quad \forall i \in\operatorname{Active}(\mathbf{x}^\star), \\
       \nabla h_j(\mathbf{x}^\star)^\top \mathbf{d} &=0
       \quad \forall j.
     \end{aligned}
   \]
 \end{enumerate}
-But the second alternative says exactly that $\mathbf{d}\in T_F(\mathbf{x}^\star)$
-is a feasible descent direction, which is impossible at a local minimizer.
-Hence only the first alternative can occur.
+But the second alternative gives $\mathbf{d}\in T_F(\mathbf{x}^\star)$ with
+$\nabla f(\mathbf{x}^\star)^\top\mathbf{d}<0$, contradicting
+\Cref{clm:ch7-tangent-necessary}. Hence only the first alternative can occur.
 
-We can now return to the theorem stated at the beginning of the section.
+This finishes a sketch of the proof for \cref{thm:ch7-kkt-first}.
 
-\begin{proof}[Proof of \Cref{thm:ch7-kkt-first}]
-Let $\mathbf{x}^\star$ be a local minimizer. By
-\Cref{clm:ch7-tangent-necessary},
-\[
-  \nabla f(\mathbf{x}^\star)^\top \mathbf{d}\ge 0
-  \qquad \forall \mathbf{d}\in T_F(\mathbf{x}^\star).
-\]
-Under a constraint qualification, the tangent cone is given by
-\eqref{eq:ch7-general-tangent-cone}. So the Farkas alternative above applies:
-either $\nabla f(\mathbf{x}^\star)\in N(\mathbf{x}^\star)$, or one can find a
-feasible descent direction. The latter is impossible because
-$\mathbf{x}^\star$ is a local minimizer. Therefore
-\[
-  \nabla f(\mathbf{x}^\star)
-  =
-  -\sum_{i:\,g_i(\mathbf{x}^\star)=0} \lambda_i^\star
-  \nabla g_i(\mathbf{x}^\star)
-  -\sum_{j=1}^p \mu_j^\star \nabla h_j(\mathbf{x}^\star)
-\]
-for some $\lambda_i^\star\ge 0$ and some $\mu_j^\star\in\mathbb{R}$. This is
-the stationarity condition \eqref{eq:ch7-kkt-stationarity}. For inactive
-inequalities with $g_i(\mathbf{x}^\star)<0$, set
-$\lambda_i^\star:=0$. Then primal feasibility and dual feasibility are
-automatic, and complementary slackness holds because either
-$g_i(\mathbf{x}^\star)=0$ (active case) or $\lambda_i^\star=0$ (inactive case).
-\end{proof}
 
 \section{Second-order KKT conditions}
 \label{sec:ch7-second-order}
@@ -548,10 +625,11 @@ inequality terms are nonnegative after multiplication by $-\lambda_i$:
 \[
   -\lambda_i \nabla g_i(\mathbf{x}^\star)^\top \mathbf{d}\ge 0.
 \]
-Therefore a direction with zero first-order growth must satisfy
+Therefore a direction with $\nabla f(\mathbf{x}^\star)^\top \mathbf{d} = 0$
+must satisfy
 \[
   \nabla g_i(\mathbf{x}^\star)^\top \mathbf{d}=0
-  \qquad \forall i \text{ active with } \lambda_i>0.
+  \qquad \forall i \in\operatorname{Active}(\mathbf{x}^\star)\text{ with } \lambda_i>0.
 \]
 This leads to the critical cone.
 
@@ -566,8 +644,8 @@ $\boldsymbol{\lambda}\ge \mathbf{0}$, the critical cone is
   \left\{
     \mathbf{d}\in T_F(\mathbf{x}^\star):
     \begin{array}{l}
-      \nabla g_i(\mathbf{x}^\star)^\top \mathbf{d}=0 \\
-      \quad \forall i \text{ such that } g_i(\mathbf{x}^\star)=0
+      \nabla g_i(\mathbf{x}^\star)^\top \mathbf{d}=0 
+      \quad \forall i\in\operatorname{Active}(\mathbf{x}^\star) 
       \text{ and } \lambda_i>0
     \end{array}
   \right\}.
@@ -616,7 +694,9 @@ then $\mathbf{x}^\star$ is a local minimizer.
 The point of \eqref{eq:ch7-second-order-necessary} and
 \eqref{eq:ch7-second-order-sufficient} is that the Hessian of the Lagrangian is
 not checked on the whole space $\mathbb{R}^n$, but only on the critical
-directions left undecided by first-order KKT.
+directions left undecided by first-order KKT. However, sometimes we check the
+Hessian inequality on the whole space, because there are cases when it is hard
+to explicitly construct the critical cone.
 
 \section{Worked examples}
 \label{sec:ch7-examples}
@@ -722,6 +802,8 @@ Consider
   \min_{x,y} \ x^2-y^2
   \qquad \text{subject to } x^2+y^2\le 1.
 \]
+Slater's condition holds: for example, $(0,0)$ is strictly feasible since
+$0^2+0^2-1<0$. Therefore the KKT conditions are applicable.
 The Lagrangian is
 \[
   L(x,y,\lambda)=x^2-y^2+\lambda(x^2+y^2-1).
@@ -829,16 +911,6 @@ and again the quadratic form equals $4d_1^2>0$ on nonzero critical
 directions. Hence $(0,-1)$ is also a local minimum.
 \end{example}
 
-\begin{figure}[ht]
-  \centering
-  \incfig{kkt-disk-example-embed}
-  \caption{Contours of $f(x,y)=x^2-y^2$ on the feasible disk
-  $x^2+y^2\le 1$. The origin satisfies first-order KKT but fails the
-  second-order test, while $(0,\pm 1)$ are the local minima identified in
-  \Cref{ex:ch7-disk}.}
-  \label{fig:ch7-disk-example}
-\end{figure}
-
 \subsection{A determinant maximization example}
 \begin{example}[Maximizing $\det(\mathbf{X})$ under one trace constraint]
 \label{ex:ch7-det-max}
@@ -864,6 +936,8 @@ To fit the chapter's minimization form, rewrite the problem as
   \text{subject to }
   \operatorname{tr}(\mathbf{A}^\top \mathbf{X})-b \le 0.
 \]
+The constraint qualification holds because the inequality constraint is affine
+in $\mathbf{X}$.
 The Lagrangian is
 \[
   L(\mathbf{X},\lambda)
@@ -976,8 +1050,11 @@ Linearizing each score around the current point gives
   \approx
   f_k(\mathbf{x}) + \nabla f_k(\mathbf{x})^\top \mathbf{r}.
 \]
-For a fixed competing class $j\neq y$, the linearized boundary between class
-$y$ and class $j$ is therefore
+The predicted class changes when at least one competing score catches the
+current winning score. Locally, we therefore ask how far one must move before
+the first-order model of $f_j$ ties the first-order model of $f_y$.
+For a fixed competing class $j\neq y$, this linearized boundary between class
+$y$ and class $j$ is
 \[
   f_y(\mathbf{x}) + \nabla f_y(\mathbf{x})^\top \mathbf{r}
   =
@@ -1102,910 +1179,12 @@ overshoot factor:
 \]
 where $m$ is the first index for which
 $\hat k(\mathbf{x}_m)\neq y$.
+The overshoot is a practical correction: each computed step is the shortest
+step to a locally linearized boundary, so without the factor the final point may
+lie exactly on the approximate boundary or may still remain on the original side
+of the true nonlinear boundary. Multiplying by $1+\eta$ moves the point slightly
+farther in the same direction and makes the label change robust to curvature and
+numerical instabilities.
 
-The important point for this chapter is not the neural-network application by
-itself, but the structure of the derivation: every DeepFool step is obtained
-by solving a smallest-norm constrained optimization problem through the same
-Lagrangian and KKT logic used throughout this chapter.
 \end{example}
 
-\section{Duality and reformulations}
-\label{sec:ch7-transformations}
-Up to this point the chapter has asked a direct question: given a constrained
-problem, what must happen at a local minimizer? We now switch perspective.
-Instead of extracting information from the original problem, we now reformulate
-it: as a Lagrange dual problem, a split formulation, an epigraph form, or a
-reparameterized unconstrained model. The goal is the same in every case:
-preserve the essential optimization content, but move it into a representation
-that is easier to analyze or solve.
-
-\subsection{The dual function and the dual problem}
-\label{subsec:ch7-dual}
-Return to the primal problem
-\begin{equation}
-  \label{eq:ch7-primal-dual-primal}
-  \begin{aligned}
-    \min_{\mathbf{x}} \quad & f(\mathbf{x}) \\
-    \text{subject to}\quad & g_i(\mathbf{x}) \le 0, \qquad i=1,\dots,m, \\
-    & h_j(\mathbf{x}) = 0, \qquad j=1,\dots,p.
-  \end{aligned}
-\end{equation}
-Its Lagrangian is still
-\[
-  L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  f(\mathbf{x})
-  + \sum_{i=1}^m \lambda_i g_i(\mathbf{x})
-  + \sum_{j=1}^p \mu_j h_j(\mathbf{x}).
-\]
-The new object is the dual function
-\begin{equation}
-  \label{eq:ch7-dual-function}
-  q(\boldsymbol{\lambda},\boldsymbol{\mu})
-  :=
-  \inf_{\mathbf{x}} L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu}).
-\end{equation}
-For fixed multipliers, the Lagrangian is an objective in $\mathbf{x}$, and the
-dual function records its best lower value.
-
-\begin{claim}[Basic properties of the dual function]
-\label{clm:ch7-dual-properties}
-The function $q$ has the following properties.
-\begin{enumerate}
-  \item $q(\boldsymbol{\lambda},\boldsymbol{\mu})$ is concave in
-  $(\boldsymbol{\lambda},\boldsymbol{\mu})$.
-  \item If $\boldsymbol{\lambda}\ge \mathbf{0}$, then
-  \[
-    q(\boldsymbol{\lambda},\boldsymbol{\mu}) \le f_{\mathrm{opt}},
-  \]
-  where $f_{\mathrm{opt}}$ is the optimal primal value.
-\end{enumerate}
-\end{claim}
-\begin{proof}
-For every fixed $\mathbf{x}$, the function
-\[
-  (\boldsymbol{\lambda},\boldsymbol{\mu})
-  \mapsto
-  L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})
-\]
-is affine, hence both convex and concave. Therefore
-\[
-  q(\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  \inf_{\mathbf{x}} L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  -\sup_{\mathbf{x}}
-  \bigl(-L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})\bigr)
-\]
-is concave as the negative of a supremum of convex functions.
-
-Now take any feasible $\widehat{\mathbf{x}}\in F$. Since
-$g_i(\widehat{\mathbf{x}})\le 0$, $h_j(\widehat{\mathbf{x}})=0$, and
-$\lambda_i\ge 0$, we obtain
-\begin{align*}
-  q(\boldsymbol{\lambda},\boldsymbol{\mu})
-  &=
-  \inf_{\mathbf{x}} L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu}) \\
-  &\le
-  L(\widehat{\mathbf{x}},\boldsymbol{\lambda},\boldsymbol{\mu}) \\
-  &=
-  f(\widehat{\mathbf{x}})
-  + \sum_{i=1}^m \lambda_i g_i(\widehat{\mathbf{x}})
-  + \sum_{j=1}^p \mu_j h_j(\widehat{\mathbf{x}}) \\
-  &\le f(\widehat{\mathbf{x}}).
-\end{align*}
-Taking the infimum over all feasible $\widehat{\mathbf{x}}$ gives
-\[
-  q(\boldsymbol{\lambda},\boldsymbol{\mu}) \le f_{\mathrm{opt}}.
-\]
-\end{proof}
-
-Because $q$ is concave, maximizing it is a convex optimization problem even
-when the primal problem is not. This gives the dual problem
-\begin{equation}
-  \label{eq:ch7-dual-problem}
-  \begin{aligned}
-    \max_{\boldsymbol{\lambda},\boldsymbol{\mu}} \quad
-    & q(\boldsymbol{\lambda},\boldsymbol{\mu}) \\
-    \text{subject to}\quad
-    & \boldsymbol{\lambda}\ge \mathbf{0}.
-  \end{aligned}
-\end{equation}
-
-\begin{theorem}[Weak duality]
-\label{thm:ch7-weak-duality}
-For every primal feasible $\mathbf{x}$ and every dual feasible
-$(\boldsymbol{\lambda},\boldsymbol{\mu})$,
-\[
-  q(\boldsymbol{\lambda},\boldsymbol{\mu}) \le f(\mathbf{x}).
-\]
-In particular, if $q_{\mathrm{opt}}$ denotes the optimal dual value, then
-\[
-  q_{\mathrm{opt}} \le f_{\mathrm{opt}}.
-\]
-\end{theorem}
-
-The quantity
-\[
-  f_{\mathrm{opt}} - q_{\mathrm{opt}} \ge 0
-\]
-is the \emph{duality gap}. The main favorable case is strong duality.
-
-\begin{theorem}[Strong duality in the convex case]
-\label{thm:ch7-strong-duality}
-Assume that the primal problem \eqref{eq:ch7-primal-dual-primal} is convex in
-the sense of Chapter~4, and assume that Slater's condition from
-\Cref{def:ch7-cq} holds. Then
-\[
-  q_{\mathrm{opt}} = f_{\mathrm{opt}}.
-\]
-If, in addition, dual optimizers
-$(\boldsymbol{\lambda}^\star,\boldsymbol{\mu}^\star)$ exist, then every primal
-optimizer $\mathbf{x}^\star$ satisfies
-\[
-  \mathbf{x}^\star \in
-  \arg\min_{\mathbf{x}}
-  L(\mathbf{x},\boldsymbol{\lambda}^\star,\boldsymbol{\mu}^\star).
-\]
-\end{theorem}
-
-So, under the same constraint-qualification theme that already appeared in the
-KKT section,
-the dual problem is not merely a lower-bounding relaxation: it recovers the
-exact optimal value.
-
-\begin{example}[Dual of a linear program with equalities and inequalities]
-\label{ex:ch7-dual-lp}
-Consider
-\[
-  \min_{\mathbf{x}} c^\top \mathbf{x}
-  \qquad
-  \text{subject to }
-  A\mathbf{x}\le \mathbf{b},
-  \qquad
-  C\mathbf{x}=\mathbf{d}.
-\]
-Its Lagrangian is
-\[
-  L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  c^\top \mathbf{x}
-  + \boldsymbol{\lambda}^\top(A\mathbf{x}-\mathbf{b})
-  + \boldsymbol{\mu}^\top(C\mathbf{x}-\mathbf{d}),
-\]
-or, after grouping the $\mathbf{x}$-terms,
-\[
-  L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  \mathbf{x}^\top
-  (c + A^\top \boldsymbol{\lambda} + C^\top \boldsymbol{\mu})
-  - \boldsymbol{\lambda}^\top \mathbf{b}
-  - \boldsymbol{\mu}^\top \mathbf{d}.
-\]
-Therefore
-\[
-  q(\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  \inf_{\mathbf{x}} L(\mathbf{x},\boldsymbol{\lambda},\boldsymbol{\mu})
-  =
-  \begin{cases}
-    -\boldsymbol{\lambda}^\top \mathbf{b}
-    - \boldsymbol{\mu}^\top \mathbf{d},
-    &
-    c + A^\top \boldsymbol{\lambda} + C^\top \boldsymbol{\mu}
-    = \mathbf{0},
-    \\
-    -\infty, & \text{otherwise}.
-  \end{cases}
-\]
-The reason is simple: if the coefficient of $\mathbf{x}$ is nonzero, then the
-affine function of $\mathbf{x}$ can be driven to $-\infty$.
-
-Hence the dual problem is
-\[
-  \max_{\boldsymbol{\lambda},\boldsymbol{\mu}}
-  \bigl(
-    -\boldsymbol{\lambda}^\top \mathbf{b}
-    - \boldsymbol{\mu}^\top \mathbf{d}
-  \bigr)
-  \qquad
-  \text{subject to }
-  \boldsymbol{\lambda}\ge \mathbf{0},
-  \qquad
-  c + A^\top \boldsymbol{\lambda} + C^\top \boldsymbol{\mu}=\mathbf{0}.
-\]
-\end{example}
-
-\subsection{Dual decomposition}
-\label{subsec:ch7-dual-decomposition}
-A standard splitting idea starts from an objective that is a
-sum of two simple pieces, but optimizing them together is inconvenient:
-\[
-  \min_{\mathbf{x}} f(\mathbf{x}) + g(\mathbf{x}).
-\]
-Introduce two copies of the variable and tie them together by an equality:
-\begin{equation}
-  \label{eq:ch7-dual-decomposition-primal}
-  \min_{\mathbf{x},\mathbf{y}} f(\mathbf{x}) + g(\mathbf{y})
-  \qquad
-  \text{subject to }
-  \mathbf{x}=\mathbf{y}.
-\end{equation}
-Its Lagrangian is
-\[
-  L(\mathbf{x},\mathbf{y},\boldsymbol{\mu})
-  =
-  f(\mathbf{x}) + g(\mathbf{y}) + \boldsymbol{\mu}^\top(\mathbf{x}-\mathbf{y}),
-\]
-so the dual function separates:
-\begin{align}
-  q(\boldsymbol{\mu})
-  &=
-  \inf_{\mathbf{x},\mathbf{y}}
-  L(\mathbf{x},\mathbf{y},\boldsymbol{\mu}) \notag \\
-  &=
-  \inf_{\mathbf{x}}
-  \bigl(f(\mathbf{x})+\boldsymbol{\mu}^\top \mathbf{x}\bigr)
-  +
-  \inf_{\mathbf{y}}
-  \bigl(g(\mathbf{y})-\boldsymbol{\mu}^\top \mathbf{y}\bigr).
-  \label{eq:ch7-dual-decomposition-q}
-\end{align}
-This is the basic advantage of the reformulation: the primal coupling
-$\mathbf{x}=\mathbf{y}$ becomes an additive separation in the dual.
-
-If the minimizers
-\[
-  \mathbf{x}_{\mathrm{opt}}(\boldsymbol{\mu})
-  \in
-  \arg\min_{\mathbf{x}}
-  \bigl(f(\mathbf{x})+\boldsymbol{\mu}^\top \mathbf{x}\bigr),
-  \qquad
-  \mathbf{y}_{\mathrm{opt}}(\boldsymbol{\mu})
-  \in
-  \arg\min_{\mathbf{y}}
-  \bigl(g(\mathbf{y})-\boldsymbol{\mu}^\top \mathbf{y}\bigr)
-\]
-are well defined, then the gradient of the dual function is
-\[
-  \nabla_{\boldsymbol{\mu}} q(\boldsymbol{\mu})
-  =
-  \mathbf{x}_{\mathrm{opt}}(\boldsymbol{\mu})
-  -
-  \mathbf{y}_{\mathrm{opt}}(\boldsymbol{\mu}).
-\]
-So Chapter~2's gradient methods can be applied on the dual side: ascent tries
-to force the two split variables to agree.
-
-\begin{example}[$\ell_1$-regularized least squares]
-\label{ex:ch7-dual-lasso}
-Consider the problem
-\[
-  \min_{\mathbf{x}}
-  \frac12 \|A\mathbf{x}-\mathbf{b}\|_2^2 + \lambda \|\mathbf{x}\|_1.
-\]
-The nonsmooth term and the quadratic term become easier to separate after
-introducing
-\[
-  \mathbf{z}=A\mathbf{x}-\mathbf{b}.
-\]
-This gives the equivalent constrained problem
-\[
-  \min_{\mathbf{x},\mathbf{z}}
-  \frac12 \|\mathbf{z}\|_2^2 + \lambda \|\mathbf{x}\|_1
-  \qquad
-  \text{subject to }
-  A\mathbf{x}-\mathbf{b}-\mathbf{z}=\mathbf{0}.
-\]
-Its Lagrangian is
-\[
-  L(\mathbf{x},\mathbf{z},\boldsymbol{\mu})
-  =
-  \frac12 \|\mathbf{z}\|_2^2
-  + \lambda \|\mathbf{x}\|_1
-  + \boldsymbol{\mu}^\top(A\mathbf{x}-\mathbf{b}-\mathbf{z}).
-\]
-Minimizing first with respect to $\mathbf{z}$ gives
-\[
-  \nabla_{\mathbf{z}} L = \mathbf{z}-\boldsymbol{\mu}=\mathbf{0},
-  \qquad
-  \mathbf{z}=\boldsymbol{\mu},
-\]
-and hence
-\[
-  \inf_{\mathbf{z}}
-  \left(
-    \frac12 \|\mathbf{z}\|_2^2
-    - \boldsymbol{\mu}^\top \mathbf{z}
-  \right)
-  =
-  -\frac12 \|\boldsymbol{\mu}\|_2^2.
-\]
-For the $\mathbf{x}$-part,
-\[
-  \lambda \|\mathbf{x}\|_1 + \boldsymbol{\mu}^\top A\mathbf{x}
-  =
-  \sum_i
-  \Bigl(
-    \lambda |x_i| + (A^\top \boldsymbol{\mu})_i x_i
-  \Bigr).
-\]
-Each scalar term has finite infimum if and only if
-\[
-  -\lambda \le (A^\top \boldsymbol{\mu})_i \le \lambda,
-  \qquad i=1,\dots,n,
-\]
-in which case the infimum equals $0$; otherwise the infimum is $-\infty$.
-Therefore the dual problem is
-\[
-  \max_{\boldsymbol{\mu}}
-  \left(
-    -\frac12 \|\boldsymbol{\mu}\|_2^2
-    - \boldsymbol{\mu}^\top \mathbf{b}
-  \right)
-  \qquad
-  \text{subject to }
-  \|A^\top \boldsymbol{\mu}\|_\infty \le \lambda.
-\]
-This is now a standard quadratic maximization problem
-with simple convex constraints.
-\end{example}
-
-\subsection{Wasserstein distance as a duality example}
-\label{subsec:ch7-wasserstein}
-A particularly useful duality example comes from optimal transport and its
-machine-learning applications. For discrete distributions $p$ and $q$, a transport plan is
-a nonnegative function $d(x,y)$ satisfying the marginal constraints
-\[
-  \sum_y d(x,y)=p(x),
-  \qquad
-  \sum_x d(x,y)=q(y).
-\]
-The corresponding optimal transport problem is
-\[
-  \min_d \sum_{x,y} d(x,y)\,\|x-y\|
-  \qquad
-  \text{subject to the constraints above.}
-\]
-
-In continuous form, the Wasserstein distance is
-\[
-  W(p,q)
-  =
-  \inf_{d\in \Pi(p,q)}
-  \mathbb{E}_{(x,y)\sim d}\|x-y\|,
-\]
-where $\Pi(p,q)$ is the set of all couplings with marginals $p$ and $q$:
-\[
-  d(x,y)\ge 0,
-  \qquad
-  \int d(x,y)\,dy = p(x),
-  \qquad
-  \int d(x,y)\,dx = q(y).
-\]
-
-\begin{theorem}[Kantorovich--Rubinstein duality]
-\label{thm:ch7-kr}
-The Wasserstein distance satisfies
-\[
-  W(p,q)
-  =
-  \sup_{h\in 1\text{-Lipschitz}}
-  \left(
-    \mathbb{E}_{x\sim p} h(x)
-    -
-    \mathbb{E}_{y\sim q} h(y)
-  \right).
-\]
-\end{theorem}
-\begin{proof}
-Start from the constrained primal problem
-\[
-  \inf_{d}
-  \iint d(x,y)\|x-y\|\,dx\,dy
-  \quad
-  \text{subject to }
-  \begin{cases}
-    d(x,y)\ge 0, \\
-    \int d(x,y)\,dy = p(x), \\
-    \int d(x,y)\,dx = q(y).
-  \end{cases}
-\]
-Introduce dual functions $\mu_1(x)$ and $\mu_2(y)$ for the marginal
-constraints and a nonnegative multiplier $\lambda(x,y)$ for $d(x,y)\ge 0$.
-The Lagrangian is
-\begin{align*}
-  L[d,\mu_1,\mu_2,\lambda]
-  &=
-  \iint d(x,y)\|x-y\|\,dx\,dy \\
-  &\quad +
-  \int \mu_1(x)
-  \left(
-    p(x) - \int d(x,y)\,dy
-  \right)
-  dx \\
-  &\quad +
-  \int \mu_2(y)
-  \left(
-    q(y) - \int d(x,y)\,dx
-  \right)
-  dy \\
-  &\quad -
-  \iint \lambda(x,y)d(x,y)\,dx\,dy.
-\end{align*}
-After collecting the $d$-terms, this becomes
-\begin{align*}
-  L[d,\mu_1,\mu_2,\lambda]
-  &=
-  \iint d(x,y)
-  \bigl(
-    \|x-y\|-\mu_1(x)-\mu_2(y)-\lambda(x,y)
-  \bigr)
-  dx\,dy \\
-  &\quad +
-  \mathbb{E}_{x\sim p}\mu_1(x)
-  +
-  \mathbb{E}_{y\sim q}\mu_2(y).
-\end{align*}
-So the dual function is finite only if
-\[
-  \|x-y\|-\mu_1(x)-\mu_2(y)-\lambda(x,y)=0,
-  \qquad
-  \lambda(x,y)\ge 0,
-\]
-that is,
-\[
-  \mu_1(x)+\mu_2(y)\le \|x-y\|
-  \qquad \forall x,y.
-\]
-Hence the dual problem is
-\begin{equation}
-  \label{eq:ch7-wasserstein-dual-raw}
-  \sup_{\mu_1,\mu_2}
-  \left(
-    \mathbb{E}_{x\sim p}\mu_1(x)
-    +
-    \mathbb{E}_{y\sim q}\mu_2(y)
-  \right)
-  \quad
-  \text{subject to }
-  \mu_1(x)+\mu_2(y)\le \|x-y\|
-  \ \forall x,y.
-\end{equation}
-
-Now let $h$ be any $1$-Lipschitz function. For every coupling $d\in \Pi(p,q)$,
-\begin{align*}
-  \mathbb{E}_{x\sim p} h(x) - \mathbb{E}_{y\sim q} h(y)
-  &=
-  \iint d(x,y)\bigl(h(x)-h(y)\bigr)\,dx\,dy \\
-  &\le
-  \iint d(x,y)\|x-y\|\,dx\,dy.
-\end{align*}
-Taking the infimum over all couplings gives
-\[
-  \mathbb{E}_{x\sim p} h(x) - \mathbb{E}_{y\sim q} h(y)
-  \le W(p,q),
-\]
-and then taking the supremum over all $1$-Lipschitz $h$ yields
-\begin{equation}
-  \label{eq:ch7-kr-one-side}
-  \sup_{h\in 1\text{-Lipschitz}}
-  \left(
-    \mathbb{E}_{x\sim p} h(x)
-    -
-    \mathbb{E}_{y\sim q} h(y)
-  \right)
-  \le W(p,q).
-\end{equation}
-
-For the reverse inequality, take any feasible pair $(\mu_1,\mu_2)$ in
-\eqref{eq:ch7-wasserstein-dual-raw} and define
-\[
-  k(x)
-  :=
-  \inf_y \bigl(\|x-y\|-\mu_2(y)\bigr).
-\]
-Then \(\mu_1(x)\le k(x)\) \(\forall x\). Also, for any $x,z$,
-\[
-  k(x)
-  \le
-  \|x-z\|
-  +
-  \inf_y \bigl(\|z-y\|-\mu_2(y)\bigr)
-  =
-  \|x-z\| + k(z),
-\]
-so
-\[
-  |k(x)-k(z)|\le \|x-z\|,
-\]
-which means that $k$ is $1$-Lipschitz. Finally, by choosing $y=x$ in the
-definition of $k$,
-\[
-  k(x)\le \|x-x\|-\mu_2(x) = -\mu_2(x),
-\]
-or equivalently $\mu_2(x)\le -k(x)$. Therefore
-\[
-  \mathbb{E}_{x\sim p}\mu_1(x)
-  +
-  \mathbb{E}_{y\sim q}\mu_2(y)
-  \le
-  \mathbb{E}_{x\sim p}k(x)
-  -
-  \mathbb{E}_{y\sim q}k(y)
-  \le
-  W(p,q),
-\]
-where the last inequality follows from \eqref{eq:ch7-kr-one-side} because $k$
-is $1$-Lipschitz. Taking the supremum over feasible $(\mu_1,\mu_2)$ gives the
-reverse inequality. Hence equality holds.
-\end{proof}
-
-This duality formula is one of the reasons Wasserstein distance is useful in
-machine learning: it replaces optimization over couplings by optimization over
-test functions with a Lipschitz constraint.
-
-\begin{example}[Wasserstein GAN]
-\label{ex:ch7-wgan}
-Suppose we are given samples
-\[
-  X_1,\dots,X_N,
-\]
-with empirical data distribution
-\[
-  p_{\mathrm{data}}(x)
-  =
-  \frac1N \sum_{i=1}^N \delta(x-X_i).
-\]
-Let $z\sim p(z)$ be a latent variable and let the generator produce
-\[
-  x = g(z,\theta),
-\]
-which induces a model distribution $q_\theta$. By
-\Cref{thm:ch7-kr}, minimizing the Wasserstein distance can be written as
-\[
-  \min_\theta
-  \sup_{h\in 1\text{-Lipschitz}}
-  \left(
-    \mathbb{E}_{x\sim p_{\mathrm{data}}} h(x)
-    -
-    \mathbb{E}_{z\sim p(z)} h(g(z,\theta))
-  \right).
-\]
-In practice one then makes the modeling step
-\[
-  h(\cdot,w)=\text{neural network},
-\]
-so the critic is parameterized by weights $w$. The remaining issue is the
-$1$-Lipschitz constraint. Two standard ways to enforce it in practice are to
-restrict the size of the network weights, or add a gradient penalty term of
-the form
-\[
-  \lambda\bigl(\|\nabla h(x)\|_2 - 1\bigr)^2
-\]
-to the critic objective. The point here is not the implementation detail, but
-the origin of the objective: it is a direct application of the Wasserstein
-dual problem.
-\end{example}
-
-\subsection{Epigraph reformulations}
-\label{subsec:ch7-epigraph}
-Chapter~4 already introduced epigraphs as geometric objects. Here the same
-idea appears as a modeling trick. The basic identity is
-\[
-  \min_{\mathbf{x}} f(\mathbf{x})
-  \qquad \Longleftrightarrow \qquad
-  \min_{\mathbf{x},t} t
-  \quad
-  \text{subject to }
-  f(\mathbf{x})\le t.
-\]
-The objective has been linearized, at the cost of one extra constraint.
-
-\begin{example}[The infinity norm as a mini-max problem]
-\label{ex:ch7-epigraph-inf}
-Consider
-\[
-  \min_{\mathbf{x}} \|A\mathbf{x}-\mathbf{b}\|_\infty
-  =
-  \min_{\mathbf{x}} \max_i |(A\mathbf{x}-\mathbf{b})_i|.
-\]
-Introducing an epigraph variable $t$ gives
-\[
-  \min_{\mathbf{x},t} t
-  \qquad
-  \text{subject to }
-  |(A\mathbf{x}-\mathbf{b})_i|\le t
-  \quad \forall i.
-\]
-Equivalently,
-\[
-  \min_{\mathbf{x},t} t
-  \qquad
-  \text{subject to }
-  -t \le (A\mathbf{x}-\mathbf{b})_i \le t
-  \quad \forall i.
-\]
-So a mini-max objective becomes a linear objective with linear inequalities.
-\end{example}
-
-\begin{example}[Turning an $\ell_1$ term into linear constraints]
-\label{ex:ch7-epigraph-l1}
-For
-\[
-  \min_{\mathbf{x}} f(\mathbf{x}) + \lambda \|\mathbf{x}\|_1,
-\]
-introduce one slack variable $t_j$ for each coordinate. Then the equivalent
-problem is
-\[
-  \min_{\mathbf{x},\mathbf{t}\in \mathbb{R}^d}
-  f(\mathbf{x}) + \lambda \sum_{j=1}^d t_j
-  \qquad
-  \text{subject to }
-  -t_j \le x_j \le t_j,
-  \quad j=1,\dots,d.
-\]
-The nonsmooth absolute values have disappeared from the objective and been
-moved into linear constraints.
-\end{example}
-
-\subsection{Reparameterization reformulations}
-\label{subsec:ch7-reparam}
-Another useful idea is to enforce the constraint set by construction.
-If $\Omega$ is the feasible set and we can write
-\[
-  \mathbf{x}=g(\mathbf{y})\in \Omega,
-  \qquad
-  \mathbf{y}\in \mathbb{R}^m,
-\]
-then
-\[
-  \min_{\mathbf{x}\in \Omega} f(\mathbf{x})
-  \qquad \Longleftrightarrow \qquad
-  \min_{\mathbf{y}} f(g(\mathbf{y})).
-\]
-This removes the explicit constraint, but it changes the geometry of the
-problem and may create new numerical issues.
-
-Typical examples are the following.
-\begin{enumerate}
-  \item For the scalar constraint $x\ge 0$, use
-  \[
-    x = g(y) = \log(1+e^y).
-  \]
-  The seemingly simpler map $x=y^2$ is often a
-  poor choice numerically: it is symmetric, not monotone, and may create bad
-  gradients.
-
-  \item For the box constraint $a\le x\le b$, use
-  \[
-    x = g(y) = a + (b-a)\sigma(y),
-  \]
-  where $\sigma(y)=1/(1+e^{-y})$. If one wants to reach the
-  boundary values exactly, then one should choose a different map.
-
-  \item For positive semidefinite matrices,
-  \[
-    X \succeq 0
-    \qquad \Longrightarrow \qquad
-    X = Y Y^\top.
-  \]
-
-  \item For positive definite matrices, use a Cholesky-type factorization
-  \[
-    X = L L^\top,
-  \]
-  where $L$ is triangular and its diagonal is forced to be positive, for
-  example by
-  \[
-    L_{ii} = \log(1+e^{\ell_{ii}}).
-  \]
-
-  \item For orthogonality constraints,
-  \[
-    X^\top X = I
-    \qquad \Longrightarrow \qquad
-    X = \exp(Y-Y^\top).
-  \]
-  This reaches the connected component with determinant $1$.
-
-  \item For the Euclidean ball $\|\mathbf{x}\|_2\le a$, one can separate radius
-  and direction, for instance by
-  \[
-    \mathbf{x}
-    =
-    a\,\delta(z)\,
-    \frac{\mathbf{y}}{\|\mathbf{y}\|_2},
-  \]
-  where $\delta(z)\in [0,1]$. Another useful map is the
-  projection-style parameterization
-  \[
-    g(\mathbf{y})
-    =
-    \operatorname{proj}_{\{\|\mathbf{u}\|_2\le a\}}(\mathbf{y})
-    =
-    \begin{cases}
-      \mathbf{y}, & \|\mathbf{y}\|_2\le a, \\
-      a\,\mathbf{y}/\|\mathbf{y}\|_2, & \text{otherwise}.
-    \end{cases}
-  \]
-\end{enumerate}
-
-\subsection{Standard classes of constrained convex optimization}
-\label{subsec:ch7-standard-classes}
-We close with the model classes that appear repeatedly in
-applications. They all fit the constrained template of this chapter, but each
-class has specialized algorithms and geometry.
-
-\paragraph{Linear programming (LP).}
-\[
-  \min_{\mathbf{x}} c^\top \mathbf{x}
-  \qquad
-  \text{subject to }
-  A\mathbf{x}\le \mathbf{b},
-  \qquad
-  E\mathbf{x}=\mathbf{f}.
-\]
-
-\paragraph{Quadratic programming (QP).}
-\[
-  \min_{\mathbf{x}}
-  \frac12 \mathbf{x}^\top A \mathbf{x} + \mathbf{x}^\top \mathbf{b}
-  \qquad
-  \text{subject to }
-  C\mathbf{x}\le \mathbf{d},
-  \qquad
-  E\mathbf{x}=\mathbf{f},
-  \qquad
-  A\in \mathbb{S}_+^n.
-\]
-
-\paragraph{Quadratically constrained quadratic programming (QCQP).}
-\[
-  \min_{\mathbf{x}}
-  \frac12 \mathbf{x}^\top A \mathbf{x} + \mathbf{x}^\top \mathbf{b}
-  \qquad
-  \text{subject to }
-  \frac12 \mathbf{x}^\top P_j \mathbf{x}
-  + \mathbf{x}^\top \mathbf{q}_j + r_j \le 0,
-  \quad j=1,\dots,m,
-\]
-\[
-  E\mathbf{x}=\mathbf{f},
-  \qquad
-  A,P_j\in \mathbb{S}_+^n.
-\]
-
-\paragraph{Second-order cone programming (SOCP).}
-\[
-  \min_{\mathbf{x}} c^\top \mathbf{x}
-  \qquad
-  \text{subject to }
-  \|A_i\mathbf{x}+\mathbf{b}_i\|_2 \le c_i^\top \mathbf{x} + d_i,
-  \quad i=1,\dots,m,
-  \qquad
-  E\mathbf{x}=\mathbf{f}.
-\]
-
-\paragraph{Semidefinite programming (SDP).}
-\[
-  \min_{\mathbf{x}\in \mathbb{R}^n} c^\top \mathbf{x}
-  \qquad
-  \text{subject to }
-  A_0 + x_1 A_1 + \cdots + x_n A_n \succeq 0,
-  \qquad
-  E\mathbf{x}=\mathbf{f},
-\]
-with $A_i\in \mathbb{S}^m$.
-
-These classes satisfy the inclusion chain
-\[
-  \mathrm{LP} \subset \mathrm{QP} \subset \mathrm{QCQP}
-  \subset \mathrm{SOCP} \subset \mathrm{SDP}.
-\]
-As Chapter~4 already suggested through epigraphs, cones, and positive
-semidefinite matrices, each inclusion means that the later class can represent
-the earlier one.
-
-\begin{example}[Dual of a simple semidefinite program]
-\label{ex:ch7-sdp-dual}
-Consider
-\[
-  \min_X \langle A,X\rangle
-  \qquad
-  \text{subject to }
-  X\succeq 0,
-  \qquad
-  \langle C,X\rangle = d.
-\]
-Here $X\in \mathbb{S}^n$ is the optimization variable, the matrix inequality is
-the cone constraint, and the equality is one affine side condition.
-
-Introduce a scalar multiplier $\mu$ for the equality constraint and a matrix
-multiplier $\Lambda\succeq 0$ for the cone constraint. The Lagrangian is
-\[
-  L(X,\Lambda,\mu)
-  =
-  \langle A,X\rangle
-  + \mu(\langle C,X\rangle-d)
-  - \langle \Lambda,X\rangle.
-\]
-Grouping the $X$-terms gives
-\[
-  L(X,\Lambda,\mu)
-  =
-  \langle A + \mu C - \Lambda, X\rangle - \mu d.
-\]
-Therefore
-\[
-  q(\Lambda,\mu)
-  =
-  \inf_X L(X,\Lambda,\mu)
-  =
-  \begin{cases}
-    -\mu d, & A+\mu C-\Lambda = 0, \\
-    -\infty, & \text{otherwise}.
-  \end{cases}
-\]
-So the dual problem is
-\[
-  \max_{\Lambda,\mu} -\mu d
-  \qquad
-  \text{subject to }
-  A+\mu C-\Lambda = 0,
-  \qquad
-  \Lambda\succeq 0.
-\]
-Eliminating $\Lambda$ yields the equivalent form
-\[
-  \max_\mu -\mu d
-  \qquad
-  \text{subject to }
-  A+\mu C \succeq 0.
-\]
-This is exactly the linear-matrix-inequality structure emphasized by the SDP
-representation.
-\end{example}
-
-\section{What to remember}
-\begin{itemize}
-  \item Constrained first-order optimality is not tested in all directions, but
-  only in the tangent cone $T_F(\mathbf{x}^\star)$ of feasible directions.
-  \item KKT rewrites the tangent-cone condition in terms of the gradients of
-  the equality constraints and active inequalities, together with the
-  multipliers in the Lagrangian.
-  \item Equality constraints lead to orthogonality with the tangent space;
-  active inequalities lead to nonnegative multipliers and complementary
-  slackness.
-  \item Constraint qualifications are essential. Without them, even a true
-  minimizer may fail to satisfy KKT, as in the example with $x^2\le 0$.
-  \item Second-order analysis does not use the Hessian on all of
-  $\mathbb{R}^n$, but only on the critical cone
-  $C(\mathbf{x}^\star,\boldsymbol{\lambda}^\star)$ of directions left
-  undecided by first-order KKT.
-  \item Open feasible sets and bad reformulations are genuine edge cases:
-  finite infima need not be attained, and equivalent constraint descriptions
-  need not be equally regular.
-  \item DeepFool is a useful application to keep in mind: it attacks a
-  classifier by repeatedly solving a locally linearized smallest-norm
-  constrained problem, so KKT appears there in essentially the same way as in
-  the analytic examples.
-  \item The dual function
-  $q(\boldsymbol{\lambda},\boldsymbol{\mu})=\inf_{\mathbf{x}}L$ is always
-  concave and always gives lower bounds on the primal optimum. Maximizing it is
-  therefore a convex problem.
-  \item Weak duality always holds, and in the convex setting Slater's
-  condition upgrades it to strong duality, so primal and dual optimal values
-  coincide.
-  \item Dual decomposition replaces a hard coupled problem by simpler
-  subproblems linked through multipliers. The coupling reappears as the dual
-  gradient.
-  \item Wasserstein distance is a duality example worth remembering:
-  transport-plan minimization is equivalent to maximizing the gap of
-  expectations over $1$-Lipschitz test functions.
-  \item Epigraph reformulations trade a complicated objective for extra
-  variables and constraints; reparameterizations enforce feasibility by
-  construction but change the optimization geometry.
-  \item LP, QP, QCQP, SOCP, and SDP are the standard constrained convex classes
-  in this hierarchy, with increasingly expressive cone structure.
-\end{itemize}

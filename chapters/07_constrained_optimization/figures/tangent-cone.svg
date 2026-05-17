@@ -1904,9 +1904,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.8705842"
-     inkscape:cx="725.99094"
-     inkscape:cy="404.67425"
+     inkscape:zoom="1.1853642"
+     inkscape:cx="722.98452"
+     inkscape:cy="301.17325"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1951,7 +1951,7 @@
      id="layer1"
      transform="translate(0,-177)">
     <path
-       style="opacity:0.35;fill:#9ecae1;fill-opacity:1;fill-rule:nonzero;stroke:#08519c;stroke-width:0.280882;stroke-linecap:square;paint-order:markers stroke fill"
+       style="opacity:0.3;fill:#c6dbef;fill-opacity:1;fill-rule:nonzero;stroke:#4292c6;stroke-width:0.280882;stroke-linecap:square;paint-order:markers stroke fill"
        d="m 40.17813,193.49698 c 12.860549,25.27763 25.721098,50.55526 39.113947,64.39146 13.39285,13.8362 27.317443,16.23088 39.379853,17.07346 12.06241,0.84258 22.26195,0.13305 33.4818,-12.8608 11.21984,-12.99384 23.45929,-38.27096 35.69898,-63.54859"
        id="path1-4"
        inkscape:path-effect="#path-effect1-1"

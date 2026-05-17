@@ -1,0 +1,75 @@
+%% Creator: Inkscape 1.4.2 (ebf0e940, 2025-05-08), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'kkt-general-case.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{680.31496063bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.5)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{kkt-general-case.pdf}}%
+    \put(0.16142631,0.43723679){\color[rgb]{0.25882353,0.57254902,0.77647059}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$g_1(\mathbf{x}) \leq 0$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{kkt-general-case.pdf}}%
+    \put(0.25176827,0.12118454){\color[rgb]{0.25882353,0.57254902,0.77647059}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$g_2(\mathbf{x}) \leq 0$\end{tabular}}}}%
+    \put(0.31720613,0.41222534){\color[rgb]{0,0,0}\transparent{0.30000001}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} \end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{kkt-general-case.pdf}}%
+    \put(0.61616463,0.18526725){\color[rgb]{0.25882353,0.57254902,0.77647059}\rotatebox{-0.44738689}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla g_2(\mathbf{x}^\star)$\end{tabular}}}}}%
+    \put(0.42881247,0.28197886){\color[rgb]{0.9372549,0.23137255,0.17254902}\transparent{0.17000002}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}  \end{tabular}}}}%
+    \put(0.68157712,0.24666075){\color[rgb]{0.9372549,0.23137255,0.17254902}\rotatebox{-13.2778666}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$T_{F_{1}}(\mathbf{x}^\star)$\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{kkt-general-case.pdf}}%
+    \put(0.63865613,0.33571683){\color[rgb]{0.9372549,0.23137255,0.17254902}\rotatebox{61.3176792}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$T_{F_{2}} (\mathbf{x}^\star)$\end{tabular}}}}}%
+    \put(0.60328382,0.22704451){\color[rgb]{0,0,0}\rotatebox{-1.9839997}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\mathbf{x}^\star$\end{tabular}}}}}%
+    \put(0.46710929,0.47535822){\color[rgb]{0.74117647,0.74117647,0.74117647}\rotatebox{-0.70989171}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla f(\mathbf{x}^\star)$\end{tabular}}}}}%
+    \put(0.74012566,0.23935998){\color[rgb]{0.74117647,0.74117647,0.74117647}\transparent{0.40000001}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} \end{tabular}}}}%
+    \put(0.77396889,0.23837452){\color[rgb]{0.74117647,0.74117647,0.74117647}\transparent{0.40000001}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l} \end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{kkt-general-case.pdf}}%
+    \put(0.49492195,0.18307112){\color[rgb]{0.25882353,0.57254902,0.77647059}\rotatebox{0.18533634}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$\nabla g_1(\mathbf{x}^\star)$\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{kkt-general-case.pdf}}%
+  \end{picture}%
+\endgroup%
